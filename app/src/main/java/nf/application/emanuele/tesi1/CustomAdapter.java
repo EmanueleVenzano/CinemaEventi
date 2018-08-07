@@ -3,6 +3,7 @@ package nf.application.emanuele.tesi1;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
@@ -10,12 +11,15 @@ import android.os.AsyncTask;
 import android.os.VibrationEffect;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,9 +97,17 @@ public class CustomAdapter extends ArrayAdapter<Copertina> {
                     if (result!=null) {
                         imageView.setImageBitmap(result);
                     }else{
-                        Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.ic_audiotrack_dark);
+                        Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.ic_launcher_background);
                         imageView.setImageDrawable(placeholder);
                     }
+//                    WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+  //                  Display display = wm.getDefaultDisplay();
+    //                Point size = new Point();
+      //              display.getSize(size);
+        //            int height = size.y/3;
+          //          height=1;
+            //        imageView.on;
+              //      height=4400404;
                 }
             }
         }
@@ -106,11 +118,14 @@ public class CustomAdapter extends ArrayAdapter<Copertina> {
                 URL uri = new URL(url);
                 urlConnection = (HttpURLConnection) uri.openConnection();
                 int statusCode = urlConnection.getResponseCode();
-                /*OK){
+                if (statusCode!=200){
                     return null;
-                }*/
+                }
                 InputStream inputStream = urlConnection.getInputStream();
+
                 if (inputStream!=null){
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds=true;
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                     return bitmap;
                 }

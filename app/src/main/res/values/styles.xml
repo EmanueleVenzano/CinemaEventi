@@ -7,5 +7,5 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
+    <dimen name="scr1">@dimen/cast_expanded_controller_ad_layout_height</dimen>
 </resources>

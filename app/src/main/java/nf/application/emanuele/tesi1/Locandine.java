@@ -61,7 +61,6 @@ public class Locandine extends Activity implements AdapterView.OnItemClickListen
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id){
-
         Copertina item = films.get(position);
         Intent intent = new Intent (this, InfoFilm.class);
         intent.putExtra("name", item.name);

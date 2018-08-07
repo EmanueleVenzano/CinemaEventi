@@ -22,7 +22,7 @@ public class Cinemas {
         f1.Titolo = "Black panther";
         f1.durata = 110;
         f1.trama = "Non succede un cazzo";
-        f1.immagine = "http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png";
+        f1.immagine = "https://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png";
         f1.proiezione.add(P1);
         f1.proiezione.add(P2);
         f1.proiezione.add(P3);
@@ -61,7 +61,7 @@ public class Cinemas {
         f1.Titolo = "Super Sonic";
         f1.durata = 110;
         f1.trama = "Un riccio";
-        f1.immagine = "http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png";
+        f1.immagine = "https://cdn.pixabay.com/photo/2016/03/21/23/25/link-1271843_1280.png";
         f1.proiezione.add(P1);
         c1.films.add(f1);
         cinemas.add(c1);
