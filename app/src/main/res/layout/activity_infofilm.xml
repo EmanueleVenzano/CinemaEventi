@@ -7,33 +7,29 @@
     <ImageView
         android:id="@+id/imgFilm"
         android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        android:layout_height="240dp" />
 
     <TextView
         android:id="@+id/titleFilm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imgFilm"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@id/imgFilm" />
 
     <TextView
         android:id="@+id/durataFilm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/titleFilm"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@id/titleFilm" />
 
     <TextView
         android:id="@+id/descrizioneFilm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="85dp" />
+        android:layout_below="@+id/durataFilm" />
 
     <TextView
         android:id="@+id/proiezioniFilm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_below="@id/descrizioneFilm"/>
 </RelativeLayout>
