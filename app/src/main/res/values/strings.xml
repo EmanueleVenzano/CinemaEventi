@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Tesi1</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="map_button_text">Vai alla mappa</string>
+    <string name="search_button_text">Cerca Film</string>
+    <string name="saved_button_text">Vai ai preferiti</string>
+    <string name="eventi_button_text">Eventi a Genova</string>
+</resources>
