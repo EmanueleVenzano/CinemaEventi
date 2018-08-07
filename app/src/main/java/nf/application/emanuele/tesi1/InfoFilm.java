@@ -4,11 +4,20 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
@@ -33,22 +42,50 @@ public class InfoFilm extends Activity {
         String name = intent.getStringExtra("name");
 
         Cinemas c = new Cinemas();
-
-        //TODO metti immagine che non sono capapce
-
         ArrayList<ArrayList<Proiezione>> orari = new ArrayList<>();
         ArrayList<String> cinema = new ArrayList<>();
         int durata = 0;
         String descrizione = "";
+        String urlToString = "";
         for (int i=0; i< c.cinemas.size(); i++){
             for (int j=0; j<c.cinemas.get(i).films.size(); j++) {
                 if (c.cinemas.get(i).films.get(j).Titolo.equals(name)){
                     durata = c.cinemas.get(i).films.get(j).durata;
                     descrizione = c.cinemas.get(i).films.get(j).trama;
+                    urlToString = c.cinemas.get(i).films.get(j).immagine;
                     orari.add(c.cinemas.get(i).films.get(j).proiezione);
                     cinema.add(c.cinemas.get(i).name);
                 }
             }
+        }
+
+        HttpURLConnection urlConnection = null;
+        Bitmap bitmap = null;
+        try{
+            URL uri = new URL(urlToString);
+            urlConnection = (HttpURLConnection) uri.openConnection();
+            int statusCode = urlConnection.getResponseCode();
+            if (statusCode==200) {
+                InputStream inputStream = urlConnection.getInputStream();
+                if (inputStream != null) {
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    bitmap = BitmapFactory.decodeStream(inputStream);
+                }
+            }
+        }catch (Exception e){
+            urlConnection.disconnect();
+            Log.w("Image Downloader", "Error downloding image from "+urlToString);
+        }finally {
+            if (urlConnection!=null){
+                urlConnection.disconnect();
+            }
+        }
+        if (bitmap!=null) {
+            imgFilm.setImageBitmap(bitmap);
+        }else{
+            Drawable placeholder = imgFilm.getContext().getResources().getDrawable(R.drawable.ic_launcher_background);
+            imgFilm.setImageDrawable(placeholder);
         }
 
         titleFilm.setText("Titolo: "+name);
