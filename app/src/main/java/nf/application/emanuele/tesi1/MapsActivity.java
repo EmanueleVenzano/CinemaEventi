@@ -76,6 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        Cinemas c = new Cinemas();
         if (!goTo.equals("")) {
             //Initialize Google Play Services
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -93,11 +94,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Setting onclick event listener for the map
             LatLng myPosition = new LatLng(44.426669, 8.800794);
             MarkerPoints.add(myPosition);
-            MarkerPoints.add(new LatLng(44.413339, 8.880113));
+            CinemaDB db = new CinemaDB(this);
+            Location cinema = db.getCinemaLocation(goTo);
+            MarkerPoints.add(new LatLng(cinema.getLatitude(), cinema.getLongitude()));
             MarkerOptions options = new MarkerOptions();
 
             // Setting the position of the marker
-            options.position(new LatLng(44.413339, 8.880113));
+            options.position(new LatLng(cinema.getLatitude(), cinema.getLongitude()));
 
             /**
              * For the start location, the color of marker is GREEN and
@@ -130,7 +133,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
             }
         } else {
-            Cinemas c = new Cinemas();
             for (int i = 0; i < c.cinemas.size(); i++) {
                 CinemaDB db = new CinemaDB(this);
                 String name = c.cinemas.get(i).name;
