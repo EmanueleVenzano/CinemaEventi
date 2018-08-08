@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade (SQLiteDatabase db, int oldVersion, int newVersion){
         Log.d("Cinema", "Upgrading DB version from "+oldVersion+" to "+newVersion);
-        db.execSQL(CinemaDB.DROP_CINEMA_TABLE);
+        //db.execSQL(CinemaDB.DROP_CINEMA_TABLE);
         onCreate(db);
     }
 }

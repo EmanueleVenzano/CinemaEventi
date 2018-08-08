@@ -21,38 +21,34 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class InfoCinema extends Fragment implements View.OnClickListener{
+public class InfoCinema extends Activity implements View.OnClickListener{
     private String name;
     private ImageView imageCinema;
     private TextView nameCinema;
     private TextView descriptionCinema;
-    private SharedPreferences savedValues;
     private Button button;
 
     @Override
-    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.activity_infocinema, container, false);
-        savedValues = getActivity().getSharedPreferences("SavedValues", Context.MODE_PRIVATE );
-        name = savedValues.getString("name", "");
-        SharedPreferences.Editor editor = savedValues.edit();
-        editor.putString("name", "");
-        editor.commit();
-        CinemaDB db = new CinemaDB(getContext());
+    public void onCreate (Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_infocinema);
+        name = getIntent().getStringExtra("name");
+        CinemaDB db = new CinemaDB(this);
         ArrayList<String> info = db.getInfoCinema(name);
 
-        imageCinema = (ImageView) view.findViewById(R.id.imageCinema);
-        nameCinema = (TextView) view.findViewById(R.id.nameCinema);
-        descriptionCinema = (TextView) view.findViewById(R.id.descriptionCinema);
-        button = (Button) view.findViewById(R.id.buttonCinema);
+        imageCinema = (ImageView) findViewById(R.id.imageCinema);
+        nameCinema = (TextView) findViewById(R.id.nameCinema);
+        descriptionCinema = (TextView) findViewById(R.id.descriptionCinema);
+        button = (Button) findViewById(R.id.buttonCinema);
         button.setOnClickListener(this);
 
-        String path = getActivity().getApplication().getFilesDir().getAbsolutePath();
+        String path = getApplication().getFilesDir().getAbsolutePath();
         InputStream is = null;
-        try{
+        /*try{
              is = new FileInputStream(path + "/"+info.get(1));
         }catch (FileNotFoundException e){
             try{
-                 is = new FileInputStream(path+"/noImg.jpg");
+                 is = new FileInputStream(path+"/noimg.jpg");
             }catch (FileNotFoundException e1){
                 e1.printStackTrace();
             }
@@ -63,18 +59,17 @@ public class InfoCinema extends Fragment implements View.OnClickListener{
         Log.i("Fnord", "width="+icon.getIntrinsicWidth()+
                 " height="+icon.getIntrinsicHeight());
         imageCinema.setImageDrawable(icon);
+        */
         nameCinema.setText(info.get(0));
         descriptionCinema.setText(info.get(2));
-        return view;
     }
 
     @Override
     public void onClick(View v){
         if (v.getId()==R.id.buttonCinema){
-            SharedPreferences.Editor editor = savedValues.edit();
-            editor.putString("name", name);
-            editor.commit();
+            Intent intent = new Intent(this, MapsActivity.class);
+            intent.putExtra("name", name);
+            startActivity(intent);
         }
-        getActivity().onBackPressed();
     }
 }
