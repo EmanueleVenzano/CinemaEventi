@@ -3,6 +3,7 @@ package nf.application.emanuele.tesi1;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,7 @@ public class CinemaDB {
             CINEMA_IMG + " TEXT, " +
             CINEMA_DESCRIZIONE + " TEXT, " +
             CINEMA_LATITUDE + " TEXT, "+
-            CINEMA_LONGITUDE + " TEXT);";
+            CINEMA_LONGITUDE + " DOUBLE);";
     public static final String DROP_CINEMA_TABLE = "DROP TABLE IF EXISTS "+ CINEMA_TABLE;
 
     public CinemaDB(Context context){
@@ -47,6 +48,35 @@ public class CinemaDB {
     private void closeDB(){
         if (db!=null){
             db.close();
+        }
+    }
+
+    public Location getCinemaLocation (String cinemaName){
+        String where = CINEMA_NAME + " = ? ";
+        String[] whereArgs = {cinemaName};
+        this.openReadableDB();
+//        Cursor cursor = db.query(CINEMA_TABLE, null, where, whereArgs, null, null, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM cinema WHERE nome = ?", new String[]{cinemaName});
+        Location result = getLocationCinemFromCursor(cinemaName, cursor);
+        if (cursor!=null){
+            cursor.close();
+        }
+        this.closeDB();
+        return result;
+    }
+
+    private static Location getLocationCinemFromCursor (String name, Cursor cursor){
+        if (cursor == null || cursor.getCount()==0) return null;
+        try{
+            cursor.moveToFirst();
+            double lat = Double.parseDouble(cursor.getString(CINEMA_LATITUDE_COL));
+            double lon = cursor.getDouble(CINEMA_LONGITUDE_COL);
+            Location l = new Location(name);
+            l.setLongitude(lon);
+            l.setLatitude(lat);
+            return l;
+        }catch (Exception e){
+            return null;
         }
     }
 
