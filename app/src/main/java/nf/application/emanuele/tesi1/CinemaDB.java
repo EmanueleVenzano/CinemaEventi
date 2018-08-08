@@ -97,6 +97,7 @@ public class CinemaDB {
     private static ArrayList<String> getInfoCinemFromCursor (Cursor cursor){
         if (cursor == null || cursor.getCount()==0) return null;
         try{
+            cursor.moveToFirst();
             ArrayList<String> result = new ArrayList<>();
             result.add(cursor.getString(CINEMA_NAME_COL));
             result.add(cursor.getString(CINEMA_IMG_COL));

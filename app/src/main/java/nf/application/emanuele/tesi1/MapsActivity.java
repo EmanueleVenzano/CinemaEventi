@@ -1,5 +1,6 @@
 package nf.application.emanuele.tesi1;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -30,11 +31,13 @@ import java.util.ArrayList;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     Marker lastclicked=null;
     private GoogleMap mMap;
+    private SharedPreferences savedValues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        savedValues = getSharedPreferences("SavedValues", MODE_PRIVATE);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -45,20 +48,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap){
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        Cinemas c = new Cinemas();
-        for (int i=0; i<c.cinemas.size(); i++){
-            CinemaDB db = new CinemaDB(this);
-            String name =c.cinemas.get(i).name;
-            Location location = db.getCinemaLocation(name);
-            if (location!=null){
-                LatLng temp = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(temp).title(name));
+        String goTo = savedValues.getString("name", "");
+        if (goTo!=""){
+
+        }else {
+            Cinemas c = new Cinemas();
+            for (int i = 0; i < c.cinemas.size(); i++) {
+                CinemaDB db = new CinemaDB(this);
+                String name = c.cinemas.get(i).name;
+                Location location = db.getCinemaLocation(name);
+                if (location != null) {
+                    LatLng temp = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(temp).title(name));
+                }
             }
+            mMap.setOnMarkerClickListener(this);
+            LatLng centered = new LatLng(44.416899, 8.917900);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(centered));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centered, 12), 1000, null);
         }
-        mMap.setOnMarkerClickListener(this);
-        LatLng centered = new LatLng(44.416899, 8.917900);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(centered));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centered, 12), 1000, null);
     }
 
     @Override
@@ -68,7 +76,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_audiotrack_light));
         lastclicked=marker;
+        SharedPreferences.Editor editor = savedValues.edit();
+        editor.putString("name", marker.getTitle());
+        editor.commit();
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new InfoCinema()).commit();
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
     }
 
 }

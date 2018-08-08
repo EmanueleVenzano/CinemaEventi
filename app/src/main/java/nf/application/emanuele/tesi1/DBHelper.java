@@ -13,9 +13,9 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL(CinemaDB.CREATE_CINEMA_TABLE);
-        db.execSQL("INSERT INTO cinema VALUES ('Cinema Italia', 'italia', 'NON Multisala STRABILIANTEE', 44.402998, 8.684109)");
-        db.execSQL("INSERT INTO cinema VALUES ('TheSpace', 'thespace', 'Multisala in centro', 44.408186, 8.921580)");
-        db.execSQL("INSERT INTO cinema VALUES ('Fiumara', 'fiumara', 'Multisala STRABILIANTEE', 44.413469, 8.880971)");
+        db.execSQL("INSERT INTO cinema VALUES ('Cinema Italia', 'cinemaitalia.jpg', 'NON Multisala STRABILIANTEE', 44.402998, 8.684109)");
+        db.execSQL("INSERT INTO cinema VALUES ('TheSpace', 'thespace.jpg', 'Multisala in centro', 44.408186, 8.921580)");
+        db.execSQL("INSERT INTO cinema VALUES ('Fiumara', 'fiumara.jpg', 'Multisala STRABILIANTEE', 44.413469, 8.880971)");
     }
 
     @Override
