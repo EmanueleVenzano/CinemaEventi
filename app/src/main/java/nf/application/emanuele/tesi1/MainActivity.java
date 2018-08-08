@@ -31,6 +31,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         switch (v.getId()){
             case R.id.MapButton:
                 intent = new Intent (this, MapsActivity.class);
+                intent.putExtra("name", "");
                 break;
             case R.id.SavedButton:
                 intent = new Intent (this, MapsActivity.class);
@@ -39,7 +40,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 intent = new Intent (this, Locandine.class);
                 break;
             case R.id.EventidButton:
-                intent = new Intent (this, MapsActivity.class);
+                intent = new Intent (this,InfoCinema.class);
+                intent.putExtra("name", "Fiumara");;
                 break;
         }
         if (intent!=null){

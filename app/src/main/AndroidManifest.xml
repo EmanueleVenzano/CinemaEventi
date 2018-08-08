@@ -49,6 +49,8 @@
         </activity>
         <activity android:name=".InfoFilm"
             android:label="Film"/>
+        <activity android:name=".InfoCinema"
+            android:label="Cinema"/>
     </application>
 
 </manifest>
