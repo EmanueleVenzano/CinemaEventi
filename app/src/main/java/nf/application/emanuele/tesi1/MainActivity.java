@@ -31,6 +31,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         switch (v.getId()){
             case R.id.MapButton:
                 intent = new Intent (this, MapsActivity.class);
+                intent.putExtra("name", "");
                 break;
             case R.id.SavedButton:
                 intent = new Intent (this, MapsActivity.class);
