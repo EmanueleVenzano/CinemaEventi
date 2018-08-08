@@ -42,13 +42,15 @@ public class CustomAdapter extends ArrayAdapter<Copertina> {
             convertView = inflater.inflate(R.layout.items_listview, null);
             viewHolder = new ViewHolder();
             viewHolder.name = (TextView)convertView.findViewById(R.id.titleLocandine);
+            viewHolder.genere=(TextView)convertView.findViewById(R.id.genereLocandine);
             viewHolder.img = (ImageView)convertView.findViewById(R.id.imgLocandine);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
         Copertina copertina =getItem(position);
-        viewHolder.name.setText(copertina.name);
+        viewHolder.name.setText("Titolo: "+copertina.name);
+        viewHolder.genere.setText("Genere: "+copertina.genere);
 
         new ImageDownloaderTask((ImageView)convertView.findViewById(R.id.imgLocandine)).execute(copertina.img.toString());
 
@@ -67,10 +69,12 @@ public class CustomAdapter extends ArrayAdapter<Copertina> {
 
     private class ViewHolder {
         public TextView name;
+        public TextView genere;
         public ImageView img;
 
         public ViewHolder(){
             name=null;
+            genere=null;
             img=null;
         }
     }

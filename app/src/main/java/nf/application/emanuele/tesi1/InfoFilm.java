@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 public class InfoFilm extends Activity {
     private ImageView imgFilm;
     private TextView titleFilm;
+    private TextView genereFilm;
     private TextView durataFilm;
     private TextView descrizioneFilm;
     private TextView proiezioniFilm;
@@ -35,6 +37,7 @@ public class InfoFilm extends Activity {
         imgFilm = (ImageView)findViewById(R.id.imgFilm);
         titleFilm = (TextView)findViewById(R.id.titleFilm);
         durataFilm = (TextView)findViewById(R.id.durataFilm);
+        genereFilm = (TextView)findViewById(R.id.genereFilm);
         descrizioneFilm = (TextView)findViewById(R.id.descrizioneFilm);
         proiezioniFilm = (TextView) findViewById(R.id.proiezioniFilm);
 
@@ -45,12 +48,14 @@ public class InfoFilm extends Activity {
         ArrayList<ArrayList<Proiezione>> orari = new ArrayList<>();
         ArrayList<String> cinema = new ArrayList<>();
         int durata = 0;
+        String genere="";
         String descrizione = "";
         String urlToString = "";
         for (int i=0; i< c.cinemas.size(); i++){
             for (int j=0; j<c.cinemas.get(i).films.size(); j++) {
                 if (c.cinemas.get(i).films.get(j).Titolo.equals(name)){
                     durata = c.cinemas.get(i).films.get(j).durata;
+                    genere = c.cinemas.get(i).films.get(j).genere;
                     descrizione = c.cinemas.get(i).films.get(j).trama;
                     urlToString = c.cinemas.get(i).films.get(j).immagine;
                     orari.add(c.cinemas.get(i).films.get(j).proiezione);
@@ -61,18 +66,19 @@ public class InfoFilm extends Activity {
 
         new ImageDownloaderTask(imgFilm).execute(urlToString);
 
-        titleFilm.setText("Titolo: "+name);
-        durataFilm.setText("Durata: "+durata);
-        descrizioneFilm.setText("Trama: "+descrizione);
+        titleFilm.setText(Html.fromHtml("<b>Titolo: </b>"+name));
+        durataFilm.setText(Html.fromHtml("<b>Durata: </b>"+durata+"min"));
+        genereFilm.setText(Html.fromHtml("<b>Genere: </b>"+genere));
+        descrizioneFilm.setText(Html.fromHtml("<b>Trama: </b><br />"+descrizione));
         String p = "";
         for (int i=0; i<cinema.size(); i++){
-            p+=cinema.get(i)+": ";
+            p+=cinema.get(i)+":<br />";
             for (Proiezione pro: orari.get(i)){
-                p+=pro.orario+"(sala: "+pro.sala+") ";
+                p+=pro.orario+"(sala: "+pro.sala+")<br /> ";
             }
-            p+="\n";
+            p+="<br />";
         }
-        proiezioniFilm.setText("Proiezioni: \n"+p);
+        proiezioniFilm.setText(Html.fromHtml("<b>Proiezioni: </b><br /><br />"+p));
 
     }
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Film {
     public String Titolo;
     public String trama;
+    public String genere;
     public int durata;
     public String immagine;
     public ArrayList<Proiezione> proiezione;
@@ -12,6 +13,7 @@ public class Film {
     public Film(){
         Titolo="";
         trama="";
+        genere="";
         durata=0;
         immagine="";
         proiezione= new ArrayList<>();

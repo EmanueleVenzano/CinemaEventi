@@ -7,18 +7,33 @@
 
     <ImageView
         android:id="@+id/imgLocandine"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
+        android:layout_width="132dp"
+        android:layout_height="190dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_marginStart="11dp"
         android:contentDescription="@string/cast_expanded_controller_background_image"
         android:text="" />
 
     <TextView
         android:id="@+id/titleLocandine"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_below="@id/imgLocandine"
-        android:layout_centerHorizontal="true"
-        android:text="" />
+        android:layout_width="195dp"
+        android:layout_height="25dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="27dp"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/genereLocandine"
+        android:layout_width="195dp"
+        android:layout_height="57dp"
+        android:layout_alignEnd="@+id/titleLocandine"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:text=""
+        android:textSize="20sp" />
 </RelativeLayout>

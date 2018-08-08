@@ -6,10 +6,12 @@ import java.net.URL;
 
 public class Copertina {
     public String name;
+    public String genere;
     public URL img;
 
     public Copertina(){
         name="";
+        genere="";
         img=null;
     }
 }

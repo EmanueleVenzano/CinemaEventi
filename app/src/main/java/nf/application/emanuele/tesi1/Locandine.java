@@ -32,7 +32,7 @@ public class Locandine extends Activity implements AdapterView.OnItemClickListen
         itemsListView = (ListView) findViewById(R.id.itemsListView);
         titleTextView = (TextView) findViewById(R.id.titleTextView);
         itemsListView.setOnItemClickListener(this);
-        titleTextView.setText("Che magnifici Film!");
+        titleTextView.setText("Cerca film");
         Cinemas c = new Cinemas();
         for (int i=0; i< c.cinemas.size(); i++){
             for (int j=0; j<c.cinemas.get(i).films.size(); j++){
@@ -45,6 +45,7 @@ public class Locandine extends Activity implements AdapterView.OnItemClickListen
                 if (controller == 0){
                     Copertina temp = new Copertina();
                     temp.name = c.cinemas.get(i).films.get(j).Titolo;
+                    temp.genere=c.cinemas.get(i).films.get(j).genere;
                     try {
                         temp.img = new URL(c.cinemas.get(i).films.get(j).immagine);
                     }catch (MalformedURLException e){
