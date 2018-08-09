@@ -103,12 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              * For the start location, the color of marker is GREEN and
              * for the end location, the color of marker is RED.
              */
-            if (MarkerPoints.size() == 1) {
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            } else if (MarkerPoints.size() == 2) {
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            }
-
+            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
             // Add new marker to the Google Map Android API V2
             mMap.addMarker(options);
@@ -303,7 +298,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 lineOptions.addAll(points);
                 lineOptions.width(10);
                 lineOptions.color(Color.RED);
-
                 Log.d("onPostExecute", "onPostExecute lineoptions decoded");
 
             }
@@ -359,7 +353,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
         //move map camera
