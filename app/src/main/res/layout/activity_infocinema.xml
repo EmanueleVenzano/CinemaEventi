@@ -18,11 +18,30 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/nameCinema"
         android:id="@+id/descriptionCinema"/>
-
-    <Button
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/descriptionCinema"
-        android:id="@+id/buttonCinema"
-        android:text="Portamici" />
+        android:layout_below="@id/descriptionCinema">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonDriveCinema"
+            android:text="A" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonTransitCinema"
+            android:text="T" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonFootCinema"
+            android:text="W" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonBikeCinema"
+            android:text="B" />
+    </LinearLayout>
 </LinearLayout>
