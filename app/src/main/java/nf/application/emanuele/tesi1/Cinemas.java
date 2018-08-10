@@ -1,7 +1,5 @@
 package nf.application.emanuele.tesi1;
 
-import android.location.Location;
-
 import java.util.ArrayList;
 
 public class Cinemas {
@@ -16,11 +14,8 @@ public class Cinemas {
         Cinema c1 = new Cinema();
 
         P1.orario = "12:20";
-        P1.sala=1;
         P2.orario = "14:20";
-        P2.sala=1;
         P3.orario = "16:20";
-        P3.sala=2;
         f1.Titolo = "Black Panther";
         f1.durata = 110;
         f1.genere="Fantasy";
@@ -37,7 +32,6 @@ public class Cinemas {
         P3 = new Proiezione();
         f1 = new Film();
         P1.orario = "12:20";
-        P1.sala=1;
         f1.Titolo = "Supersonic";
         f1.durata = 110;
         f1.genere ="Film ridicolo sugli oasis";
@@ -53,11 +47,8 @@ public class Cinemas {
         f1 = new Film();
         c1 = new Cinema();
         P1.orario = "12:20";
-        P1.sala=1;
         P2.orario = "14:20";
-        P2.sala=1;
         P3.orario = "16:20";
-        P3.sala=2;
         f1.Titolo = "Black Panther";
         f1.durata = 110;
         f1.genere="Fantasy";
@@ -76,11 +67,8 @@ public class Cinemas {
         f1 = new Film();
         c1 = new Cinema();
         P1.orario = "12:20";
-        P1.sala=1;
         P2.orario = "14:20";
-        P2.sala=1;
         P3.orario = "16:20";
-        P3.sala=2;
         f1.Titolo = "Black Panther";
         f1.durata = 110;
         f1.genere="Fantasy";

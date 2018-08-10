@@ -1,23 +1,13 @@
 package nf.application.emanuele.tesi1;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -66,7 +56,7 @@ public class InfoCinema extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View v){
-        if (v.getId()==R.id.buttonCinema){
+        if (v.getId()== R.id.buttonCinema){
             Intent intent = new Intent(this, MapsActivity.class);
             intent.putExtra("name", name);
             startActivity(intent);

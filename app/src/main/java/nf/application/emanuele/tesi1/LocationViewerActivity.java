@@ -13,10 +13,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 
 public class LocationViewerActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {

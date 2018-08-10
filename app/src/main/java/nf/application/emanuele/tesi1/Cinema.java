@@ -1,7 +1,5 @@
 package nf.application.emanuele.tesi1;
 
-import android.location.Location;
-
 import java.util.ArrayList;
 
 public class Cinema {

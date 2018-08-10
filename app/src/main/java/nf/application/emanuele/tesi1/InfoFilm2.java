@@ -1,9 +1,7 @@
 package nf.application.emanuele.tesi1;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -11,42 +9,90 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
+import java.util.HashMap;
+import java.util.List;
 
-public class InfoFilm extends Activity {
+public class InfoFilm2 extends Activity {
+
     private ImageView imgFilm;
     private TextView titleFilm;
     private TextView genereFilm;
     private TextView durataFilm;
     private TextView descrizioneFilm;
-    private TextView proiezioniFilm;
+
+    ExpandableListAdapter listAdapter;
+    ExpandableListView explistView;
+    List<String> cinema;
+    HashMap<String, List<String>> figli;
+
+    //nome del film che mi viene passato
+    String name = "";
 
     @Override
-    public void onCreate (Bundle savedInstanceState){
+    protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infofilm);
+
         imgFilm = (ImageView)findViewById(R.id.imgFilm);
         titleFilm = (TextView)findViewById(R.id.titleFilm);
         durataFilm = (TextView)findViewById(R.id.durataFilm);
         genereFilm = (TextView)findViewById(R.id.genereFilm);
         descrizioneFilm = (TextView)findViewById(R.id.descrizioneFilm);
-        proiezioniFilm = (TextView) findViewById(R.id.proiezioniFilm);
+        explistView = (ExpandableListView) findViewById(R.id.proiezioniListView);
+
+        cinema = new ArrayList<String>();
+        figli = new HashMap<String, List<String>>();
+
 
         Intent intent = this.getIntent();
-        String name = intent.getStringExtra("name");
+        name = intent.getStringExtra("name");
 
+        prepareListData();
+
+        listAdapter = new ExpandableListAdapter(this, cinema, figli);
+        explistView.setAdapter(listAdapter);
+
+        explistView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                Toast.makeText(getApplicationContext(), "Group clicked"+cinema.get(groupPosition), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+
+        explistView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                Toast.makeText(getApplicationContext(), cinema.get(groupPosition)+"Expanded", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        explistView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                Toast.makeText(getApplicationContext(), cinema.get(groupPosition)+" : "+figli.get(cinema.get(groupPosition)).get(childPosition), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+    }
+
+
+    public void prepareListData () {
         Cinemas c = new Cinemas();
-        ArrayList<ArrayList<Proiezione>> orari = new ArrayList<>();
-        ArrayList<String> cinema = new ArrayList<>();
+        //ArrayList<ArrayList<Proiezione>> orari = new ArrayList<>();
+        //ArrayList<String> cinema = new ArrayList<>();
+
         int durata = 0;
         String genere="";
         String descrizione = "";
@@ -54,35 +100,36 @@ public class InfoFilm extends Activity {
         for (int i=0; i< c.cinemas.size(); i++){
             for (int j=0; j<c.cinemas.get(i).films.size(); j++) {
                 if (c.cinemas.get(i).films.get(j).Titolo.equals(name)){
+                    List<String> ora = new ArrayList<>();
+
                     durata = c.cinemas.get(i).films.get(j).durata;
                     genere = c.cinemas.get(i).films.get(j).genere;
                     descrizione = c.cinemas.get(i).films.get(j).trama;
                     urlToString = c.cinemas.get(i).films.get(j).immagine;
-                    orari.add(c.cinemas.get(i).films.get(j).proiezione);
+
+                    ArrayList<Proiezione> temp = c.cinemas.get(i).films.get(j).proiezione;
+                    for(Proiezione z: temp) {
+                        ora.add(z.orario);
+                    }
+
                     cinema.add(c.cinemas.get(i).name);
+                    figli.put(c.cinemas.get(i).name, ora);
                 }
             }
         }
 
-        new ImageDownloaderTask(imgFilm).execute(urlToString);
+        new InfoFilm2.ImageDownloaderTask(imgFilm).execute(urlToString);
 
         titleFilm.setText(Html.fromHtml("<b>Titolo: </b>"+name));
         durataFilm.setText(Html.fromHtml("<b>Durata: </b>"+durata+"min"));
         genereFilm.setText(Html.fromHtml("<b>Genere: </b>"+genere));
         descrizioneFilm.setText(Html.fromHtml("<b>Trama: </b><br />"+descrizione));
-        String p = "";
-        for (int i=0; i<cinema.size(); i++){
-            p+=cinema.get(i)+":<br />";
-            for (Proiezione pro: orari.get(i)){
-                p+=pro.orario+"(sala: "+pro.sala+")<br /> ";
-            }
-            p+="<br />";
-        }
-        proiezioniFilm.setText(Html.fromHtml("<b>Proiezioni: </b><br /><br />"+p));
 
     }
 
-    private class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap>{
+
+
+    private class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
         private final WeakReference<ImageView> imageViewWeakReference;
 
         public ImageDownloaderTask (ImageView imageView){
@@ -140,5 +187,7 @@ public class InfoFilm extends Activity {
             return null;
         }
     }
+
+
 
 }

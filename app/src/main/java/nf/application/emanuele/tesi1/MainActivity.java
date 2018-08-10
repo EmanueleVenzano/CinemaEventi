@@ -3,23 +3,24 @@ package nf.application.emanuele.tesi1;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends Activity implements View.OnClickListener{
-    private Button map;
-    private Button saved;
-    private Button search;
-    private Button events;
+    private CardView map;
+    private CardView saved;
+    private CardView search;
+    private CardView events;
 
     @Override
     public void onCreate (Bundle savedInstaceState){
         super.onCreate(savedInstaceState);
         setContentView(R.layout.activity_main);
-        map = (Button) findViewById(R.id.MapButton);
-        saved = (Button) findViewById(R.id.SavedButton);
-        search = (Button) findViewById(R.id.SearchButton);
-        events = (Button) findViewById(R.id.EventidButton);
+        map = (CardView) findViewById(R.id.MapButton);
+        saved = (CardView) findViewById(R.id.SavedButton);
+        search = (CardView) findViewById(R.id.SearchButton);
+        events = (CardView) findViewById(R.id.EventiButton);
         map.setOnClickListener(this);
         saved.setOnClickListener(this);
         search.setOnClickListener(this);
@@ -39,7 +40,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case R.id.SearchButton:
                 intent = new Intent (this, Locandine.class);
                 break;
-            case R.id.EventidButton:
+            case R.id.EventiButton:
                 intent = new Intent (this, MapsActivity.class);
                 break;
         }

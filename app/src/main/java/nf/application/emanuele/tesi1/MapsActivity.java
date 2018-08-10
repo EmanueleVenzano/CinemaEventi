@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,8 +12,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -59,7 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         goTo = getIntent().getStringExtra("name");
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
         // Initializing
@@ -76,10 +73,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        Cinemas c = new Cinemas();
         if (!goTo.equals("")) {
             //Initialize Google Play Services
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (ContextCompat.checkSelfPermission(this,
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
@@ -94,13 +90,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Setting onclick event listener for the map
             LatLng myPosition = new LatLng(44.426669, 8.800794);
             MarkerPoints.add(myPosition);
-            CinemaDB db = new CinemaDB(this);
-            Location cinema = db.getCinemaLocation(goTo);
-            MarkerPoints.add(new LatLng(cinema.getLatitude(), cinema.getLongitude()));
+            MarkerPoints.add(new LatLng(44.413339, 8.880113));
             MarkerOptions options = new MarkerOptions();
 
             // Setting the position of the marker
-            options.position(new LatLng(cinema.getLatitude(), cinema.getLongitude()));
+            options.position(new LatLng(44.413339, 8.880113));
 
             /**
              * For the start location, the color of marker is GREEN and
@@ -133,6 +127,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
             }
         } else {
+            Cinemas c = new Cinemas();
             for (int i = 0; i < c.cinemas.size(); i++) {
                 CinemaDB db = new CinemaDB(this);
                 String name = c.cinemas.get(i).name;

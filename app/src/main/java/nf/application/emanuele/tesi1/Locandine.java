@@ -2,21 +2,14 @@ package nf.application.emanuele.tesi1;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.google.ads.mediation.customevent.CustomEventAdapter;
-
-import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,7 +56,7 @@ public class Locandine extends Activity implements AdapterView.OnItemClickListen
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id){
         Copertina item = films.get(position);
-        Intent intent = new Intent (this, InfoFilm.class);
+        Intent intent = new Intent (this, InfoFilm2.class);
         intent.putExtra("name", item.name);
         this.startActivity(intent);
     }

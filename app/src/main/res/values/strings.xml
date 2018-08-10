@@ -1,8 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">GenovaCity</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="map_button_text">Mappa</string>
-    <string name="search_button_text">Cerca Film</string>
-    <string name="saved_button_text">Preferiti</string>
-    <string name="eventi_button_text">Eventi</string>
+    <string name="app_name">Movies</string>
+    <string name="title_activity_maps">Mapp</string>
 </resources>
