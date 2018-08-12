@@ -60,7 +60,7 @@ public class InfoFilm2 extends Activity {
 
         prepareListData();
 
-        listAdapter = new ExpandableListAdapter(this, cinema, figli);
+        listAdapter = new ExpandableListAdapter(this, cinema, figli, name);
         explistView.setAdapter(listAdapter);
 
         explistView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
@@ -82,6 +82,10 @@ public class InfoFilm2 extends Activity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 Toast.makeText(getApplicationContext(), cinema.get(groupPosition)+" : "+figli.get(cinema.get(groupPosition)).get(childPosition), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), (String) listAdapter.getChild(groupPosition, childPosition), Toast.LENGTH_LONG).show();
+                int starNera = getResources().getIdentifier("android:drawable/star_big_off", null, null);
+                //ImageView img_selection = (ImageView) explistView.getChildAt(groupPosition).findViewById(R.id.ratingBar);
+
                 return false;
             }
         });

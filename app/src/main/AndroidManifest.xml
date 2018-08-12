@@ -59,6 +59,9 @@
             android:name=".InfoFilm2"
             android:label="infoFilm2">
         </activity>
+        <activity android:name=".AltraActivity"
+            android:label="preferit">
+        </activity>
 
     </application>
 

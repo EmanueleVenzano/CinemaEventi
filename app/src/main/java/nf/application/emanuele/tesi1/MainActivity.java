@@ -35,13 +35,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 intent.putExtra("name", "");
                 break;
             case R.id.SavedButton:
-                intent = new Intent (this, MapsActivity.class);
+                intent = new Intent (this, AltraActivity.class);
                 break;
             case R.id.SearchButton:
                 intent = new Intent (this, Locandine.class);
                 break;
             case R.id.EventiButton:
-                intent = new Intent (this, MapsActivity.class);
+                intent = new Intent (this, AltraActivity.class);
                 break;
         }
         if (intent!=null){

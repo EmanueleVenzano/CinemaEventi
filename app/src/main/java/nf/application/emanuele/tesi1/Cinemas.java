@@ -16,7 +16,7 @@ public class Cinemas {
         P1.orario = "12:20";
         P2.orario = "14:20";
         P3.orario = "16:20";
-        f1.Titolo = "Black Panther";
+        f1.Titolo = "BlackPanther";
         f1.durata = 110;
         f1.genere="Fantasy";
         f1.trama = "Il sogno utopico di un'Africa senza l'uomo bianco";
@@ -49,7 +49,7 @@ public class Cinemas {
         P1.orario = "12:20";
         P2.orario = "14:20";
         P3.orario = "16:20";
-        f1.Titolo = "Black Panther";
+        f1.Titolo = "BlackPanther";
         f1.durata = 110;
         f1.genere="Fantasy";
         f1.trama = "Il sogno utopico di un'Africa senza l'uomo bianco";
@@ -69,7 +69,7 @@ public class Cinemas {
         P1.orario = "12:20";
         P2.orario = "14:20";
         P3.orario = "16:20";
-        f1.Titolo = "Black Panther";
+        f1.Titolo = "BlackPanther";
         f1.durata = 110;
         f1.genere="Fantasy";
         f1.trama = "Il sogno utopico di un'Africa senza l'uomo bianco";
