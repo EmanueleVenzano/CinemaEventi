@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,27 +102,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         //info = db.deletePreferito(film);
                         result = db.insertPreferito(film, "1", childText, listDataHeader.get(groupPosition));
 
-         /*               if (result>0){
-                            Intent notificationIntent = new Intent (context, InfoFilm2.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0 , notificationIntent, flags);
-                            int icon = R.drawable.ticket;
-                            CharSequence tickerText = "Tra 2 ore devi essere a "+actualCinema+" per vedere "+film;
-                            CharSequence contentTitle = film+"+"+actualCinema+"+"+childText;
-                            CharSequence contentText = "stronzo";
-                            Notification notification = new NotificationCompat.Builder(context)
-                                    .setSmallIcon(icon)
-                                    .setTicker(tickerText)
-                                    .setContentTitle(contentTitle)
-                                    .setContentText(contentText)
-                                    .setContentIntent(pendingIntent)
-                                    .setAutoCancel(true)
-                                    .build();
-                            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                            final int NOTIFICATION_ID = 1;
-                            manager.notify(NOTIFICATION_ID, notification);
-                        }
-*/
                         //Toast.makeText(context, "info: "+info+", result: "+result, Toast.LENGTH_LONG).show();
                         Toast.makeText(context, "result: "+result, Toast.LENGTH_LONG).show();
                 }

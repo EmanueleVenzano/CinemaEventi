@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 intent = new Intent (this, AltraActivity.class);
                 break;
             case R.id.SearchButton:
-                intent = new Intent (this, Locandine.class);
+                intent = new Intent (this, cercaFilm.class);
                 break;
             case R.id.EventiButton:
                 intent = new Intent (this, AltraActivity.class);

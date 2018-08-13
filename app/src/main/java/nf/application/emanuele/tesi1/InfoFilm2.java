@@ -1,6 +1,7 @@
 package nf.application.emanuele.tesi1;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,7 +10,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InfoFilm2 extends Activity {
+public class InfoFilm2 extends Fragment {
 
     private ImageView imgFilm;
     private TextView titleFilm;
@@ -40,30 +43,27 @@ public class InfoFilm2 extends Activity {
     String name = "";
 
     @Override
-    protected void onCreate (Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_infofilm);
+    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_infofilm, container, false);
 
-        imgFilm = (ImageView)findViewById(R.id.imgFilm);
-        titleFilm = (TextView)findViewById(R.id.titleFilm);
-        durataFilm = (TextView)findViewById(R.id.durataFilm);
-        genereFilm = (TextView)findViewById(R.id.genereFilm);
-        descrizioneFilm = (TextView)findViewById(R.id.descrizioneFilm);
-        explistView = (ExpandableListView) findViewById(R.id.proiezioniListView);
+        name = ((cercaFilm)getActivity()).getMyData();
+
+        imgFilm = (ImageView)view.findViewById(R.id.imgFilm);
+        titleFilm = (TextView)view.findViewById(R.id.titleFilm);
+        durataFilm = (TextView)view.findViewById(R.id.durataFilm);
+        genereFilm = (TextView)view.findViewById(R.id.genereFilm);
+        descrizioneFilm = (TextView)view.findViewById(R.id.descrizioneFilm);
+        explistView = (ExpandableListView)view.findViewById(R.id.proiezioniListView);
 
         cinema = new ArrayList<String>();
         figli = new HashMap<String, List<String>>();
 
-
-        Intent intent = this.getIntent();
-        name = intent.getStringExtra("name");
-
         prepareListData();
 
-        listAdapter = new ExpandableListAdapter(this, cinema, figli, name);
+        listAdapter = new ExpandableListAdapter(InfoFilm2.this.getContext(), cinema, figli, name);
         explistView.setAdapter(listAdapter);
 
-        explistView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+  /*      explistView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 Toast.makeText(getApplicationContext(), "Group clicked"+cinema.get(groupPosition), Toast.LENGTH_LONG).show();
@@ -88,7 +88,8 @@ public class InfoFilm2 extends Activity {
 
                 return false;
             }
-        });
+        });*/
+      return view;
     }
 
 

@@ -46,18 +46,13 @@
         </activity>
 
         <activity
-            android:name=".Locandine"
+            android:name=".cercaFilm"
             android:label="@string/title_activity_maps">
         </activity>
 
         <activity
             android:name=".InfoCinema"
             android:label="Cinema">
-        </activity>
-
-        <activity
-            android:name=".InfoFilm2"
-            android:label="infoFilm2">
         </activity>
         <activity android:name=".AltraActivity"
             android:label="preferit">

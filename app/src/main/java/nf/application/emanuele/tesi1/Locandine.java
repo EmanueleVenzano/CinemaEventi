@@ -1,9 +1,13 @@
 package nf.application.emanuele.tesi1;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -13,17 +17,17 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Locandine extends Activity implements AdapterView.OnItemClickListener {
+public class Locandine extends Fragment implements AdapterView.OnItemClickListener {
     private ListView itemsListView;
     private TextView titleTextView;
     private List<Copertina> films = new LinkedList();
 
     @Override
-    public void onCreate (Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_locandine);
-        itemsListView = (ListView) findViewById(R.id.itemsListView);
-        titleTextView = (TextView) findViewById(R.id.titleTextView);
+    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        View view = inflater.inflate(R.layout.activity_locandine, container, false);
+
+        itemsListView = (ListView) view.findViewById(R.id.itemsListView);
+        titleTextView = (TextView) view.findViewById(R.id.titleTextView);
         itemsListView.setOnItemClickListener(this);
         titleTextView.setText("Cerca film");
         Cinemas c = new Cinemas();
@@ -49,15 +53,17 @@ public class Locandine extends Activity implements AdapterView.OnItemClickListen
             }
         }
 
-        CustomAdapter adapter = new CustomAdapter(this, R.layout.items_listview, films);
+        CustomAdapter adapter = new CustomAdapter(Locandine.this.getContext(), R.layout.items_listview, films);
         itemsListView.setAdapter(adapter);
+        FragmentManager fm = getFragmentManager();
+        fm.popBackStack();
+        return view;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id){
         Copertina item = films.get(position);
-        Intent intent = new Intent (this, InfoFilm2.class);
-        intent.putExtra("name", item.name);
-        this.startActivity(intent);
+        ((cercaFilm)getActivity()).onSobstitute(1);
+        ((cercaFilm) getActivity()).setMyData(item.name);
     }
 }
