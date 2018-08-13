@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
-import android.widget.Button;
 
 public class MainActivity extends Activity implements View.OnClickListener{
     private CardView map;
@@ -38,7 +37,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 intent = new Intent (this, AltraActivity.class);
                 break;
             case R.id.SearchButton:
-                intent = new Intent (this, Locandine.class);
+                intent = new Intent (this, cercaFilm.class);
                 break;
             case R.id.EventiButton:
                 intent = new Intent (this, AltraActivity.class);
