@@ -1,10 +1,15 @@
 package nf.application.emanuele.tesi1;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.provider.ContactsContract;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +67,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             preferitiOrario.add(infoPreferito.get(i).get(0));
         }
         final String actualCinema = listDataHeader.get(groupPosition);
-        if (infoPreferito.size()>0 && preferitiLuogo.contains(actualCinema) && preferitiOrario.contains(childText)){
+        boolean pippo = false;
+        for (int i=0; i<infoPreferito.size(); i++){
+            if (actualCinema.equals(preferitiLuogo.get(i)) && childText.equals(preferitiOrario.get(i))){
+                pippo = true;
+                break;
+            }
+        }
+        if (pippo){
             img_selected.setImageResource(R.drawable.friends);
             img_selected.setTag(R.drawable.friends);
         }else{
@@ -80,7 +92,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     case R.drawable.friends:
                         img_selected.setImageResource(R.drawable.calendar);
                         img_selected.setTag(R.drawable.calendar);
-                        info = db.deletePreferito(film);
+                        info = db.deletePreferito(film,actualCinema, childText);
                         Toast.makeText(context, "info: "+info, Toast.LENGTH_LONG).show();
                         break;
                     case R.drawable.calendar:
@@ -88,6 +100,28 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         img_selected.setTag(R.drawable.friends);
                         //info = db.deletePreferito(film);
                         result = db.insertPreferito(film, "1", childText, listDataHeader.get(groupPosition));
+
+         /*               if (result>0){
+                            Intent notificationIntent = new Intent (context, InfoFilm2.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+                            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0 , notificationIntent, flags);
+                            int icon = R.drawable.ticket;
+                            CharSequence tickerText = "Tra 2 ore devi essere a "+actualCinema+" per vedere "+film;
+                            CharSequence contentTitle = film+"+"+actualCinema+"+"+childText;
+                            CharSequence contentText = "stronzo";
+                            Notification notification = new NotificationCompat.Builder(context)
+                                    .setSmallIcon(icon)
+                                    .setTicker(tickerText)
+                                    .setContentTitle(contentTitle)
+                                    .setContentText(contentText)
+                                    .setContentIntent(pendingIntent)
+                                    .setAutoCancel(true)
+                                    .build();
+                            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                            final int NOTIFICATION_ID = 1;
+                            manager.notify(NOTIFICATION_ID, notification);
+                        }
+*/
                         //Toast.makeText(context, "info: "+info+", result: "+result, Toast.LENGTH_LONG).show();
                         Toast.makeText(context, "result: "+result, Toast.LENGTH_LONG).show();
                 }

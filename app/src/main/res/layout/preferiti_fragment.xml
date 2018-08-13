@@ -6,7 +6,18 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tuoi preferiti"/>
+        android:text="I tuoi preferiti"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:paddingLeft="5dp"
+        android:textColor="@android:color/black"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@android:color/black" />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

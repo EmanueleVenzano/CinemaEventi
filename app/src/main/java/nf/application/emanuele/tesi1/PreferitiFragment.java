@@ -16,7 +16,7 @@ public class PreferitiFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.preferiti_fragment, container, false);
         PreferitiDB db = new PreferitiDB(getContext());
-        final ArrayList<PreferitiDB.filmPreferiti> infoPreferito = db.getAllFavourites();
+        final ArrayList<ArrayList<String>> infoPreferito = db.getAllFavourites();
         listView=(ListView) v.findViewById(R.id.preferiti_listview);
 
         PreferitiCustomAdapter customAdapter = new PreferitiCustomAdapter(getContext(), R.layout.preferiti_items_listview, infoPreferito);
