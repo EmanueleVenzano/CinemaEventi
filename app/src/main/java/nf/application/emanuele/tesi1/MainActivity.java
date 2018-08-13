@@ -35,10 +35,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 intent.putExtra("name", "");
                 break;
             case R.id.SavedButton:
-                intent = new Intent (this, AltraActivity.class);
+                intent = new Intent (this, cercaFilm.class);
+                intent.putExtra("name", "preferiti");
                 break;
             case R.id.SearchButton:
                 intent = new Intent (this, cercaFilm.class);
+                intent.putExtra("name", "search");
                 break;
             case R.id.EventiButton:
                 intent = new Intent (this, AltraActivity.class);

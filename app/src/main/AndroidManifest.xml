@@ -54,10 +54,5 @@
             android:name=".InfoCinema"
             android:label="Cinema">
         </activity>
-        <activity android:name=".AltraActivity"
-            android:label="preferit">
-        </activity>
-
     </application>
-
 </manifest>
