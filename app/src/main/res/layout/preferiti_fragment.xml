@@ -4,25 +4,34 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="?android:windowBackground">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="I tuoi preferiti"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:paddingLeft="5dp"
-        android:textColor="@android:color/black"/>
-
-    <View
-        android:id="@+id/divider"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@android:color/black" />
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I tuoi preferiti"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:paddingLeft="5dp"
+                android:textColor="@android:color/black"/>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/preferiti_listview">
-    </ListView>
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@android:color/black" />
 
+            <ListView
+                android:id="@+id/preferiti_listview"
+                android:layout_width="match_parent"
+                android:layout_height="517dp"></ListView>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
+
+

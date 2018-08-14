@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Mappa"
+        android:id="@+id/menu_bottom_map"
+        android:icon="@drawable/transpglobe"
+         />
+    <item
+        android:title="Cerca Film"
+        android:id="@+id/menu_bottom_search"
+        android:icon="@drawable/newciak"
+         />
+    <item
+        android:title="Preferiti"
+        android:id="@+id/menu_bottom_saved"
+        android:icon="@drawable/friends"
+         />
+    <item
+        android:title="Cerca Eventi"
+        android:id="@+id/menu_bottom_events"
+        android:icon="@drawable/confetti"
+         />
+</menu>

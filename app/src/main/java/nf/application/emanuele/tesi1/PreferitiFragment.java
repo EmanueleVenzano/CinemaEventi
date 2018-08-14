@@ -1,6 +1,7 @@
 package nf.application.emanuele.tesi1;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,8 +20,12 @@ public class PreferitiFragment extends Fragment {
         final ArrayList<ArrayList<String>> infoPreferito = db.getAllFavourites();
         listView=(ListView) v.findViewById(R.id.preferiti_listview);
 
-        PreferitiCustomAdapter customAdapter = new PreferitiCustomAdapter(getContext(), R.layout.preferiti_items_listview, infoPreferito);
+        PreferitiCustomAdapter customAdapter = new PreferitiCustomAdapter(PreferitiFragment.this.getContext(), R.layout.preferiti_items_listview, infoPreferito);
         listView.setAdapter(customAdapter);
         return v;
+    }
+    public static PreferitiFragment newInstance(){
+        PreferitiFragment Fragment = new PreferitiFragment();
+        return Fragment;
     }
 }

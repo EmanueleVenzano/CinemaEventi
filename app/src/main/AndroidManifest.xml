@@ -47,7 +47,8 @@
 
         <activity
             android:name=".cercaFilm"
-            android:label="@string/title_activity_maps">
+            android:label="@string/title_activity_maps"
+            android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
 
         <activity

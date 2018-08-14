@@ -1,15 +1,18 @@
 package nf.application.emanuele.tesi1;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.icu.text.IDNA;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +94,6 @@ public class InfoFilm2 extends Fragment {
         });*/
       return view;
     }
-
 
     public void prepareListData () {
         Cinemas c = new Cinemas();

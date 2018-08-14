@@ -1,8 +1,8 @@
 package nf.application.emanuele.tesi1;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -65,5 +65,10 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
         Copertina item = films.get(position);
         ((cercaFilm)getActivity()).onSobstitute(1);
         ((cercaFilm) getActivity()).setMyData(item.name);
+    }
+
+    public static Locandine newInstance(){
+        Locandine Fragment = new Locandine();
+        return Fragment;
     }
 }

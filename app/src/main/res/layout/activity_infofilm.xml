@@ -1,65 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ScrollView01"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="?android:windowBackground">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/imgFilm"
-            android:layout_width="340dp"
-            android:layout_height="220dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="14dp" />
-
-        <TextView
-            android:id="@+id/titleFilm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imgFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"/>
-
-        <TextView
-            android:id="@+id/durataFilm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/titleFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"/>
-
-        <TextView
-            android:id="@+id/genereFilm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/durataFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"/>
-
-        <TextView
-            android:id="@+id/descrizioneFilm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/genereFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"/>
-
-        <ExpandableListView
-            android:id="@+id/proiezioniListView"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <ScrollView
+        android:id="@+id/ScrollView01"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:windowBackground">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_below="@id/descrizioneFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_height="match_parent">
 
-    </RelativeLayout>
-</ScrollView>
+            <ImageView
+                android:id="@+id/imgFilm"
+                android:layout_width="340dp"
+                android:layout_height="220dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="14dp" />
+
+            <TextView
+                android:id="@+id/titleFilm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imgFilm"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"/>
+
+            <TextView
+                android:id="@+id/durataFilm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleFilm"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/genereFilm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/durataFilm"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/descrizioneFilm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/genereFilm"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"/>
+
+            <ExpandableListView
+                android:id="@+id/proiezioniListView"
+                android:layout_width="match_parent"
+                android:layout_height="190dp"
+                android:layout_below="@id/descrizioneFilm"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <!--<fragment
+        android:id="@+id/menu_fragment_infofilm"
+        android:name="nf.application.emanuele.tesi1.MenuFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp" />-->
+</LinearLayout>

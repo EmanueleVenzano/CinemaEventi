@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:context="nf.application.emanuele.tesi1.cercaFilm">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:id="@+id/main_fragment"
-        android:name="nf.application.emanuele.tesi1.Locandine"/>
+        android:name="nf.application.emanuele.tesi1.Locandine"
+        android:layout_above="@id/navigation"
+        android:animateLayoutChanges="true"/>
 
-</LinearLayout>
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/navigation"
+            app:itemTextColor="@color/nav_item_state_list"
+            app:menu="@menu/bottom_navigation_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:background="?android:attr/windowBackground"
+            app:itemBackground="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
