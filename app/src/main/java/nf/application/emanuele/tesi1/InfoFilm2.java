@@ -67,34 +67,34 @@ public class InfoFilm2 extends Fragment {
         listAdapter = new ExpandableListAdapter(InfoFilm2.this.getContext(), cinema, figli, name);
         explistView.setAdapter(listAdapter);
 
-    /*
-        explistView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                Toast.makeText(getContext(), "Group clicked"+cinema.get(groupPosition), Toast.LENGTH_LONG).show();
-                return false;
-            }
-        });
-
         explistView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getContext(), cinema.get(groupPosition)+"Expanded", Toast.LENGTH_LONG).show();
+                int height = 0;
+                for (int i = 0; i < explistView.getChildCount(); i++) {
+                    height += explistView.getChildAt(i).getMeasuredHeight();
+                    height += explistView.getDividerHeight();
+                }
+                explistView.getLayoutParams().height = (height)*2;
             }
         });
 
-        explistView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+        // Listview Group collapsed listener
+        explistView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Toast.makeText(getContext(), cinema.get(groupPosition)+" : "+figli.get(cinema.get(groupPosition)).get(childPosition), Toast.LENGTH_LONG).show();
-                Toast.makeText(getContext(), (String) listAdapter.getChild(groupPosition, childPosition), Toast.LENGTH_LONG).show();
-                int starNera = getResources().getIdentifier("android:drawable/star_big_off", null, null);
-                //ImageView img_selection = (ImageView) explistView.getChildAt(groupPosition).findViewById(R.id.ratingBar);
-
-                return false;
+            public void onGroupCollapse(int groupPosition) {
+                int height = 0;
+                for (int i = 0; i < explistView.getChildCount(); i++) {
+                    height += explistView.getChildAt(i).getMeasuredHeight();
+                    height += explistView.getDividerHeight();
+                }
+                explistView.getLayoutParams().height = (height);
             }
+
         });
-    */
+
 
         return view;
     }
