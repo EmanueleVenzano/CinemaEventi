@@ -1,7 +1,6 @@
 package nf.application.emanuele.tesi1;
 
-import android.app.Fragment;
-import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -41,15 +40,17 @@ public class InfoFilm2 extends Fragment {
     //nome del film che mi viene passato
     String name = "";
 
+    public static InfoFilm2 newInstance(){
+        InfoFilm2 Fragment = new InfoFilm2();
+        return Fragment;
+    }
+
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setRetainInstance(true);
         View view = inflater.inflate(R.layout.activity_infofilm, container, false);
 
-        super.onCreate(savedInstanceState);
-        Bundle bundle = this.getArguments();
-        if(bundle!=null) {
-            name = bundle.getString("name", null);
-        }
+        name = ((cercaFilm)getActivity()).getMyData();
 
         imgFilm = (ImageView)view.findViewById(R.id.imgFilm);
         titleFilm = (TextView)view.findViewById(R.id.titleFilm);
@@ -61,15 +62,12 @@ public class InfoFilm2 extends Fragment {
         cinema = new ArrayList<String>();
         figli = new HashMap<String, List<String>>();
 
-
-        /*Intent intent = this.getIntent();
-        name = intent.getStringExtra("name");*/
-
         prepareListData();
 
         listAdapter = new ExpandableListAdapter(InfoFilm2.this.getContext(), cinema, figli, name);
         explistView.setAdapter(listAdapter);
 
+    /*
         explistView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -96,6 +94,7 @@ public class InfoFilm2 extends Fragment {
                 return false;
             }
         });
+    */
 
         return view;
     }
@@ -103,8 +102,6 @@ public class InfoFilm2 extends Fragment {
 
     public void prepareListData () {
         Cinemas c = new Cinemas();
-        //ArrayList<ArrayList<Proiezione>> orari = new ArrayList<>();
-        //ArrayList<String> cinema = new ArrayList<>();
 
         int durata = 0;
         String genere="";

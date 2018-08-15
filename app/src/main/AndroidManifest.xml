@@ -47,7 +47,8 @@
 
         <activity
             android:name=".cercaFilm"
-            android:label="cerca film">
+            android:label="cerca film"
+            android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
 
         <activity
@@ -55,8 +56,12 @@
             android:label="Cinema">
         </activity>
 
-        <activity android:name=".AltraActivity"
-            android:label="preferiti">
+        <receiver
+            android:name=".NotificationPublisher"/>
+
+        <activity
+            android:name=".BottomBar"
+            android:label="bar">
         </activity>
 
     </application>

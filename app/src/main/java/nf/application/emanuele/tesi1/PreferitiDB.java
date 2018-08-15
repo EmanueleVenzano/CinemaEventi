@@ -61,9 +61,9 @@ public class PreferitiDB {
         contentValues.put(PREFERITI_ORARIO, orario);
         contentValues.put(PREFERITI_LUOGO, luogo);
 //        String sqlStatement = "INSERT INTO "+PREFERITI_TABLE+" ("+PREFERITI_TITOLO+", "+PREFERITI_ISFILM+", "+PREFERITI_ORARIO+", "+PREFERITI_LUOGO+") " + "VALUES ("+titolo+", "+isfilm+", "+orario+", "+luogo+");";
-  //      try{
-    //        db.execSQL(sqlStatement);
-      //  }catch (Exception e){
+        //      try{
+        //        db.execSQL(sqlStatement);
+        //  }catch (Exception e){
         //    e.printStackTrace();
         //}
         long id = db.insert(PREFERITI_TABLE, null, contentValues);
@@ -71,14 +71,28 @@ public class PreferitiDB {
         return id;
     }
 
-    public int deletePreferito(String titolo){
+    public long deletePreferito(String titolo, String luogo, String orario){
         this.openReadableDB();
         this.openWriteableDB();
-        String where = PREFERITI_TITOLO + " = ? ";
-        String[] whereArgs = {titolo};
+        String where =
+                PREFERITI_TITOLO + " = ? AND "+
+                        PREFERITI_LUOGO + " = ? AND "+
+                        PREFERITI_ORARIO + " = ?";
+        String[] whereArgs = {titolo, luogo, orario};
+        Cursor cursor = db.query(PREFERITI_TABLE, null, where, whereArgs, null, null, null);
+        long result = 0;
+        if (cursor == null || cursor.getCount() == 0)try{
+            cursor.moveToFirst();
+            result =cursor.getInt(PREFERITI_ID_COL);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (cursor!=null){
+            cursor.close();
+        }
         int id = db.delete(PREFERITI_TABLE, where, whereArgs);
         this.closeDB();
-        return id;
+        return result;
     }
 
     public ArrayList<ArrayList<String>> getPreferito (String name){
@@ -113,23 +127,10 @@ public class PreferitiDB {
 
     }
 
-    public class filmPreferiti{
-        public String nome;
-        public String orario;
-        public String luogo;
-
-        public filmPreferiti(){
-            nome="";
-            orario="";
-            luogo="";
-        }
-    }
-
-    public ArrayList<filmPreferiti> getAllFavourites (){
+    public ArrayList<ArrayList<String>> getAllFavourites (){
         this.openReadableDB();
         Cursor cursor = db.query(PREFERITI_TABLE, null, null, null, null, null, null);
-        filmPreferiti temp = new filmPreferiti();
-        ArrayList<filmPreferiti> result = getAllFavourites(cursor, temp);
+        ArrayList<ArrayList<String>> result = getAllFavourites(cursor);
         if (cursor!=null){
             cursor.close();
         }
@@ -137,17 +138,18 @@ public class PreferitiDB {
         return result;
     }
 
-    private static ArrayList<filmPreferiti> getAllFavourites (Cursor cursor, filmPreferiti temp) {
-        ArrayList<filmPreferiti> result = new ArrayList<>();
+    private static ArrayList<ArrayList<String>> getAllFavourites (Cursor cursor) {
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
         if (cursor == null || cursor.getCount() == 0) return result;
         try {
             while (cursor.moveToNext()){
+                ArrayList<String> temp = new ArrayList<>();
                 String orario = cursor.getString(PREFERITI_ORARIO_COL);
-                temp.orario=orario;
+                temp.add(orario);
                 String cinema = cursor.getString(PREFERITI_LUOGO_COL);
-                temp.luogo=cinema;
+                temp.add(cinema);
                 String titolo = cursor.getString(PREFERITI_TITOLO_COL);
-                temp.nome=titolo;
+                temp.add(titolo);
                 result.add(temp);
             }
         } catch (Exception e) {

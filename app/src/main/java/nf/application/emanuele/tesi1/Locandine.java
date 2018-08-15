@@ -1,14 +1,12 @@
 package nf.application.emanuele.tesi1;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,9 +20,15 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
     private TextView titleTextView;
     private List<Copertina> films = new LinkedList();
 
+    public static Locandine newInstance(){
+        Locandine Fragment = new Locandine();
+        return Fragment;
+    }
+
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_locandine, container, false);
+
         itemsListView = (ListView) view.findViewById(R.id.itemsListView);
         titleTextView = (TextView) view.findViewById(R.id.titleTextView);
         itemsListView.setOnItemClickListener(this);
@@ -60,20 +64,8 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id){
-
-        FragmentManager fragmentManager = getFragmentManager();
         Copertina item = films.get(position);
-
-        //TODO: passare il parametro name con il nome del film selezionato
-        Bundle arguments = new Bundle();
-        arguments.putString("name", item.name);
-        Fragment InfoFilm2 = new Fragment();
-        InfoFilm2.setArguments(arguments);
-
-        fragmentManager.beginTransaction().replace(android.R.id.content, InfoFilm2).commit();
-
-        /*Intent intent = new Intent (this, InfoFilm2.class);
-        intent.putExtra("name", item.name);
-        this.startActivity(intent);*/
+        ((cercaFilm)getActivity()).onSobstitute(1);
+        ((cercaFilm)getActivity()).setMyData(item.name);
     }
 }
