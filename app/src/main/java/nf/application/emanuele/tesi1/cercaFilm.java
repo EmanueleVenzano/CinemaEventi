@@ -58,6 +58,16 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback{
     public void onSobstitute (int next) {
         this.next=next;
         switch (next){
+            case 0:
+                try {
+                    FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
+                    transaction.replace(android.R.id.content, new Locandine());
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
             case 1:
                 try {
                     FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
