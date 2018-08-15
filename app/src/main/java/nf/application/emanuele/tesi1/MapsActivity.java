@@ -54,6 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationRequest mLocationRequest;
     String goTo;
     String mode="";
+    String center="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         goTo = getIntent().getStringExtra("name");
         mode= getIntent().getStringExtra("mode");
+        center = getIntent().getStringExtra("cinema");
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
@@ -78,7 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        if (!goTo.equals("")) {
+        if (goTo!=null && !goTo.equals("")) {
             //Initialize Google Play Services
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (ContextCompat.checkSelfPermission(this,
@@ -133,17 +135,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         } else {
             Cinemas c = new Cinemas();
+            LatLng centered = new LatLng(44.416899, 8.917900);
             for (int i = 0; i < c.cinemas.size(); i++) {
                 CinemaDB db = new CinemaDB(this);
                 String name = c.cinemas.get(i).name;
                 Location location = db.getCinemaLocation(name);
                 if (location != null) {
                     LatLng temp = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(temp).title(name));
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(temp)
+                    .title(name)
+                    .snippet(name));
+                    if (name.equals(center)) {
+                        centered = temp;
+                        marker.showInfoWindow();
+                    }
                 }
             }
             mMap.setOnMarkerClickListener(this);
-            LatLng centered = new LatLng(44.416899, 8.917900);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(centered));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centered, 12), 1000, null);
         }

@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -183,7 +184,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView (int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        String headerTitle = (String) getGroup(groupPosition);
+        final String headerTitle = (String) getGroup(groupPosition);
 
         if(convertView==null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -196,6 +197,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         //ExpandableListView eLV = (ExpandableListView) parent;
         //eLV.expandGroup(groupPosition);
+
+        Button button = (Button) convertView.findViewById(R.id.bottoneCinema);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (context, MapsActivity.class);
+                intent.putExtra("cinema", headerTitle);
+                context.startActivity(intent);
+            }
+        });
 
         return convertView;
     }
