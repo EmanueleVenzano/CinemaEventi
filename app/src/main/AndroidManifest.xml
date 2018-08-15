@@ -55,5 +55,7 @@
             android:name=".InfoCinema"
             android:label="Cinema">
         </activity>
+        <receiver android:name=".NotificationPublisher"/>
+
     </application>
 </manifest>

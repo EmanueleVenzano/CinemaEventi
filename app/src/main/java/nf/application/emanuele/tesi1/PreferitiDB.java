@@ -71,7 +71,7 @@ public class PreferitiDB {
         return id;
     }
 
-    public int deletePreferito(String titolo, String luogo, String orario){
+    public long deletePreferito(String titolo, String luogo, String orario){
         this.openReadableDB();
         this.openWriteableDB();
         String where =
@@ -79,9 +79,20 @@ public class PreferitiDB {
                 PREFERITI_LUOGO + " = ? AND "+
                 PREFERITI_ORARIO + " = ?";
         String[] whereArgs = {titolo, luogo, orario};
+        Cursor cursor = db.query(PREFERITI_TABLE, null, where, whereArgs, null, null, null);
+        long result = 0;
+        if (cursor == null || cursor.getCount() == 0)try{
+            cursor.moveToFirst();
+            result =cursor.getInt(PREFERITI_ID_COL);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (cursor!=null){
+            cursor.close();
+        }
         int id = db.delete(PREFERITI_TABLE, where, whereArgs);
         this.closeDB();
-        return id;
+        return result;
     }
 
     public ArrayList<ArrayList<String>> getPreferito (String name){

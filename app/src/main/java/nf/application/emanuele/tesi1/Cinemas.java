@@ -66,7 +66,7 @@ public class Cinemas {
         P3 = new Proiezione();
         f1 = new Film();
         c1 = new Cinema();
-        P1.orario = "12:20";
+        P1.orario = "14:08";
         P2.orario = "14:20";
         P3.orario = "16:20";
         f1.Titolo = "BlackPanther";

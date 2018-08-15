@@ -1,5 +1,6 @@
 package nf.application.emanuele.tesi1;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,6 +9,8 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.RingtoneManager;
+import android.os.SystemClock;
 import android.provider.ContactsContract;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -20,7 +23,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.net.Uri;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -87,23 +96,59 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 PreferitiDB db = new PreferitiDB(context);
-                int info;
                 long result;
                 switch ((Integer)img_selected.getTag()){
                     case R.drawable.friends:
                         img_selected.setImageResource(R.drawable.calendar);
                         img_selected.setTag(R.drawable.calendar);
-                        info = db.deletePreferito(film,actualCinema, childText);
-                        Toast.makeText(context, "info: "+info, Toast.LENGTH_LONG).show();
+                        result = db.deletePreferito(film,actualCinema, childText);
+                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.cancel((int)result);
                         break;
                     case R.drawable.calendar:
-                        img_selected.setImageResource(R.drawable.friends);
-                        img_selected.setTag(R.drawable.friends);
-                        //info = db.deletePreferito(film);
-                        result = db.insertPreferito(film, "1", childText, listDataHeader.get(groupPosition));
+                        Date currentTime = Calendar.getInstance(Calendar.getInstance().getTimeZone()).getTime();
+                        Date filmTime = new Date();
+                        filmTime.setTime(currentTime.getTime());
+                        String[] dataFilm = childText.split(":");
+                        filmTime.setHours(Integer.parseInt(dataFilm[0]));
+                        filmTime.setMinutes(Integer.parseInt(dataFilm[1]));
+//                        if (filmTime.after(currentTime)){
+                        if (true){
+                            img_selected.setImageResource(R.drawable.friends);
+                            img_selected.setTag(R.drawable.friends);
+                            result = db.insertPreferito(film, "1", childText, listDataHeader.get(groupPosition));
 
-                        //Toast.makeText(context, "info: "+info+", result: "+result, Toast.LENGTH_LONG).show();
-                        Toast.makeText(context, "result: "+result, Toast.LENGTH_LONG).show();
+                            long futureInMillis = filmTime.getTime()-7200000;
+                            Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            Notification notification;
+                            Intent notificationIntent = new Intent(context, NotificationPublisher.class);
+                            notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, (int) result);
+                            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                            if (futureInMillis-currentTime.getTime()<0){
+                                notification = new Notification.Builder(context)
+                                        .setContentText("Affrettati, "+film+" inizierà tra meno di due ore a "+actualCinema)
+                                        .setContentTitle(film)
+                                        .setSound(sound)
+                                        .setSmallIcon(R.drawable.ticket)
+                                        .setStyle(new Notification.BigTextStyle().bigText("Affrettati, "+film+" inizierà tra meno di due ore a "+actualCinema))
+                                        .build();
+                            }else{
+                                notification = new Notification.Builder(context)
+                                        .setContentTitle(film)
+                                        .setSound(sound)
+                                        .setContentText("Preparati! Tra 2 ore devi essere a "+actualCinema+" per vedere "+film+"!")
+                                        .setSmallIcon(R.drawable.ticket)
+                                        .setStyle(new Notification.BigTextStyle().bigText("Preparati! Tra 2 ore devi essere a "+actualCinema+" per vedere "+film+"!"))
+                                        .build();
+                            }
+                            notificationIntent.putExtra(NotificationPublisher.NOTIFCATION, notification);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            if (futureInMillis-currentTime.getTime()<0){
+                                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+300, pendingIntent);
+                            }else{
+                                alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
+                            }
+                        }
                 }
             }
         });
