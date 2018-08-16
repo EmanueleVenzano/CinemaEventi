@@ -19,7 +19,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
     private ListView itemsListView;
     private TextView titleTextView;
     private List<Copertina> films = new LinkedList();
-    private DataInfo dataInfo;
+    DataInfo dataInfo;
 
     public static Locandine newInstance(){
         Locandine Fragment = new Locandine();
@@ -29,6 +29,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_locandine, container, false);
+
         MyApplication myApplication = (MyApplication)getActivity().getApplication();
         dataInfo = myApplication.dataInfo;
 
@@ -36,6 +37,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
         titleTextView = (TextView) view.findViewById(R.id.titleTextView);
         itemsListView.setOnItemClickListener(this);
         titleTextView.setText("Cerca film");
+
         for (int i=0; i<dataInfo.films.size(); i++){
             Copertina temp = new Copertina();
             temp.name = dataInfo.films.get(i).getTitle();
@@ -46,7 +48,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
             }
             films.add(temp);
         }
-/*        Cinemas c = new Cinemas();
+        /*Cinemas c = new Cinemas();
         for (int i=0; i< c.cinemas.size(); i++){
             for (int j=0; j<c.cinemas.get(i).films.size(); j++){
                 int controller=0;

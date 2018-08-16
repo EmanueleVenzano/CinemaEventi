@@ -39,7 +39,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                         break;
                     case R.id.navigation_eventi:
                         Toast.makeText(cercaFilm.this, "Eventi", Toast.LENGTH_SHORT).show();
-                        selectedFragment = InfoFilm2.newInstance();
+                        selectedFragment = EventiFragment.newInstance();
                         break;
                 }
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -58,6 +58,11 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
             next=0;
             onSobstitute(0);
         }
+        if (name.equals("eventi")){
+            next=3;
+            onSobstitute(3);
+        }
+
     }
 
     public void onSobstitute (int next) {
@@ -92,6 +97,16 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            case 3:
+                try {
+                    FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_fragment, new EventiFragment());
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
@@ -109,6 +124,8 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
             if (next != 1) {
                 this.finish();
                 return true;
+            } else{
+                next=0;
             }
         }
         return super.onKeyDown(keyCode, event);
