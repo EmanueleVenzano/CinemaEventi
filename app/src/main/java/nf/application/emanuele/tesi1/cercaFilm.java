@@ -109,6 +109,8 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
             if (next != 1) {
                 this.finish();
                 return true;
+            } else {
+                next=0;
             }
         }
         return super.onKeyDown(keyCode, event);
