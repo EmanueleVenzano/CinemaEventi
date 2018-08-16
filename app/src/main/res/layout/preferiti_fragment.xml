@@ -11,7 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <TextView
+            <!--<TextView
                 android:id="@+id/titleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:background="@android:color/black" />
+                android:background="@android:color/black" />-->
 
             <ListView
                 android:id="@+id/preferiti_listview"
