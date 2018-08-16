@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -81,6 +82,10 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
                             view.setImageResource(R.drawable.delete);
                             view.setTag(R.drawable.delete);
 
+                            Intent resultIntent = new Intent(context, MainActivity.class);
+                            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                            stackBuilder.addNextIntentWithParentStack(resultIntent);
+                            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent((int) result, PendingIntent.FLAG_UPDATE_CURRENT);
                             long futureInMillis = filmTime.getTime()-7200000;
                             Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                             Notification notification;
@@ -89,6 +94,7 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
                             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                             if (futureInMillis-currentTime.getTime()<0){
                                 notification = new Notification.Builder(context)
+                                        .setContentIntent(resultPendingIntent)
                                         .setContentText("Affrettati, "+copertina.get(2)+" inizierà tra meno di due ore a "+copertina.get(1))
                                         .setContentTitle(copertina.get(2))
                                         .setSound(sound)
@@ -97,6 +103,7 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
                                         .build();
                             }else{
                                 notification = new Notification.Builder(context)
+                                        .setContentIntent(resultPendingIntent)
                                         .setContentTitle(copertina.get(2))
                                         .setSound(sound)
                                         .setContentText("Preparati! Tra 2 ore devi essere a "+copertina.get(1)+" per vedere "+copertina.get(2)+"!")
@@ -104,8 +111,8 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
                                         .setStyle(new Notification.BigTextStyle().bigText("Preparati! Tra 2 ore devi essere a "+copertina.get(1)+" per vedere "+copertina.get(2)+"!"))
                                         .build();
                             }
-                            notificationIntent.putExtra(NotificationPublisher.NOTIFCATION, notification);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)result, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                             if (futureInMillis-currentTime.getTime()<0){
                                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+300, pendingIntent);
                             }else{

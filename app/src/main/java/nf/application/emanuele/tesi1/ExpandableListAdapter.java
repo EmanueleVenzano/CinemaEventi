@@ -4,29 +4,26 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.SystemClock;
 import android.provider.ContactsContract;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.net.Uri;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -78,16 +75,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
         final String actualCinema = listDataHeader.get(groupPosition);
         boolean pippo = false;
-        for (int i=0; i<infoPreferito.size(); i++){
-            if (actualCinema.equals(preferitiLuogo.get(i)) && childText.equals(preferitiOrario.get(i))){
-                pippo = true;
+        for (int i=0; i<infoPreferito.size(); i++) {
+            if(actualCinema.equals(preferitiLuogo.get(i)) && childText.equals(preferitiOrario.get(i))) {
+                pippo=true;
                 break;
             }
         }
-        if (pippo){
+        if(pippo) {
             img_selected.setImageResource(R.drawable.friends);
             img_selected.setTag(R.drawable.friends);
-        }else{
+        }
+        else{
             img_selected.setImageResource(R.drawable.calendar);
             img_selected.setTag(R.drawable.calendar);
         }
@@ -101,9 +99,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     case R.drawable.friends:
                         img_selected.setImageResource(R.drawable.calendar);
                         img_selected.setTag(R.drawable.calendar);
-                        result = db.deletePreferito(film,actualCinema, childText);
+                        result = db.deletePreferito(film, actualCinema, childText);
                         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.cancel((int)result);
+                        notificationManager.cancel((int) result);
                         break;
                     case R.drawable.calendar:
                         Date currentTime = Calendar.getInstance(Calendar.getInstance().getTimeZone()).getTime();
@@ -112,40 +110,45 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         String[] dataFilm = childText.split(":");
                         filmTime.setHours(Integer.parseInt(dataFilm[0]));
                         filmTime.setMinutes(Integer.parseInt(dataFilm[1]));
-//                        if (filmTime.after(currentTime)){
-                        if (true){
+                        //if (filmTime.after(currentTime)) {
+                        if (true) {
                             img_selected.setImageResource(R.drawable.friends);
                             img_selected.setTag(R.drawable.friends);
                             result = db.insertPreferito(film, "1", childText, listDataHeader.get(groupPosition));
-
+                            Intent resultIntent = new Intent(context, MainActivity.class);
+                            TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+                            taskStackBuilder.addNextIntentWithParentStack(resultIntent);
+                            PendingIntent resultPendingIntent = taskStackBuilder.getPendingIntent((int) result, PendingIntent.FLAG_UPDATE_CURRENT);
                             long futureInMillis = filmTime.getTime()-7200000;
-                            Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            Uri sound = RingtoneManager.getDefaultUri((RingtoneManager.TYPE_NOTIFICATION));
                             Notification notification;
                             Intent notificationIntent = new Intent(context, NotificationPublisher.class);
                             notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, (int) result);
-                            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                            if (futureInMillis-currentTime.getTime()<0){
+                            AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+                            if(futureInMillis-currentTime.getTime() < 0) {
                                 notification = new Notification.Builder(context)
+                                        .setContentIntent(resultPendingIntent)
                                         .setContentText("Affrettati, "+film+" inizierà tra meno di due ore a "+actualCinema)
                                         .setContentTitle(film)
                                         .setSound(sound)
                                         .setSmallIcon(R.drawable.ticket)
                                         .setStyle(new Notification.BigTextStyle().bigText("Affrettati, "+film+" inizierà tra meno di due ore a "+actualCinema))
                                         .build();
-                            }else{
+                            } else {
                                 notification = new Notification.Builder(context)
+                                        .setContentIntent(resultPendingIntent)
+                                        .setContentText("Preparati ! Tra due ore devi essere a "+actualCinema+" per vedere "+film+"!")
                                         .setContentTitle(film)
                                         .setSound(sound)
-                                        .setContentText("Preparati! Tra 2 ore devi essere a "+actualCinema+" per vedere "+film+"!")
                                         .setSmallIcon(R.drawable.ticket)
-                                        .setStyle(new Notification.BigTextStyle().bigText("Preparati! Tra 2 ore devi essere a "+actualCinema+" per vedere "+film+"!"))
+                                        .setStyle(new Notification.BigTextStyle().bigText("Preparati ! Tra due ore devi essere a "+actualCinema+" per vedere "+film+"!"))
                                         .build();
                             }
-                            notificationIntent.putExtra(NotificationPublisher.NOTIFCATION, notification);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                            if (futureInMillis-currentTime.getTime()<0){
+                            notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) result, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            if (futureInMillis-currentTime.getTime() < 0) {
                                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+300, pendingIntent);
-                            }else{
+                            } else {
                                 alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, pendingIntent);
                             }
                         }
@@ -181,7 +184,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView (int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        String headerTitle = (String) getGroup(groupPosition);
+        final String headerTitle = (String) getGroup(groupPosition);
 
         if(convertView==null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -194,6 +197,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         //ExpandableListView eLV = (ExpandableListView) parent;
         //eLV.expandGroup(groupPosition);
+
+        Button button = (Button) convertView.findViewById(R.id.bottoneCinema);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (context, MapsActivity.class);
+                intent.putExtra("cinema", headerTitle);
+                context.startActivity(intent);
+            }
+        });
 
         return convertView;
     }

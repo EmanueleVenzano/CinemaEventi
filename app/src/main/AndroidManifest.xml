@@ -15,9 +15,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_new"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_new_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -47,7 +47,7 @@
 
         <activity
             android:name=".cercaFilm"
-            android:label="@string/title_activity_maps"
+            android:label="cerca film"
             android:configChanges="orientation|screenSize|keyboardHidden">
         </activity>
 
@@ -55,7 +55,15 @@
             android:name=".InfoCinema"
             android:label="Cinema">
         </activity>
-        <receiver android:name=".NotificationPublisher"/>
+
+        <receiver
+            android:name=".NotificationPublisher"/>
+
+        <activity
+            android:name=".BottomBar"
+            android:label="bar">
+        </activity>
 
     </application>
+
 </manifest>

@@ -1,9 +1,7 @@
 package nf.application.emanuele.tesi1;
 
-import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +19,11 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
     private ListView itemsListView;
     private TextView titleTextView;
     private List<Copertina> films = new LinkedList();
+
+    public static Locandine newInstance(){
+        Locandine Fragment = new Locandine();
+        return Fragment;
+    }
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -55,8 +58,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
 
         CustomAdapter adapter = new CustomAdapter(Locandine.this.getContext(), R.layout.items_listview, films);
         itemsListView.setAdapter(adapter);
-        FragmentManager fm = getFragmentManager();
-        fm.popBackStack();
+
         return view;
     }
 
@@ -64,11 +66,6 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
     public void onItemClick(AdapterView<?> parent, View v, int position, long id){
         Copertina item = films.get(position);
         ((cercaFilm)getActivity()).onSobstitute(1);
-        ((cercaFilm) getActivity()).setMyData(item.name);
-    }
-
-    public static Locandine newInstance(){
-        Locandine Fragment = new Locandine();
-        return Fragment;
+        ((cercaFilm)getActivity()).setMyData(item.name);
     }
 }

@@ -1,18 +1,13 @@
 package nf.application.emanuele.tesi1;
 
-import android.app.Activity;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.icu.text.IDNA;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +40,14 @@ public class InfoFilm2 extends Fragment {
     //nome del film che mi viene passato
     String name = "";
 
+    public static InfoFilm2 newInstance(){
+        InfoFilm2 Fragment = new InfoFilm2();
+        return Fragment;
+    }
+
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setRetainInstance(true);
         View view = inflater.inflate(R.layout.activity_infofilm, container, false);
 
         name = ((cercaFilm)getActivity()).getMyData();
@@ -66,39 +67,41 @@ public class InfoFilm2 extends Fragment {
         listAdapter = new ExpandableListAdapter(InfoFilm2.this.getContext(), cinema, figli, name);
         explistView.setAdapter(listAdapter);
 
-  /*      explistView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                Toast.makeText(getApplicationContext(), "Group clicked"+cinema.get(groupPosition), Toast.LENGTH_LONG).show();
-                return false;
-            }
-        });
-
         explistView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getApplicationContext(), cinema.get(groupPosition)+"Expanded", Toast.LENGTH_LONG).show();
+                int height = 0;
+                for (int i = 0; i < explistView.getChildCount(); i++) {
+                    height += explistView.getChildAt(i).getMeasuredHeight();
+                    height += explistView.getDividerHeight();
+                }
+                explistView.getLayoutParams().height = (height)*2;
             }
         });
 
-        explistView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Toast.makeText(getApplicationContext(), cinema.get(groupPosition)+" : "+figli.get(cinema.get(groupPosition)).get(childPosition), Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(), (String) listAdapter.getChild(groupPosition, childPosition), Toast.LENGTH_LONG).show();
-                int starNera = getResources().getIdentifier("android:drawable/star_big_off", null, null);
-                //ImageView img_selection = (ImageView) explistView.getChildAt(groupPosition).findViewById(R.id.ratingBar);
 
-                return false;
+        // Listview Group collapsed listener
+        explistView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                int height = 0;
+                for (int i = 0; i < explistView.getChildCount(); i++) {
+                    height += explistView.getChildAt(i).getMeasuredHeight();
+                    height += explistView.getDividerHeight();
+                }
+                explistView.getLayoutParams().height = (height);
             }
-        });*/
-      return view;
+
+        });
+
+
+        return view;
     }
+
 
     public void prepareListData () {
         Cinemas c = new Cinemas();
-        //ArrayList<ArrayList<Proiezione>> orari = new ArrayList<>();
-        //ArrayList<String> cinema = new ArrayList<>();
 
         int durata = 0;
         String genere="";

@@ -1,16 +1,16 @@
 package nf.application.emanuele.tesi1;
 
-import android.app.Activity;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback{
+public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
     int next=0;
     String param;
 
@@ -19,24 +19,27 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback{
         param = "";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cerca_film);
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
 
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
-                switch (item.getItemId()){
-                    case R.id.menu_bottom_map:
+                switch (item.getItemId()) {
+                    /*case R.id.navigation_mappe:
+                        Toast.makeText(BottomBar.this, "Mappe", Toast.LENGTH_SHORT).show();
+                        break;*/
+                    case R.id.navigation_film:
+                        Toast.makeText(cercaFilm.this, "Film", Toast.LENGTH_SHORT).show();
                         selectedFragment = Locandine.newInstance();
                         break;
-                    case R.id.menu_bottom_events:
-                        selectedFragment = Locandine.newInstance();
-                        break;
-                    case R.id.menu_bottom_saved:
+                    case R.id.navigation_preferiti:
+                        Toast.makeText(cercaFilm.this, "Preferiti", Toast.LENGTH_SHORT).show();
                         selectedFragment = PreferitiFragment.newInstance();
                         break;
-                    case R.id.menu_bottom_search:
-                        selectedFragment = Locandine.newInstance();
+                    case R.id.navigation_eventi:
+                        Toast.makeText(cercaFilm.this, "Eventi", Toast.LENGTH_SHORT).show();
+                        selectedFragment = InfoFilm2.newInstance();
                         break;
                 }
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -46,12 +49,14 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback{
             }
         });
 
-
-
         String name = getIntent().getStringExtra("name");
         if (name.equals("preferiti")){
             next=2;
             onSobstitute(2);
+        }
+        if (name.equals("search")){
+            next=0;
+            onSobstitute(0);
         }
     }
 
@@ -61,7 +66,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback{
             case 0:
                 try {
                     FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
-                    transaction.replace(android.R.id.content, new Locandine());
+                    transaction.replace(R.id.main_fragment, new Locandine());
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } catch (Exception e) {
@@ -71,7 +76,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback{
             case 1:
                 try {
                     FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
-                    transaction.replace(android.R.id.content, new InfoFilm2());
+                    transaction.replace(R.id.main_fragment, new InfoFilm2());
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } catch (Exception e) {
@@ -80,8 +85,8 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback{
                 break;
             case 2:
                 try {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(android.R.id.content, new PreferitiFragment());
+                    FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_fragment, new PreferitiFragment());
                     transaction.addToBackStack(null);
                     transaction.commit();
                 } catch (Exception e) {
@@ -108,4 +113,5 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback{
         }
         return super.onKeyDown(keyCode, event);
     }
+
 }

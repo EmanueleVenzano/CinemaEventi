@@ -61,9 +61,9 @@ public class PreferitiDB {
         contentValues.put(PREFERITI_ORARIO, orario);
         contentValues.put(PREFERITI_LUOGO, luogo);
 //        String sqlStatement = "INSERT INTO "+PREFERITI_TABLE+" ("+PREFERITI_TITOLO+", "+PREFERITI_ISFILM+", "+PREFERITI_ORARIO+", "+PREFERITI_LUOGO+") " + "VALUES ("+titolo+", "+isfilm+", "+orario+", "+luogo+");";
-  //      try{
-    //        db.execSQL(sqlStatement);
-      //  }catch (Exception e){
+        //      try{
+        //        db.execSQL(sqlStatement);
+        //  }catch (Exception e){
         //    e.printStackTrace();
         //}
         long id = db.insert(PREFERITI_TABLE, null, contentValues);
@@ -76,8 +76,8 @@ public class PreferitiDB {
         this.openWriteableDB();
         String where =
                 PREFERITI_TITOLO + " = ? AND "+
-                PREFERITI_LUOGO + " = ? AND "+
-                PREFERITI_ORARIO + " = ?";
+                        PREFERITI_LUOGO + " = ? AND "+
+                        PREFERITI_ORARIO + " = ?";
         String[] whereArgs = {titolo, luogo, orario};
         Cursor cursor = db.query(PREFERITI_TABLE, null, where, whereArgs, null, null, null);
         long result = 0;

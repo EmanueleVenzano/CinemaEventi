@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#505050</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#505050</color>
-    <color name="nav_item_state_list">#E456FD</color>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#00695C</color>
+    <color name="colorAccent">#b2DFDB</color>
+    <color name="white">#FFFFFF</color>
 </resources>
