@@ -44,6 +44,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
             case R.id.EventiButton:
                 intent = new Intent (this, cercaFilm.class);
+                intent.putExtra("name", "eventi");
                 break;
         }
         if (intent!=null){
