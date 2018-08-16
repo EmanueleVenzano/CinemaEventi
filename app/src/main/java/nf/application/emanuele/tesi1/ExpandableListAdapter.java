@@ -183,7 +183,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView (int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+    public View getGroupView (final int groupPosition, final boolean isExpanded, View convertView, final ViewGroup parent) {
         final String headerTitle = (String) getGroup(groupPosition);
 
         if(convertView==null) {
@@ -205,6 +205,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 Intent intent = new Intent (context, MapsActivity.class);
                 intent.putExtra("cinema", headerTitle);
                 context.startActivity(intent);
+            }
+        });
+        convertView.setOnClickListener(new View.OnClickListener() {
+            final ViewGroup p = parent;
+            final int i = groupPosition;
+            @Override
+            public void onClick(View v) {
+                ExpandableListView eLV = (ExpandableListView) parent;
+                if (isExpanded){
+                    eLV.collapseGroup(groupPosition);
+                }else{
+                    eLV.expandGroup(groupPosition);
+                }
+
             }
         });
 
