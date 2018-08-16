@@ -19,6 +19,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
     private ListView itemsListView;
     private TextView titleTextView;
     private List<Copertina> films = new LinkedList();
+    DataInfo dataInfo;
 
     public static Locandine newInstance(){
         Locandine Fragment = new Locandine();
@@ -29,11 +30,25 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_locandine, container, false);
 
+        MyApplication myApplication = (MyApplication)getActivity().getApplication();
+        dataInfo = myApplication.dataInfo;
+
         itemsListView = (ListView) view.findViewById(R.id.itemsListView);
         titleTextView = (TextView) view.findViewById(R.id.titleTextView);
         itemsListView.setOnItemClickListener(this);
         titleTextView.setText("Cerca film");
-        Cinemas c = new Cinemas();
+
+        for (int i=0; i<dataInfo.films.size(); i++){
+            Copertina temp = new Copertina();
+            temp.name = dataInfo.films.get(i).getTitle();
+            try {
+                temp.img = new URL (dataInfo.films.get(i).getImg());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            films.add(temp);
+        }
+        /*Cinemas c = new Cinemas();
         for (int i=0; i< c.cinemas.size(); i++){
             for (int j=0; j<c.cinemas.get(i).films.size(); j++){
                 int controller=0;
@@ -55,7 +70,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
                 }
             }
         }
-
+*/
         CustomAdapter adapter = new CustomAdapter(Locandine.this.getContext(), R.layout.items_listview, films);
         itemsListView.setAdapter(adapter);
 
