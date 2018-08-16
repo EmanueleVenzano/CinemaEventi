@@ -190,11 +190,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         InputStream iStream = null;
         HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL(strUrl);
+//            URL url = new URL("https://api.internationalshowtimes.com/v4/showtimes/?city_ids=11861");
+            URL url = new URL("https://api.internationalshowtimes.com/v4/showtimes/?countries=IT");
 
             // Creating an http connection to communicate with url
             urlConnection = (HttpURLConnection) url.openConnection();
-
+            urlConnection.setRequestProperty("X-API-Key","9AmxQRqw3gltnlBKQvR9CgJDwUaC6DLg");
             // Connecting to url
             urlConnection.connect();
 
