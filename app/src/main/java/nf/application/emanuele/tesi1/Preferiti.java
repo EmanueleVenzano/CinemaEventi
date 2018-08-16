@@ -1,24 +1,29 @@
 package nf.application.emanuele.tesi1;
 
-import android.support.v4.view.PagerAdapter;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class Preferiti extends AppCompatActivity {
+
+    String warning1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.preferiti_activity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle("I tuoi preferiti");
-        toolbar.setTitleTextColor(getResources().getColor(android.R.color.black));
+
+        getIntent().getFlags();
+        warning1 = getIntent().getStringExtra("warning1");
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Cinema"));
@@ -41,21 +46,58 @@ public class Preferiti extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) { }
         });
-    }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
+        bottomNavigationView.setItemIconTintList(null);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent = null;
+                int flag = 0;
+                switch (item.getItemId()) {
+                    /*case R.id.navigation_mappe:
+                        Toast.makeText(BottomBar.this, "Mappe", Toast.LENGTH_SHORT).show();
+                        break;*/
+                    case R.id.navigation_film:
+                        Toast.makeText(Preferiti.this, "Film", Toast.LENGTH_SHORT).show();
+                        intent = new Intent (Preferiti.this, cercaFilm.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("name", "search");
+                        intent.putExtra("warning", "1");
+                        break;
+                    case R.id.navigation_preferiti:
+                        Toast.makeText(Preferiti.this, "Preferiti", Toast.LENGTH_SHORT).show();
+                        flag = 1;
+                        break;
+                    case R.id.navigation_eventi:
+                        Toast.makeText(Preferiti.this, "Eventi", Toast.LENGTH_SHORT).show();
+                        intent = new Intent (Preferiti.this, cercaFilm.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("name", "eventi");
+                        intent.putExtra("warning", "1");
+                        break;
+                }
+                if(flag==0) {
+                    startActivity(intent);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+    public boolean onKeyDown (int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+           if(warning1.equals("0")) {
+               finish();
+           } else {
+               warning1="0";
+               Intent intent = new Intent(Preferiti.this, MainActivity.class);
+               intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+               startActivity(intent);
+           }
         }
-        return super.onOptionsItemSelected(item);
-    }*/
+        return true;
+    }
 }
 

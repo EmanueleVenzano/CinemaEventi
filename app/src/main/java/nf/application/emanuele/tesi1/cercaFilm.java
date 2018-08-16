@@ -1,5 +1,6 @@
 package nf.application.emanuele.tesi1;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
     int next=0;
     String param;
+    String warning;
+    int flag = 0;
 
     @Override
     public void onCreate (Bundle savedInstanceState) {
@@ -20,11 +23,15 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cerca_film);
 
+        getIntent().getFlags();
+
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
+        bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
+                Intent intent = null;
                 switch (item.getItemId()) {
                     /*case R.id.navigation_mappe:
                         Toast.makeText(BottomBar.this, "Mappe", Toast.LENGTH_SHORT).show();
@@ -35,20 +42,28 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                         break;
                     case R.id.navigation_preferiti:
                         Toast.makeText(cercaFilm.this, "Preferiti", Toast.LENGTH_SHORT).show();
-                        selectedFragment = PreferitiFragment.newInstance();
+                        flag=1;
+                        intent = new Intent (cercaFilm.this, Preferiti.class);
+                        intent.putExtra("warning1", "1");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         break;
                     case R.id.navigation_eventi:
                         Toast.makeText(cercaFilm.this, "Eventi", Toast.LENGTH_SHORT).show();
-                        selectedFragment = InfoFilm2.newInstance();
+                        selectedFragment = EventiFragment.newInstance();
                         break;
                 }
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.main_fragment, selectedFragment );
-                transaction.commit();
+                if (flag==0) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_fragment, selectedFragment);
+                    transaction.commit();
+                } else {
+                    startActivity(intent);
+                }
                 return true;
             }
         });
 
+        warning = getIntent().getStringExtra("warning");
         String name = getIntent().getStringExtra("name");
         if (name.equals("preferiti")){
             next=2;
@@ -58,6 +73,11 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
             next=0;
             onSobstitute(0);
         }
+        if (name.equals("eventi")){
+            next=3;
+            onSobstitute(3);
+        }
+
     }
 
     public void onSobstitute (int next) {
@@ -92,6 +112,16 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            case 3:
+                try {
+                    FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_fragment, new EventiFragment());
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
@@ -106,10 +136,16 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
     @Override
     public boolean onKeyDown (int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (next != 1) {
+            if (next!=1 && warning.equals("0")) {
                 this.finish();
                 return true;
-            } else {
+            } else if (next!=1 && warning.equals("1")) {
+                Intent intent = new Intent(cercaFilm.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                warning="0";
+                startActivity(intent);
+                return true;
+            } else{
                 next=0;
             }
         }

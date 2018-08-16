@@ -33,5 +33,3 @@ public class PreferitiAdapter extends FragmentStatePagerAdapter {
         return mNumOfTabs;
     }
 }
-
-}

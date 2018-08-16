@@ -25,7 +25,18 @@ public class PreferitiDB {
     public static final int PREFERITI_LUOGO_COL = 4;
     public static final String PREFERITI_ISFILM = "isfilm";
     public static final int PREFERITI_ISFILM_COL = 2;
+//NEW PART-----------
+    public static final String EVENTI_TABLE = "eventi";
+    public static final String EVENTI_ID = "eventiId";
+    public static final int EVENTI_ID_COL = 0;
+    public static final String EVENTI_TITOLO = "eventiTitolo";
+    public static final int EVENTI_TITOLO_COL = 1;
+    public static final String EVENTI_DATA = "eventiData";
+    public static final int EVENTI_DATA_COL = 2;
+    public static final String EVENTI_LUOGO = "eventiLuogo";
+    public static final int EVENTI_LUOGO_COL = 3;
 
+    //-------------------
     public static final String CREATE_PREFERITI_TABLE = "CREATE TABLE " + PREFERITI_TABLE + "(" +
             PREFERITI_ID + "INT AUTO_INCREMENT PRIMARY KEY, "+
             PREFERITI_TITOLO + " TEXT, " +
@@ -34,6 +45,14 @@ public class PreferitiDB {
             PREFERITI_LUOGO + " TEXT);";
     public static final String DROP_PREFERITI_TABLE = "DROP TABLE IF EXISTS "+ PREFERITI_TABLE;
 
+    //---------------------------------
+    public static final String CREATE_EVENTI_TABLE = "CREATE TABLE " + EVENTI_TABLE + "(" +
+            EVENTI_ID + "INT AUTO_INCREMENT PRIMARY KEY, "+
+            EVENTI_TITOLO + " TEXT, " +
+            EVENTI_DATA + " TEXT, " +
+            EVENTI_LUOGO + " TEXT);";
+    public static final String DROP_EVENTI_TABLE = "DROP TABLE IF EXISTS "+ EVENTI_TABLE;
+//-------------------------------
     public PreferitiDB(Context context){
         dbHelper = new PreferitiDBHelper(context, DB_NAME, null, DB_VERSION);
     }
@@ -60,12 +79,6 @@ public class PreferitiDB {
         contentValues.put(PREFERITI_ISFILM, isfilm);
         contentValues.put(PREFERITI_ORARIO, orario);
         contentValues.put(PREFERITI_LUOGO, luogo);
-//        String sqlStatement = "INSERT INTO "+PREFERITI_TABLE+" ("+PREFERITI_TITOLO+", "+PREFERITI_ISFILM+", "+PREFERITI_ORARIO+", "+PREFERITI_LUOGO+") " + "VALUES ("+titolo+", "+isfilm+", "+orario+", "+luogo+");";
-        //      try{
-        //        db.execSQL(sqlStatement);
-        //  }catch (Exception e){
-        //    e.printStackTrace();
-        //}
         long id = db.insert(PREFERITI_TABLE, null, contentValues);
         this.closeDB();
         return id;
@@ -157,30 +170,11 @@ public class PreferitiDB {
         }
         return result;
     }
-/*
-
-    private static Location getLocationCinemFromCursor (String name, Cursor cursor){
-        if (cursor == null || cursor.getCount()==0) return null;
-        try{
-            cursor.moveToFirst();
-            double lat = Double.parseDouble(cursor.getString(CINEMA_LATITUDE_COL));
-            double lon = cursor.getDouble(CINEMA_LONGITUDE_COL);
-            Location l = new Location(name);
-            l.setLongitude(lon);
-            l.setLatitude(lat);
-            return l;
-        }catch (Exception e){
-            return null;
-        }
-    }
-
-    public ArrayList<String> getInfoCinema (String cinemaName){
-        String where = CINEMA_NAME + "= ? ";
-        String[] whereArgs = {cinemaName};
+    //--------------------------------------------------------------------------
+    public ArrayList<ArrayList<String>> getAllEvents (){
         this.openReadableDB();
-        Cursor cursor = db.query(CINEMA_TABLE, null, where, whereArgs, null, null, null);
-        ArrayList<String> result = new ArrayList<>();
-        result = getInfoCinemFromCursor(cursor);
+        Cursor cursor = db.query(EVENTI_TABLE, null, null, null, null, null, null);
+        ArrayList<ArrayList<String>> result = getAllEvents(cursor);
         if (cursor!=null){
             cursor.close();
         }
@@ -188,18 +182,26 @@ public class PreferitiDB {
         return result;
     }
 
-    private static ArrayList<String> getInfoCinemFromCursor (Cursor cursor){
-        if (cursor == null || cursor.getCount()==0) return null;
-        try{
-            cursor.moveToFirst();
-            ArrayList<String> result = new ArrayList<>();
-            result.add(cursor.getString(CINEMA_NAME_COL));
-            result.add(cursor.getString(CINEMA_IMG_COL));
-            result.add(cursor.getString(CINEMA_DESCRIZIONE_COL));
-            return result;
-        }catch (Exception e){
-            return null;
+    private static ArrayList<ArrayList<String>> getAllEvents (Cursor cursor) {
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        if (cursor == null || cursor.getCount() == 0) return result;
+        try {
+            while (cursor.moveToNext()){
+                ArrayList<String> temp = new ArrayList<>();
+                String data = cursor.getString(EVENTI_DATA_COL);
+                temp.add(data);
+                String luogo = cursor.getString(EVENTI_LUOGO_COL);
+                temp.add(luogo);
+                String titolo = cursor.getString(EVENTI_TITOLO_COL);
+                temp.add(titolo);
+                result.add(temp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return result;
     }
-*/
+
+    //------------------------------------------------------------------------------
+
 }
