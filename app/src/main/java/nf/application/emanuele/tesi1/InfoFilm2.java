@@ -35,10 +35,6 @@ public class InfoFilm2 extends Fragment {
     ListView explistView;
     List<ArrayList<String>> cinema;
     ArrayList<ArrayList<DataShowTimes>> showtimes;
-    //HashMap<String, List<DataShowTimes>> figli;
-
-
-    //nome del film che mi viene passato
     String name = "";
 
     public static InfoFilm2 newInstance(){
@@ -55,49 +51,11 @@ public class InfoFilm2 extends Fragment {
 
         imgFilm = (ImageView)view.findViewById(R.id.imgFilm);
         titleFilm = (TextView)view.findViewById(R.id.titleFilm);
-//        durataFilm = (TextView)view.findViewById(R.id.durataFilm);
-  //      genereFilm = (TextView)view.findViewById(R.id.genereFilm);
-    //    descrizioneFilm = (TextView)view.findViewById(R.id.descrizioneFilm);
         explistView = (ListView)view.findViewById(R.id.proiezioniListView);
-
         cinema = new ArrayList<ArrayList<String>>();
-        //figli = new HashMap<String, List<DataShowTimes>>();
-
         prepareListData();
-
-//        FilmCustomAdapter listAdapter = new FilmCustomAdapter(InfoFilm2.this.getContext(), cinema, figli, name);
-        FilmCustomAdapter listAdapter = new FilmCustomAdapter(InfoFilm2.this.getContext(), R.layout.proiezioni_listview,cinema, showtimes , name);
+        FilmCustomAdapter listAdapter = new FilmCustomAdapter(InfoFilm2.this.getContext(), R.layout.proiezioni_listview, cinema, showtimes, name);
         explistView.setAdapter(listAdapter);
-
-/*        explistView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                int height = 0;
-                for (int i = 0; i < explistView.getChildCount(); i++) {
-                    height += explistView.getChildAt(i).getMeasuredHeight();
-                    height += explistView.getDividerHeight();
-                }
-                explistView.getLayoutParams().height = (height)*2;
-            }
-        });
-
-
-        // Listview Group collapsed listener
-        explistView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                int height = 0;
-                for (int i = 0; i < explistView.getChildCount(); i++) {
-                    height += explistView.getChildAt(i).getMeasuredHeight();
-                    height += explistView.getDividerHeight();
-                }
-                explistView.getLayoutParams().height = (height);
-            }
-
-        });
-*/
-
         return view;
     }
 
@@ -112,8 +70,9 @@ public class InfoFilm2 extends Fragment {
                 urlToString = dataInfo.films.get(i).getImg();
                 String movie_id = dataInfo.films.get(i).getId();
                 for (int j = 0; j < dataInfo.showTimes.size(); j++){
-                    if (!movie_id.equals(dataInfo.showTimes.get(j).getMovie_id())) continue;
-                    String cinema_id = dataInfo.showTimes.get(j).getCinema_id();
+                    DataShowTimes dataShowTimes = dataInfo.showTimes.get(j);
+                    if (!movie_id.equals(dataShowTimes.getMovie_id())) continue;
+                    String cinema_id = dataShowTimes.getCinema_id();
                     String cinema_name = "";
                     for (int k = 0; k < dataInfo.cinemas.size(); k++){
                         if (dataInfo.cinemas.get(k).getId().equals(cinema_id)){
@@ -141,7 +100,6 @@ public class InfoFilm2 extends Fragment {
                             break;
                         }
                     }
-                    DataShowTimes dataShowTimes = dataInfo.showTimes.get(j);
                     while (position>=showtimes.size()){
                         showtimes.add(new ArrayList<DataShowTimes>());
                     }
@@ -150,48 +108,9 @@ public class InfoFilm2 extends Fragment {
                 break;
             }
         }
-        //for (int i = 0; i < cinema.size(); i++){
-          //  figli.put(cinema.get(i), showtimes.get(i));
-        //}
         new InfoFilm2.ImageDownloaderTask(imgFilm).execute(urlToString);
         titleFilm.setText(Html.fromHtml("<b>Titolo: </b>" + name));
     }
-
-       /* Cinemas c = new Cinemas();
-        int durata = 0;
-        String genere="";
-        String descrizione = "";
-        String urlToString = "";
-        for (int i=0; i< c.cinemas.size(); i++){
-            for (int j=0; j<c.cinemas.get(i).films.size(); j++) {
-                if (c.cinemas.get(i).films.get(j).Titolo.equals(name)){
-                    List<String> ora = new ArrayList<>();
-
-                    durata = c.cinemas.get(i).films.get(j).durata;
-                    genere = c.cinemas.get(i).films.get(j).genere;
-                    descrizione = c.cinemas.get(i).films.get(j).trama;
-                    urlToString = c.cinemas.get(i).films.get(j).immagine;
-
-                    ArrayList<Proiezione> temp = c.cinemas.get(i).films.get(j).proiezione;
-                    for(Proiezione z: temp) {
-                        ora.add(z.orario);
-                    }
-
-                    cinema.add(c.cinemas.get(i).name);
-                    figli.put(c.cinemas.get(i).name, ora);
-                }
-            }
-        }
-
-        new InfoFilm2.ImageDownloaderTask(imgFilm).execute(urlToString);
-
-        titleFilm.setText(Html.fromHtml("<b>Titolo: </b>"+name));
-        durataFilm.setText(Html.fromHtml("<b>Durata: </b>"+durata+"min"));
-        genereFilm.setText(Html.fromHtml("<b>Genere: </b>"+genere));
-        descrizioneFilm.setText(Html.fromHtml("<b>Trama: </b><br />"+descrizione));
-
-    }*/
-
     private class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
         private final WeakReference<ImageView> imageViewWeakReference;
 

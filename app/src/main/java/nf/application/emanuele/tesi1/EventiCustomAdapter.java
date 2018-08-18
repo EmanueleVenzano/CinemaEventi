@@ -92,17 +92,12 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
                         break;
                     case R.drawable.calendar:
                         Date currentTime = Calendar.getInstance(Calendar.getInstance().getTimeZone()).getTime();
-                        Date filmTime = new Date();
-                        filmTime.setTime(currentTime.getTime());
+                        Calendar calendar = Calendar.getInstance();
                         String[] dataFilm = copertina.get(0).split(" ");
                         String[] temp1 = dataFilm[0].split("/");
-                        String tempYear = "20"+temp1[2];
                         String[] temp2 = dataFilm[1].split(":");
-                        filmTime.setDate(Integer.parseInt(temp1[0]));
-                        filmTime.setMonth(Integer.parseInt(temp1[1]));
-                        filmTime.setYear(Integer.parseInt(tempYear));
-                        filmTime.setHours(Integer.parseInt(temp2[0]));
-                        filmTime.setMinutes(Integer.parseInt(temp2[1]));
+                        calendar.set(Integer.parseInt("20"+temp1[2]), Integer.parseInt(temp1[1])-1, Integer.parseInt(temp1[0]), Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]));
+                        Date filmTime = calendar.getTime();
                         //if (filmTime.after(currentTime)) {
                         if (true) {
                             img_selected.setImageResource(R.drawable.friends);

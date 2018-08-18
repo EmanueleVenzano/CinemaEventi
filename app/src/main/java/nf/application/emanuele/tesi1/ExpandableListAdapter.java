@@ -33,6 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -112,13 +113,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         break;
                     case R.drawable.calendar:
                         Date currentTime = Calendar.getInstance(Calendar.getInstance().getTimeZone()).getTime();
-                        Date filmTime = new Date();
-                        filmTime.setTime(currentTime.getTime());
-                        filmTime.setDate(Integer.parseInt(temp1[2]));
-                        filmTime.setMonth(Integer.parseInt(temp1[1]));
-                        filmTime.setYear(Integer.parseInt(temp1[0]));
-                        filmTime.setHours(Integer.parseInt(temp2[0]));
-                        filmTime.setMinutes(Integer.parseInt(temp2[1]));
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1])-1, Integer.parseInt(temp1[2]), Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]));
+                        Date filmTime = calendar.getTime();
                         //if (filmTime.after(currentTime)) {
                         if (true) {
                             img_selected.setImageResource(R.drawable.friends);
@@ -236,10 +233,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView giorno = (TextView) convertView.findViewById(R.id.proiezioneGiorno);
         giorno.setTypeface(null, Typeface.BOLD);
         String[] dataTime = headerTitle.split("-");
-        Date date = new Date();
-        date.setYear(Integer.parseInt(dataTime[0]));
-        date.setMonth(Integer.parseInt(dataTime[1])-1);
-        date.setDate(Integer.parseInt(dataTime[2]));
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Integer.parseInt(dataTime[0]), Integer.parseInt(dataTime[1])-1, Integer.parseInt(dataTime[2]));
+        Date date = calendar.getTime();
         int day = date.getDay();
         switch (day){
             case 0: giorno.setText("Domenica"); break;
