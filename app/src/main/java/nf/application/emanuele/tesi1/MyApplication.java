@@ -19,7 +19,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class MyApplication extends Application {
-    DataInfo dataInfo = new DataInfo();
+    private DataInfo dataInfo = new DataInfo();
     @Override
     public void onCreate() {
         super.onCreate();
@@ -46,6 +46,10 @@ public class MyApplication extends Application {
         dataInfo.cinemas = cinemas;
         dataInfo.films = films;
         dataInfo.showTimes = showTimes;
+    }
+
+    public DataInfo getDataInfo (){
+        return dataInfo;
     }
 
     public ArrayList<DataShowTimes> createShowTime (int id, ArrayList<DataShowTimes> film){

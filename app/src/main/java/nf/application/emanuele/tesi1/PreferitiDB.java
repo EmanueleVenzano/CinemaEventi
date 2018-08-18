@@ -140,9 +140,11 @@ public class PreferitiDB {
 
     }
 
-    public ArrayList<ArrayList<String>> getAllFavourites (){
+    public ArrayList<ArrayList<String>> getAllFavourites (String isFilm){
         this.openReadableDB();
-        Cursor cursor = db.query(PREFERITI_TABLE, null, null, null, null, null, null);
+        String where = PREFERITI_ISFILM + " = ? ";
+        String[] whereArgs = {isFilm};
+        Cursor cursor = db.query(PREFERITI_TABLE, null, where, whereArgs, null, null, null);
         ArrayList<ArrayList<String>> result = getAllFavourites(cursor);
         if (cursor!=null){
             cursor.close();

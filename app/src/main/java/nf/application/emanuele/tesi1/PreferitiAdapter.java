@@ -21,7 +21,7 @@ public class PreferitiAdapter extends FragmentStatePagerAdapter {
                 Fragment tab1 = new PreferitiFragment();
                 return tab1;
             case 1:
-                Fragment tab2 = new EventiFragment();
+                Fragment tab2 = new PreferitiEventiFragment();
                 return tab2;
             default:
                 return null;

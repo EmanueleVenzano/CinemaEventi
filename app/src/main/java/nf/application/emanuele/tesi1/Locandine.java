@@ -31,7 +31,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
         View view = inflater.inflate(R.layout.activity_locandine, container, false);
 
         MyApplication myApplication = (MyApplication)getActivity().getApplication();
-        dataInfo = myApplication.dataInfo;
+        dataInfo = myApplication.getDataInfo();
 
         itemsListView = (ListView) view.findViewById(R.id.itemsListView);
         titleTextView = (TextView) view.findViewById(R.id.titleTextView);

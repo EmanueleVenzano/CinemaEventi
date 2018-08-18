@@ -1,22 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:id="@+id/orario"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"/>
-    <ImageView
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="27dp"
-        android:id="@+id/ratingBar"
-        android:layout_gravity="right"
-        android:layout_alignRight="@id/orario"
-        android:src="@android:drawable/star_big_off"/>
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/proeiezioneLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
+            android:paddingTop="5dp">
+
+            <TextView
+                android:id="@+id/proiezioneOrario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:20" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/proiezioneOrario"
+                android:layout_marginLeft="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/proiezioneLingua"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lingua: ita" />
+
+                <TextView
+                    android:id="@+id/proiezioneSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sub: ita" />
+
+                <TextView
+                    android:id="@+id/proiezioneSala"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sala: 8 ISense" />
+
+                <TextView
+                    android:id="@+id/proiezioneType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="right"
+                android:layout_marginTop="15dp"
+                android:src="@android:drawable/star_big_off" />
+        </RelativeLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/proiezioneLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="85dp"
+        android:textColor="#00bfff"
+        android:text="Lingua: ita" />
+</RelativeLayout>

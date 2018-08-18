@@ -26,10 +26,12 @@ import java.util.TimeZone;
 
 public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
     private Context context;
+    private String isFilm;
 
-    public PreferitiCustomAdapter (Context context, int textViewResoutceId, List<ArrayList<String>> objects){
+    public PreferitiCustomAdapter (Context context, int textViewResoutceId, List<ArrayList<String>> objects, String isFilm){
         super(context, textViewResoutceId, objects);
         this.context=context;
+        this.isFilm=isFilm;
     }
 
     @Override
@@ -78,7 +80,7 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
 //                        if (filmTime.after(currentTime)){
                         if (true) {
                             db = new PreferitiDB(context);
-                            result = db.insertPreferito(copertina.get(2), "1", copertina.get(0), copertina.get(1));
+                            result = db.insertPreferito(copertina.get(2), isFilm, copertina.get(0), copertina.get(1));
                             view.setImageResource(R.drawable.delete);
                             view.setTag(R.drawable.delete);
 

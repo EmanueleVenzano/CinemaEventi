@@ -14,6 +14,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.provider.ContactsContract;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,19 +38,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<String> listDataHeader;
-    private HashMap<String, List<String>> listDataChild;
+    private ArrayList<ArrayList<DataShowTimes>> listDataChild;
     String film;
+    String cinema;
 
-    public ExpandableListAdapter (Context context, List<String> listDataHeader, HashMap<String, List<String>> listDataChild, String film) {
+    public ExpandableListAdapter (Context context, List<String> listDataHeader, ArrayList<ArrayList<DataShowTimes>> listDataChild, String cinema, String film) {
         this.context = context;
         this.listDataChild = listDataChild;
         this.listDataHeader = listDataHeader;
         this.film = film;
+        this.cinema = cinema;
     }
 
     @Override
     public Object getChild (int groupPosition, int childPosition) {
-        return this.listDataChild.get(this.listDataHeader.get(groupPosition)).get(childPosition);
+        return this.listDataChild.get(groupPosition).get(childPosition).getStart();
     }
 
     @Override
@@ -58,13 +64,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView (final int groupPosition, final int childPosition,
                               boolean isLastChild, View convertView, final ViewGroup parent) {
         final String childText = (String) getChild(groupPosition, childPosition);
-
         if(convertView==null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.proiezione_listview, null);
         }
-
         final ImageView img_selected = (ImageView) convertView.findViewById(R.id.ratingBar);
+
         PreferitiDB db = new PreferitiDB(context);
         final ArrayList<ArrayList<String>> infoPreferito = db.getPreferito(film);
         ArrayList<String> preferitiLuogo = new ArrayList<>();
@@ -73,10 +78,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             preferitiLuogo.add(infoPreferito.get(i).get(1));
             preferitiOrario.add(infoPreferito.get(i).get(0));
         }
-        final String actualCinema = listDataHeader.get(groupPosition);
+
         boolean pippo = false;
         for (int i=0; i<infoPreferito.size(); i++) {
-            if(actualCinema.equals(preferitiLuogo.get(i)) && childText.equals(preferitiOrario.get(i))) {
+            if(cinema.equals(preferitiLuogo.get(i)) && childText.equals(preferitiOrario.get(i))) {
                 pippo=true;
                 break;
             }
@@ -89,7 +94,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             img_selected.setImageResource(R.drawable.calendar);
             img_selected.setTag(R.drawable.calendar);
         }
-        final View p = convertView;
+        String[] temp = childText.split("T");
+        final String[] temp1 = temp[0].split("-");
+        final String[] temp2 = temp[1].split(":");
         img_selected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,7 +106,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     case R.drawable.friends:
                         img_selected.setImageResource(R.drawable.calendar);
                         img_selected.setTag(R.drawable.calendar);
-                        result = db.deletePreferito(film, actualCinema, childText);
+                        result = db.deletePreferito(film, cinema, childText);
                         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                         notificationManager.cancel((int) result);
                         break;
@@ -107,9 +114,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         Date currentTime = Calendar.getInstance(Calendar.getInstance().getTimeZone()).getTime();
                         Date filmTime = new Date();
                         filmTime.setTime(currentTime.getTime());
-                        String[] dataFilm = childText.split(":");
-                        filmTime.setHours(Integer.parseInt(dataFilm[0]));
-                        filmTime.setMinutes(Integer.parseInt(dataFilm[1]));
+                        filmTime.setDate(Integer.parseInt(temp1[2]));
+                        filmTime.setMonth(Integer.parseInt(temp1[1]));
+                        filmTime.setYear(Integer.parseInt(temp1[0]));
+                        filmTime.setHours(Integer.parseInt(temp2[0]));
+                        filmTime.setMinutes(Integer.parseInt(temp2[1]));
                         //if (filmTime.after(currentTime)) {
                         if (true) {
                             img_selected.setImageResource(R.drawable.friends);
@@ -128,20 +137,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                             if(futureInMillis-currentTime.getTime() < 0) {
                                 notification = new Notification.Builder(context)
                                         .setContentIntent(resultPendingIntent)
-                                        .setContentText("Affrettati, "+film+" inizierà tra meno di due ore a "+actualCinema)
+                                        .setContentText("Affrettati, "+film+" inizierà tra meno di due ore a "+cinema)
                                         .setContentTitle(film)
                                         .setSound(sound)
                                         .setSmallIcon(R.drawable.ticket)
-                                        .setStyle(new Notification.BigTextStyle().bigText("Affrettati, "+film+" inizierà tra meno di due ore a "+actualCinema))
+                                        .setStyle(new Notification.BigTextStyle().bigText("Affrettati, "+film+" inizierà tra meno di due ore a "+cinema))
                                         .build();
                             } else {
                                 notification = new Notification.Builder(context)
                                         .setContentIntent(resultPendingIntent)
-                                        .setContentText("Preparati ! Tra due ore devi essere a "+actualCinema+" per vedere "+film+"!")
+                                        .setContentText("Preparati ! Tra due ore devi essere a "+cinema+" per vedere "+film+"!")
                                         .setContentTitle(film)
                                         .setSound(sound)
                                         .setSmallIcon(R.drawable.ticket)
-                                        .setStyle(new Notification.BigTextStyle().bigText("Preparati ! Tra due ore devi essere a "+actualCinema+" per vedere "+film+"!"))
+                                        .setStyle(new Notification.BigTextStyle().bigText("Preparati ! Tra due ore devi essere a "+cinema+" per vedere "+film+"!"))
                                         .build();
                             }
                             notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
@@ -156,15 +165,50 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             }
         });
 
-        TextView txtListChild = (TextView) convertView.findViewById(R.id.orario);
-        txtListChild.setText(childText);
+        TextView orario = (TextView) convertView.findViewById(R.id.proiezioneOrario);
+        orario.setText(temp2[0]+":"+temp2[1]);
+        TextView lingua = (TextView) convertView.findViewById(R.id.proiezioneLingua);
+        if (listDataChild.get(groupPosition).get(childPosition).getLanguage()=="null"){
+            lingua.setText(Html.fromHtml("<b>Lingua: </b>"+"ita"));
+        }else{
+            lingua.setText(Html.fromHtml("<b>Lingua: </b>" +listDataChild.get(groupPosition).get(childPosition).getLanguage()));
+        }
+        TextView sub = (TextView) convertView.findViewById(R.id.proiezioneSub);
+        if (listDataChild.get(groupPosition).get(childPosition).getSubtitle()=="null"){
+            sub.setText(Html.fromHtml("<b>Sub: </b>"+"ita"));
+        }else{
+            sub.setText(Html.fromHtml("<b>Sub: </b>" +listDataChild.get(groupPosition).get(childPosition).getSubtitle()));
+        }
+        TextView sala = (TextView) convertView.findViewById(R.id.proiezioneSala);
+        sala.setText(Html.fromHtml("<b>Sala: </b>"+listDataChild.get(groupPosition).get(childPosition).getAuditorium()));
+        String type = "";
+        if (listDataChild.get(groupPosition).get(childPosition).isIs3D()){
+            type = "3D";
+        }
+        if (listDataChild.get(groupPosition).get(childPosition).isIMax()){
+            if (!type.equals("")){
+                type+=" ";
+            }
+            type+= "IMax";
+        }
+        if (!type.equals("")){
+            TextView typeP = (TextView) convertView.findViewById(R.id.proiezioneType);
+            typeP.setText(Html.fromHtml("<b>"+type+"</b>"));
+        }
+        TextView link = (TextView) convertView.findViewById(R.id.proiezioneLink);
+        SpannableString content = new SpannableString(listDataChild.get(groupPosition).get(childPosition).getLink());
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        link.setText(content);
+
+        //TextView txtListChild = (TextView) convertView.findViewById(R.id.orario);
+        //txtListChild.setText(childText);
 
         return convertView;
     }
 
     @Override
     public int getChildrenCount (int groupPosition) {
-        return this.listDataChild.get(this.listDataHeader.get(groupPosition)).size();
+        return this.listDataChild.get(groupPosition).size();
     }
 
     @Override
@@ -185,28 +229,30 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView (final int groupPosition, final boolean isExpanded, View convertView, final ViewGroup parent) {
         final String headerTitle = (String) getGroup(groupPosition);
-
         if(convertView==null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.proiezioni_listview, null);
+            convertView = infalInflater.inflate(R.layout.proiezione_giorno_listview, null);
         }
-
-        TextView nomeCinema = (TextView) convertView.findViewById(R.id.nomeCinema);
-        nomeCinema.setTypeface(null, Typeface.BOLD);
-        nomeCinema.setText(headerTitle);
-
+        TextView giorno = (TextView) convertView.findViewById(R.id.proiezioneGiorno);
+        giorno.setTypeface(null, Typeface.BOLD);
+        String[] dataTime = headerTitle.split("-");
+        Date date = new Date();
+        date.setYear(Integer.parseInt(dataTime[0]));
+        date.setMonth(Integer.parseInt(dataTime[1])-1);
+        date.setDate(Integer.parseInt(dataTime[2]));
+        int day = date.getDay();
+        switch (day){
+            case 0: giorno.setText("Domenica"); break;
+            case 1: giorno.setText("Lunedì"); break;
+            case 2: giorno.setText("Martedì"); break;
+            case 3: giorno.setText("Mercoledì"); break;
+            case 4: giorno.setText("Giovedì"); break;
+            case 5: giorno.setText("Venerdì"); break;
+            case 6: giorno.setText("Sabato"); break;
+            default: giorno.setText("Invalid"); break;
+        }
         //ExpandableListView eLV = (ExpandableListView) parent;
         //eLV.expandGroup(groupPosition);
-
-        Button button = (Button) convertView.findViewById(R.id.bottoneCinema);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent (context, MapsActivity.class);
-                intent.putExtra("cinema", headerTitle);
-                context.startActivity(intent);
-            }
-        });
         convertView.setOnClickListener(new View.OnClickListener() {
             final ViewGroup p = parent;
             final int i = groupPosition;

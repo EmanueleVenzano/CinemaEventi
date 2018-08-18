@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:padding="8dp">
-
     <TextView
         android:id="@+id/nomeCinema"
         android:layout_width="wrap_content"
@@ -13,12 +11,25 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"/>
+
     <Button
-        android:layout_marginRight="0dp"
+        android:id="@+id/bottoneCinema"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Visita"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="13dp"
         android:background="#FF0000"
-        android:id="@+id/bottoneCinema" />
+        android:text="Visita" />
 
-</LinearLayout>
+    <ExpandableListView
+        android:id="@+id/proiezioniExpandableListView"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="60dp">
+
+    </ExpandableListView>
+
+</RelativeLayout>
