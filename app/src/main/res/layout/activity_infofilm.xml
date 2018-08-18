@@ -24,7 +24,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"/>
 
-        <TextView
+        <!--<TextView
             android:id="@+id/durataFilm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,14 +50,15 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"/>
-
-        <ExpandableListView
+-->
+        <ListView
             android:id="@+id/proiezioniListView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_below="@id/descrizioneFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_height="400dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:layout_below="@id/titleFilm"
+            android:background="@drawable/shape" />
 
     </RelativeLayout>
 </ScrollView>

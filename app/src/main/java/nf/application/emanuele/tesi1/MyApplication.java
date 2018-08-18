@@ -19,7 +19,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 public class MyApplication extends Application {
-    DataInfo dataInfo = new DataInfo();
+    private DataInfo dataInfo = new DataInfo();
     @Override
     public void onCreate() {
         super.onCreate();
@@ -40,12 +40,17 @@ public class MyApplication extends Application {
                 filmFiumara.add(showTimes.get(i));
             }
         }
-        for (int i=downloaded-1; i<cinemas.size(); i++){
-            showTimes.addAll(createShowTime(Integer.parseInt(cinemas.get(i).getId()), filmFiumara));
+        for (int i=downloaded; i<cinemas.size(); i++){
+            ArrayList<DataShowTimes> temp = createShowTime(Integer.parseInt(cinemas.get(i).getId()), filmFiumara);
+            showTimes.addAll(temp);
         }
         dataInfo.cinemas = cinemas;
         dataInfo.films = films;
         dataInfo.showTimes = showTimes;
+    }
+
+    public DataInfo getDataInfo (){
+        return dataInfo;
     }
 
     public ArrayList<DataShowTimes> createShowTime (int id, ArrayList<DataShowTimes> film){
@@ -61,8 +66,7 @@ public class MyApplication extends Application {
         }
         for (int i=0; i<film.size(); i++){
             if (random.nextInt(100)<percent){
-                film.get(i).setCinema_id(String.valueOf(id));
-                dataShowTimes.add(film.get(i));
+                    dataShowTimes.add(new DataShowTimes(String.valueOf(id), film.get(i).getMovie_id(), film.get(i).getStart(), film.get(i).getLanguage(), film.get(i).getSubtitle(), film.get(i).getAuditorium(), film.get(i).isIs3D(), film.get(i).isIMax(), film.get(i).getLink()));
             }
         }
         return dataShowTimes;
@@ -71,10 +75,7 @@ public class MyApplication extends Application {
     public ArrayList<DataShowTimes> downloadShowTimes(String url){
         String data = "";
         try{
-//            data = downloadUrl(url);
             data = new downloadUrlTask().execute(url).get();
-//        } catch (IOException e1) {
-//            e1.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -85,9 +86,6 @@ public class MyApplication extends Application {
         try {
             jObject = new JSONObject(data);
             Log.d("ParserTask", data.toString());
-//            DataParserShowTimes parser = new DataParserShowTimes();
-//            Log.d("ParserTask", parser.toString());
-//            showTimes = parser.parseShowTime(jObject);
             showTimes = parseShowTime(jObject);
             Log.d("ParserTask", "Executing routes");
             Log.d("ParserTask", showTimes.toString());
@@ -101,10 +99,7 @@ public class MyApplication extends Application {
     public ArrayList<DataFilm> downloadFilms(String url){
         String data = "";
         try{
-//            data = downloadUrl(url);
             data = new downloadUrlTask().execute(url).get();
-//        } catch (IOException e1) {
-//            e1.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -115,9 +110,6 @@ public class MyApplication extends Application {
         try {
             jObject = new JSONObject(data);
             Log.d("ParserTask", data.toString());
-//            DataParserFilm parser = new DataParserFilm();
-//            Log.d("ParserTask", parser.toString());
-//            films = parser.parseFilm(jObject);
             films = parseFilm(jObject);
             Log.d("ParserTask", "Executing routes");
             Log.d("ParserTask", films.toString());
@@ -132,7 +124,6 @@ public class MyApplication extends Application {
     public ArrayList<DataCinema> downloadCinemas(String url){
         String data = "";
         try{
-//            data = downloadUrl(url);
             data = new downloadUrlTask().execute(url).get();
         } catch (ExecutionException e1) {
             e1.printStackTrace();
@@ -144,9 +135,6 @@ public class MyApplication extends Application {
         try {
             jObject = new JSONObject(data);
             Log.d("ParserTask", data.toString());
-//            DataParserCinema parser = new DataParserCinema();
-//            Log.d("ParserTask", parser.toString());
-//            cinema = parser.parseCinema(jObject);
             cinema = parseCinema(jObject);
             Log.d("ParserTask", "Executing routes");
             Log.d("ParserTask", cinema.toString());
@@ -165,8 +153,6 @@ public class MyApplication extends Application {
             InputStream iStream = null;
             HttpURLConnection urlConnection = null;
             try {
-//            URL url = new URL("https://api.internationalshowtimes.com/v4/showtimes/?city_ids=11861");
-//            URL url = new URL("https://api.internationalshowtimes.com/v4/showtimes/?countries=IT");
                 URL url = new URL(param[0]);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestProperty("X-API-Key","9AmxQRqw3gltnlBKQvR9CgJDwUaC6DLg");
@@ -198,37 +184,6 @@ public class MyApplication extends Application {
         protected void onPostExecute (String result){
             super.onPostExecute(result);
         }
-    }
-
-    private String downloadUrl(String strUrl) throws IOException {
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try {
-//            URL url = new URL("https://api.internationalshowtimes.com/v4/showtimes/?city_ids=11861");
-//            URL url = new URL("https://api.internationalshowtimes.com/v4/showtimes/?countries=IT");
-            URL url = new URL(strUrl);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("X-API-Key","9AmxQRqw3gltnlBKQvR9CgJDwUaC6DLg");
-            urlConnection.connect();
-            iStream = urlConnection.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-            StringBuffer sb = new StringBuffer();
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            data = sb.toString();
-            Log.d("downloadUrl", data.toString());
-            br.close();
-
-        } catch (Exception e) {
-            Log.d("Exception", e.toString());
-        } finally {
-            iStream.close();
-            urlConnection.disconnect();
-        }
-        return data;
     }
     public ArrayList<DataCinema> parseCinema(JSONObject jObject) {
         ArrayList<DataCinema> dataCinemas = new ArrayList<>();

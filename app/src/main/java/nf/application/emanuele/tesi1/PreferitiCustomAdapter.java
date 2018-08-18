@@ -26,10 +26,12 @@ import java.util.TimeZone;
 
 public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
     private Context context;
+    private String isFilm;
 
-    public PreferitiCustomAdapter (Context context, int textViewResoutceId, List<ArrayList<String>> objects){
+    public PreferitiCustomAdapter (Context context, int textViewResoutceId, List<ArrayList<String>> objects, String isFilm){
         super(context, textViewResoutceId, objects);
         this.context=context;
+        this.isFilm=isFilm;
     }
 
     @Override
@@ -70,15 +72,25 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
                         break;
                     case R.drawable.plus:
                         Date currentTime = Calendar.getInstance(Calendar.getInstance().getTimeZone()).getTime();
+                        Calendar calendar = Calendar.getInstance();
                         Date filmTime = new Date();
                         filmTime.setTime(currentTime.getTime());
-                        String[] dataFilm = copertina.get(0).split(":");
-                        filmTime.setHours(Integer.parseInt(dataFilm[0]));
-                        filmTime.setMinutes(Integer.parseInt(dataFilm[1]));
-//                        if (filmTime.after(currentTime)){
+                        if (isFilm.equals("0")){
+                            String[] temp = copertina.get(0).split(" ");
+                            String[] temp1 = temp[0].split("/");
+                            String[] dataFilm = temp[1].split(":");
+                            calendar.set(Integer.parseInt("20"+temp1[2]), Integer.parseInt(temp1[1])-1, Integer.parseInt(temp1[0]), Integer.parseInt(dataFilm[0]), Integer.parseInt(dataFilm[1]));
+                        }else{
+                            String[] temp = copertina.get(0).split("T");
+                            String[] temp1 = temp[0].split("-");
+                            String[] temp2 = temp[1].split(":");
+                            calendar.set(Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1])-1, Integer.parseInt(temp1[2]), Integer.parseInt(temp2[0]), Integer.parseInt(temp2[0]));
+                        }
+                        filmTime = calendar.getTime();
+                        //                        if (filmTime.after(currentTime)){
                         if (true) {
                             db = new PreferitiDB(context);
-                            result = db.insertPreferito(copertina.get(2), "1", copertina.get(0), copertina.get(1));
+                            result = db.insertPreferito(copertina.get(2), isFilm, copertina.get(0), copertina.get(1));
                             view.setImageResource(R.drawable.delete);
                             view.setTag(R.drawable.delete);
 
@@ -86,30 +98,57 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
                             TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
                             stackBuilder.addNextIntentWithParentStack(resultIntent);
                             PendingIntent resultPendingIntent = stackBuilder.getPendingIntent((int) result, PendingIntent.FLAG_UPDATE_CURRENT);
-                            long futureInMillis = filmTime.getTime()-7200000;
+                            long futureInMillis;
+                            if (isFilm.equals("0")){
+                                futureInMillis = filmTime.getTime()-604800000;
+                            }else{
+                                futureInMillis = filmTime.getTime()-7200000;
+                            }
                             Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                             Notification notification;
                             Intent notificationIntent = new Intent(context, NotificationPublisher.class);
                             notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, (int) result);
                             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                             if (futureInMillis-currentTime.getTime()<0){
-                                notification = new Notification.Builder(context)
-                                        .setContentIntent(resultPendingIntent)
-                                        .setContentText("Affrettati, "+copertina.get(2)+" inizierà tra meno di due ore a "+copertina.get(1))
-                                        .setContentTitle(copertina.get(2))
-                                        .setSound(sound)
-                                        .setSmallIcon(R.drawable.ticket)
-                                        .setStyle(new Notification.BigTextStyle().bigText("Affrettati, "+copertina.get(2)+" inizierà tra meno di due ore a "+copertina.get(1)))
-                                        .build();
+                                if (isFilm.equals("0")){
+                                    notification = new Notification.Builder(context)
+                                            .setContentIntent(resultPendingIntent)
+                                            .setContentTitle(copertina.get(2))
+                                            .setSound(sound)
+                                            .setSmallIcon(R.drawable.ticket)
+                                            .setContentText("Affrettati, "+copertina.get(2)+" inizierà tra meno di una settimana a "+copertina.get(1))
+                                            .setStyle(new Notification.BigTextStyle().bigText("Affrettati, "+copertina.get(2)+" inizierà tra meno di una settimana a "+copertina.get(1)))
+                                            .build();
+                                }else{
+                                    notification = new Notification.Builder(context)
+                                            .setContentIntent(resultPendingIntent)
+                                            .setContentTitle(copertina.get(2))
+                                            .setSound(sound)
+                                            .setSmallIcon(R.drawable.ticket)
+                                            .setContentText("Affrettati, "+copertina.get(2)+" inizierà tra meno di due ore a "+copertina.get(1))
+                                            .setStyle(new Notification.BigTextStyle().bigText("Affrettati, "+copertina.get(2)+" inizierà tra meno di due ore a "+copertina.get(1)))
+                                            .build();
+                                }
                             }else{
-                                notification = new Notification.Builder(context)
-                                        .setContentIntent(resultPendingIntent)
-                                        .setContentTitle(copertina.get(2))
-                                        .setSound(sound)
-                                        .setContentText("Preparati! Tra 2 ore devi essere a "+copertina.get(1)+" per vedere "+copertina.get(2)+"!")
-                                        .setSmallIcon(R.drawable.ticket)
-                                        .setStyle(new Notification.BigTextStyle().bigText("Preparati! Tra 2 ore devi essere a "+copertina.get(1)+" per vedere "+copertina.get(2)+"!"))
-                                        .build();
+                                if (isFilm.equals("0")){
+                                    notification = new Notification.Builder(context)
+                                            .setContentIntent(resultPendingIntent)
+                                            .setContentTitle(copertina.get(2))
+                                            .setSound(sound)
+                                            .setContentText("Preparati! Tra una settimana devi essere a "+copertina.get(1)+" per vedere "+copertina.get(2)+"!")
+                                            .setSmallIcon(R.drawable.ticket)
+                                            .setStyle(new Notification.BigTextStyle().bigText("Preparati! Tra una settimana devi essere a "+copertina.get(1)+" per vedere "+copertina.get(2)+"!"))
+                                            .build();
+                                }else {
+                                    notification = new Notification.Builder(context)
+                                            .setContentIntent(resultPendingIntent)
+                                            .setContentTitle(copertina.get(2))
+                                            .setSound(sound)
+                                            .setContentText("Preparati! Tra due ore devi essere a "+copertina.get(1)+" per vedere "+copertina.get(2)+"!")
+                                            .setSmallIcon(R.drawable.ticket)
+                                            .setStyle(new Notification.BigTextStyle().bigText("Preparati! Tra due ore devi essere a "+copertina.get(1)+" per vedere "+copertina.get(2)+"!"))
+                                            .build();
+                                }
                             }
                             notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int)result, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);

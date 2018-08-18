@@ -65,6 +65,11 @@
             android:label="bar">
         </activity>
 
+        <activity
+            android:name=".Preferiti"
+            android:label="preferiti">
+        </activity>
+
     </application>
 
 </manifest>

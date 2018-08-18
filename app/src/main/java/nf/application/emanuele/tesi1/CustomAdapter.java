@@ -41,8 +41,8 @@ public class CustomAdapter extends ArrayAdapter<Copertina> {
         Copertina copertina =getItem(position);
         viewHolder.name.setText("Titolo: "+copertina.name);
         viewHolder.genere.setText("Genere: "+copertina.genere);
-
-        new ImageDownloaderTask((ImageView)convertView.findViewById(R.id.imgLocandine)).execute(copertina.img.toString());
+        ImageDownloaderTask idt = new ImageDownloaderTask((ImageView)convertView.findViewById(R.id.imgLocandine));
+        idt.execute(copertina.img.toString());
 
         /*Bitmap bmp = null;
         try{
