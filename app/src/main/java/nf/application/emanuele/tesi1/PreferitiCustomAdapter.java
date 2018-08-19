@@ -44,7 +44,7 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
             viewHolder.nome = (TextView)convertView.findViewById(R.id.item_title_film);
             viewHolder.luogo=(TextView)convertView.findViewById(R.id.item_luogo_film);
             viewHolder.data = (TextView)convertView.findViewById(R.id.item_data_film);
-            //viewHolder.ora = (TextView)convertView.findViewById(R.id.item_ora_film);
+            viewHolder.ora = (TextView)convertView.findViewById(R.id.item_ora_film);
             viewHolder.img=(ImageView)convertView.findViewById(R.id.item_star_film);
             convertView.setTag(viewHolder);
         }else{
@@ -52,12 +52,19 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
         }
 
         final ArrayList<String> copertina =getItem(position);
-        String[] tempData = copertina.get(0).split(" ");
+        String[] tempData;
+        if (isFilm.equals("0")){
+            tempData = copertina.get(0).split(" ");
+        }else {
+            tempData = copertina.get(0).split("T");
+            String[] t = tempData[1].split(":");
+            tempData[1] = t[0]+":"+t[1];
+        }
 
         viewHolder.nome.setText(copertina.get(2));
         viewHolder.luogo.setText("Dove: "+copertina.get(1));
         viewHolder.data.setText("Data: "+tempData[0]);
-        //viewHolder.ora.setText("Ora: "+tempData[1]);
+        viewHolder.ora.setText("Ora: "+tempData[1]);
 
         viewHolder.img.setImageResource(R.drawable.delete);
         viewHolder.img.setTag(R.drawable.delete);

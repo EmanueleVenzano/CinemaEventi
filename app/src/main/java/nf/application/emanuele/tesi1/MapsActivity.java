@@ -134,6 +134,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
             }
         } else {
+            MyApplication myApplication = (MyApplication) this.getApplication();
+            ArrayList<DataCinema> dataCinema = myApplication.getDataInfo().cinemas;
             Cinemas c = new Cinemas();
             LatLng centered = new LatLng(44.416899, 8.917900);
             for (int i = 0; i < c.cinemas.size(); i++) {

@@ -111,7 +111,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     case R.drawable.friends:
                         img_selected.setImageResource(R.drawable.calendar);
                         img_selected.setTag(R.drawable.calendar);
-                        result = db.deletePreferito(film, cinema, childText);
+                        result = db.deletePreferito(film, cinema, dataShowTimes.getStart());
                         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                         notificationManager.cancel((int) result);
                         break;
@@ -124,7 +124,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         if (true) {
                             img_selected.setImageResource(R.drawable.friends);
                             img_selected.setTag(R.drawable.friends);
-                            result = db.insertPreferito(film, "1", childText, cinema);
+                            result = db.insertPreferito(film, "1", dataShowTimes.getStart(), cinema);
                             Intent resultIntent = new Intent(context, MainActivity.class);
                             TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
                             taskStackBuilder.addNextIntentWithParentStack(resultIntent);
