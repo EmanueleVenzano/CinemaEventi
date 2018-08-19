@@ -24,18 +24,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FilmCustomAdapter extends ArrayAdapter<ArrayList<String>> {
+public class FilmCustomAdapter extends ArrayAdapter<String> {
     private Context context;
     private List<ArrayList<String>> cinemas;
     private ArrayList<ArrayList<DataShowTimes>> dataShowTimes;
     private String film;
+    private List<String> giorni;
 
-    public FilmCustomAdapter (Context context, int textViewResourceId, List<ArrayList<String>> cinemas, ArrayList<ArrayList<DataShowTimes>> dataShowTimes, String film){
-        super(context, textViewResourceId, cinemas);
+    public FilmCustomAdapter (Context context, int textViewResourceId, List<ArrayList<String>> cinemas, List<String> giorni, ArrayList<ArrayList<DataShowTimes>> dataShowTimes, String film){
+        super(context, textViewResourceId, giorni);
         this.context = context;
         this.cinemas = cinemas;
         this.dataShowTimes = dataShowTimes;
         this.film = film;
+        this.giorni = giorni;
     }
 
     @Override
@@ -45,50 +47,44 @@ public class FilmCustomAdapter extends ArrayAdapter<ArrayList<String>> {
             LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.proiezioni_listview, null);
             viewHolder = new ViewHolder();
-            viewHolder.cinema = (TextView)convertView.findViewById(R.id.nomeCinema);
-            viewHolder.button = (Button) convertView.findViewById(R.id.bottoneCinema);
+            viewHolder.giorno = (TextView)convertView.findViewById(R.id.nomeGiorno);
             viewHolder.expandableListView = (ExpandableListView)convertView.findViewById(R.id.proiezioniExpandableListView);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
-//        final String cinema = getItem(position).get(0);
-        viewHolder.cinema.setText(getItem(position).get(0));
-        viewHolder.button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent (context, MapsActivity.class);
-                intent.putExtra("cinema", getItem(position).get(0));
-                context.startActivity(intent);
-            }
-        });
-        ArrayList<ArrayList<DataShowTimes>> proiezioniPerGiorno = new ArrayList<>();
-        ArrayList<String> giorni = new ArrayList<>();
+        viewHolder.giorno.setText(getItem(position));
+        ArrayList<ArrayList<DataShowTimes>> proiezioniPerCinema = new ArrayList<>();
+        ArrayList<String> cinema = new ArrayList<>();
         for (int i = 0; i < dataShowTimes.get(position).size(); i++){
-            if (!dataShowTimes.get(position).get(i).getCinema_id().equals(getItem(position).get(1))) continue;
-            String[] data = dataShowTimes.get(position).get(i).getStart().split("T");
-            int pos = giorni.indexOf(data[0]);
-            if (pos==-1){
-                giorni.add(data[0]);
-                proiezioniPerGiorno.add(new ArrayList<DataShowTimes>());
-                pos = proiezioniPerGiorno.size()-1;
+//            if (!dataShowTimes.get(position).get(i).getCinema_id().equals(getItem(position).get(1))) continue;
+            String cinema_name="";
+            for (int j=0; j<cinemas.size(); j++){
+                if (cinemas.get(j).get(1).equals(dataShowTimes.get(position).get(i).getCinema_id())){
+                    cinema_name = cinemas.get(j).get(0);
+                    break;
+                }
             }
-            proiezioniPerGiorno.get(pos).add(dataShowTimes.get(position).get(i));
+            int pos = cinema.indexOf(cinema_name);
+            if (pos==-1){
+                cinema.add(cinema_name);
+                proiezioniPerCinema.add(new ArrayList<DataShowTimes>());
+                pos = proiezioniPerCinema.size()-1;
+            }
+            proiezioniPerCinema.get(pos).add(dataShowTimes.get(position).get(i));
         }
-        ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, giorni, proiezioniPerGiorno, getItem(position).get(0), film);
+        ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, cinema, proiezioniPerCinema, film);
         viewHolder.expandableListView.setAdapter(listAdapter);
         return convertView;
     }
 
     private class ViewHolder {
-        public TextView cinema;
+        public TextView giorno;
         public ExpandableListView expandableListView;
-        public Button button;
 
         public ViewHolder(){
-            cinema = null;
+            giorno = null;
             expandableListView = null;
-            button = null;
         }
     }
 }

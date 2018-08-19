@@ -69,7 +69,7 @@
                 android:src="@android:drawable/star_big_off" />
         </RelativeLayout>
     </LinearLayout>
-    <TextView
+    <Button
         android:id="@+id/proiezioneLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -77,5 +77,5 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="85dp"
         android:textColor="#00bfff"
-        android:text="Lingua: ita" />
+        android:text="Prenota subito!" />
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Locandine extends Fragment implements AdapterView.OnItemClickListener {
-    private ListView itemsListView;
+    private GridView itemsGridView;
     private TextView titleTextView;
     private List<Copertina> films = new LinkedList();
     DataInfo dataInfo;
@@ -33,10 +34,10 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
         MyApplication myApplication = (MyApplication)getActivity().getApplication();
         dataInfo = myApplication.getDataInfo();
 
-        itemsListView = (ListView) view.findViewById(R.id.itemsListView);
-        titleTextView = (TextView) view.findViewById(R.id.titleTextView);
-        itemsListView.setOnItemClickListener(this);
-        titleTextView.setText("Cerca film");
+        itemsGridView = (GridView) view.findViewById(R.id.itemsListView);
+        //titleTextView = (TextView) view.findViewById(R.id.titleTextView);
+        itemsGridView.setOnItemClickListener(this);
+        //titleTextView.setText("Cerca film");
 
         for (int i=0; i<dataInfo.films.size(); i++){
             Copertina temp = new Copertina();
@@ -48,31 +49,9 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
             }
             films.add(temp);
         }
-        /*Cinemas c = new Cinemas();
-        for (int i=0; i< c.cinemas.size(); i++){
-            for (int j=0; j<c.cinemas.get(i).films.size(); j++){
-                int controller=0;
-                for (int k=0; k<films.size(); k++){
-                    if (films.get(k).name==c.cinemas.get(i).films.get(j).Titolo){
-                        controller=1; break;
-                    }
-                }
-                if (controller == 0){
-                    Copertina temp = new Copertina();
-                    temp.name = c.cinemas.get(i).films.get(j).Titolo;
-                    temp.genere=c.cinemas.get(i).films.get(j).genere;
-                    try {
-                        temp.img = new URL(c.cinemas.get(i).films.get(j).immagine);
-                    }catch (MalformedURLException e){
-                        e.printStackTrace();
-                    }
-                    films.add(temp);
-                }
-            }
-        }
-*/
+
         CustomAdapter adapter = new CustomAdapter(Locandine.this.getContext(), R.layout.items_listview, films);
-        itemsListView.setAdapter(adapter);
+        itemsGridView.setAdapter(adapter);
 
         return view;
     }

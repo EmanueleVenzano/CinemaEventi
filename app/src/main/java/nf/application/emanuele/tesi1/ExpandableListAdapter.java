@@ -41,19 +41,23 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> listDataHeader;
     private ArrayList<ArrayList<DataShowTimes>> listDataChild;
     String film;
-    String cinema;
 
-    public ExpandableListAdapter (Context context, List<String> listDataHeader, ArrayList<ArrayList<DataShowTimes>> listDataChild, String cinema, String film) {
+    public ExpandableListAdapter (Context context, List<String> listDataHeader, ArrayList<ArrayList<DataShowTimes>> listDataChild, String film) {
         this.context = context;
         this.listDataChild = listDataChild;
         this.listDataHeader = listDataHeader;
         this.film = film;
-        this.cinema = cinema;
+    }
+
+    public String getChildH (int groupPosition, int childPosition) {
+        String[] temp = this.listDataChild.get(groupPosition).get(childPosition).getStart().split("T");
+        String[] temp1 = temp[1].split(":");
+        return temp1[0]+":"+temp1[1];
     }
 
     @Override
-    public Object getChild (int groupPosition, int childPosition) {
-        return this.listDataChild.get(groupPosition).get(childPosition).getStart();
+    public Object getChild (int groupPosition, int childPosition){
+        return this.listDataChild.get(groupPosition).get(childPosition);
     }
 
     @Override
@@ -64,13 +68,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView (final int groupPosition, final int childPosition,
                               boolean isLastChild, View convertView, final ViewGroup parent) {
-        final String childText = (String) getChild(groupPosition, childPosition);
+        final String childText = (String) getChildH(groupPosition, childPosition);
         if(convertView==null) {
             LayoutInflater infalInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.proiezione_listview, null);
         }
         final ImageView img_selected = (ImageView) convertView.findViewById(R.id.ratingBar);
-
+        final String cinema = (String)getGroup(groupPosition);
+        final DataShowTimes dataShowTimes = (DataShowTimes)getChild(groupPosition, childPosition);
         PreferitiDB db = new PreferitiDB(context);
         final ArrayList<ArrayList<String>> infoPreferito = db.getPreferito(film);
         ArrayList<String> preferitiLuogo = new ArrayList<>();
@@ -79,7 +84,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             preferitiLuogo.add(infoPreferito.get(i).get(1));
             preferitiOrario.add(infoPreferito.get(i).get(0));
         }
-
         boolean pippo = false;
         for (int i=0; i<infoPreferito.size(); i++) {
             if(cinema.equals(preferitiLuogo.get(i)) && childText.equals(preferitiOrario.get(i))) {
@@ -95,7 +99,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             img_selected.setImageResource(R.drawable.calendar);
             img_selected.setTag(R.drawable.calendar);
         }
-        String[] temp = childText.split("T");
+        String[] temp = dataShowTimes.getStart().split("T");
         final String[] temp1 = temp[0].split("-");
         final String[] temp2 = temp[1].split(":");
         img_selected.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +124,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         if (true) {
                             img_selected.setImageResource(R.drawable.friends);
                             img_selected.setTag(R.drawable.friends);
-                            result = db.insertPreferito(film, "1", childText, listDataHeader.get(groupPosition));
+                            result = db.insertPreferito(film, "1", childText, cinema);
                             Intent resultIntent = new Intent(context, MainActivity.class);
                             TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
                             taskStackBuilder.addNextIntentWithParentStack(resultIntent);
@@ -163,26 +167,26 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         });
 
         TextView orario = (TextView) convertView.findViewById(R.id.proiezioneOrario);
-        orario.setText(temp2[0]+":"+temp2[1]);
+        orario.setText(childText);
         TextView lingua = (TextView) convertView.findViewById(R.id.proiezioneLingua);
-        if (listDataChild.get(groupPosition).get(childPosition).getLanguage()=="null"){
+        if (dataShowTimes.getLanguage()=="null"){
             lingua.setText(Html.fromHtml("<b>Lingua: </b>"+"ita"));
         }else{
-            lingua.setText(Html.fromHtml("<b>Lingua: </b>" +listDataChild.get(groupPosition).get(childPosition).getLanguage()));
+            lingua.setText(Html.fromHtml("<b>Lingua: </b>" +dataShowTimes.getLanguage()));
         }
         TextView sub = (TextView) convertView.findViewById(R.id.proiezioneSub);
-        if (listDataChild.get(groupPosition).get(childPosition).getSubtitle()=="null"){
+        if (dataShowTimes.getSubtitle()=="null"){
             sub.setText(Html.fromHtml("<b>Sub: </b>"+"ita"));
         }else{
-            sub.setText(Html.fromHtml("<b>Sub: </b>" +listDataChild.get(groupPosition).get(childPosition).getSubtitle()));
+            sub.setText(Html.fromHtml("<b>Sub: </b>" +dataShowTimes.getSubtitle()));
         }
         TextView sala = (TextView) convertView.findViewById(R.id.proiezioneSala);
-        sala.setText(Html.fromHtml("<b>Sala: </b>"+listDataChild.get(groupPosition).get(childPosition).getAuditorium()));
+        sala.setText(Html.fromHtml("<b>Sala: </b>"+dataShowTimes.getAuditorium()));
         String type = "";
-        if (listDataChild.get(groupPosition).get(childPosition).isIs3D()){
+        if (dataShowTimes.isIs3D()){
             type = "3D";
         }
-        if (listDataChild.get(groupPosition).get(childPosition).isIMax()){
+        if (dataShowTimes.isIMax()){
             if (!type.equals("")){
                 type+=" ";
             }
@@ -192,11 +196,14 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             TextView typeP = (TextView) convertView.findViewById(R.id.proiezioneType);
             typeP.setText(Html.fromHtml("<b>"+type+"</b>"));
         }
-        TextView link = (TextView) convertView.findViewById(R.id.proiezioneLink);
-        SpannableString content = new SpannableString(listDataChild.get(groupPosition).get(childPosition).getLink());
-        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        link.setText(content);
-
+        Button button = (Button) convertView.findViewById(R.id.proiezioneLink);
+        button. setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(dataShowTimes.getLink()));
+                context.startActivity(browserIntent);
+            }
+        });
         //TextView txtListChild = (TextView) convertView.findViewById(R.id.orario);
         //txtListChild.setText(childText);
 
@@ -230,23 +237,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             LayoutInflater infalInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.proiezione_giorno_listview, null);
         }
-        TextView giorno = (TextView) convertView.findViewById(R.id.proiezioneGiorno);
-        giorno.setTypeface(null, Typeface.BOLD);
-        String[] dataTime = headerTitle.split("-");
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Integer.parseInt(dataTime[0]), Integer.parseInt(dataTime[1])-1, Integer.parseInt(dataTime[2]));
-        Date date = calendar.getTime();
-        int day = date.getDay();
-        switch (day){
-            case 0: giorno.setText("Domenica"); break;
-            case 1: giorno.setText("Lunedì"); break;
-            case 2: giorno.setText("Martedì"); break;
-            case 3: giorno.setText("Mercoledì"); break;
-            case 4: giorno.setText("Giovedì"); break;
-            case 5: giorno.setText("Venerdì"); break;
-            case 6: giorno.setText("Sabato"); break;
-            default: giorno.setText("Invalid"); break;
-        }
+        TextView cinema = (TextView) convertView.findViewById(R.id.proiezioneCinema);
+        cinema.setText(headerTitle);
+        Button button = (Button) convertView.findViewById(R.id.bottoneCinema);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent (context, MapsActivity.class);
+                intent.putExtra("cinema", headerTitle);
+                context.startActivity(intent);
+            }
+        });
         //ExpandableListView eLV = (ExpandableListView) parent;
         //eLV.expandGroup(groupPosition);
         convertView.setOnClickListener(new View.OnClickListener() {

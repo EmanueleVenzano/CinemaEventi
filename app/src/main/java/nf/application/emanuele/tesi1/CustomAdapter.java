@@ -29,18 +29,23 @@ public class CustomAdapter extends ArrayAdapter<Copertina> {
         ViewHolder viewHolder = null;
         if (convertView==null){
             LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.items_listview, null);
+            try {
+                convertView = inflater.inflate(R.layout.items_listview, parent, false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            convertView.setTag(R.id.imgLocandine, convertView.findViewById(R.id.imgLocandine));
             viewHolder = new ViewHolder();
-            viewHolder.name = (TextView)convertView.findViewById(R.id.titleLocandine);
-            viewHolder.genere=(TextView)convertView.findViewById(R.id.genereLocandine);
-            viewHolder.img = (ImageView)convertView.findViewById(R.id.imgLocandine);
+            //viewHolder.name = (TextView)convertView.findViewById(R.id.titleLocandine);
+            //viewHolder.genere=(TextView)convertView.findViewById(R.id.genereLocandine);
+            viewHolder.img = (ImageView) convertView.getTag(R.id.imgLocandine);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
         Copertina copertina =getItem(position);
-        viewHolder.name.setText("Titolo: "+copertina.name);
-        viewHolder.genere.setText("Genere: "+copertina.genere);
+        //viewHolder.name.setText("Titolo: "+copertina.name);
+        //viewHolder.genere.setText("Genere: "+copertina.genere);
 
         if(copertina.img==null) {
             Drawable placeholder = viewHolder.img.getContext().getResources().getDrawable(R.drawable.bho1);

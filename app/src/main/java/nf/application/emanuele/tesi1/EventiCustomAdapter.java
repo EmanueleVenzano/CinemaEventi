@@ -42,15 +42,21 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
             viewHolder.titolo = (TextView)convertView.findViewById(R.id.item_title_evento);
             viewHolder.luogo = (TextView)convertView.findViewById(R.id.item_luogo_evento);
             viewHolder.data = (TextView)convertView.findViewById(R.id.item_data_evento);
+            viewHolder.ora = (TextView)convertView.findViewById(R.id.item_ora_evento);
             viewHolder.img = (ImageView)convertView.findViewById(R.id.ratingBar);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
         final ArrayList<String> copertina = getItem(position);
+
+        String[] tempData = copertina.get(0).split(" ");
+
         viewHolder.titolo.setText(copertina.get(2));
         viewHolder.luogo.setText("Dove: "+copertina.get(1));
-        viewHolder.data.setText("Quando: "+copertina.get(0));
+        viewHolder.data.setText("Data: "+tempData[0]);
+        viewHolder.ora.setText("Ora: "+tempData[1]);
+
         PreferitiDB db = new PreferitiDB(context);
         final ArrayList<ArrayList<String>> infoPreferito = db.getPreferito(copertina.get(2));
         ArrayList<String> preferitiLuogo = new ArrayList<>();
@@ -154,12 +160,14 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
         public TextView titolo;
         public TextView luogo;
         public TextView data;
+        public TextView ora;
         public ImageView img;
 
         public ViewHolder(){
             titolo=null;
             luogo=null;
             data=null;
+            ora=null;
             img=null;
         }
     }

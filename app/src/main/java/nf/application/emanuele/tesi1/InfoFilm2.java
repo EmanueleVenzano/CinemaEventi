@@ -22,6 +22,8 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,11 +31,12 @@ public class InfoFilm2 extends Fragment {
 
     private ImageView imgFilm;
     private TextView titleFilm;
-    private TextView genereFilm;
+/*    private TextView genereFilm;
     private TextView durataFilm;
     private TextView descrizioneFilm;
-    ListView explistView;
+*/  ListView explistView;
     List<ArrayList<String>> cinema;
+    List<String> giorni;
     ArrayList<ArrayList<DataShowTimes>> showtimes;
     String name = "";
 
@@ -52,33 +55,75 @@ public class InfoFilm2 extends Fragment {
         imgFilm = (ImageView)view.findViewById(R.id.imgFilm);
         titleFilm = (TextView)view.findViewById(R.id.titleFilm);
         explistView = (ListView)view.findViewById(R.id.proiezioniListView);
-        cinema = new ArrayList<ArrayList<String>>();
+
+        cinema = new ArrayList<>();
+        giorni = new ArrayList<>();
+
         prepareListData();
-        FilmCustomAdapter listAdapter = new FilmCustomAdapter(InfoFilm2.this.getContext(), R.layout.proiezioni_listview, cinema, showtimes, name);
+        giorni = convertDays(giorni);
+        FilmCustomAdapter listAdapter = new FilmCustomAdapter(InfoFilm2.this.getContext(), R.layout.proiezioni_listview, cinema, giorni, showtimes, name);
         explistView.setAdapter(listAdapter);
         return view;
     }
 
+    public List<String> convertDays(List<String> actual){
+        List<String> temp = new ArrayList<>();
+        for (int k=0; k<actual.size()-1; k++){
+            int i=k;
+            String[] b = actual.get(i).split("-");
+            Calendar bigger = Calendar.getInstance();
+            bigger.set(Integer.parseInt(b[0]), Integer.parseInt(b[1]), Integer.parseInt(b[2]));
+            for (int j=i+1; j<actual.size(); j++){
+                String[] l = actual.get(j).split("-");
+                Calendar little = Calendar.getInstance();
+                little.set(Integer.parseInt(l[0]), Integer.parseInt(l[1]), Integer.parseInt(l[2]));
+                if (bigger.after(little)){
+                    ArrayList<DataShowTimes> tempS = showtimes.get(i);
+                    showtimes.set(i, showtimes.get(j));
+                    showtimes.set(j, tempS);
+                    String tempD =  actual.get(i);
+                    actual.set(i, actual.get(j));
+                    actual.set(j, tempD);
+                    i=j;
+                }
+            }
+        }
+        for (String headerTitle: actual){
+            String[] dataTime = headerTitle.split("-");
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Integer.parseInt(dataTime[0]), Integer.parseInt(dataTime[1])-1, Integer.parseInt(dataTime[2]));
+            Date date = calendar.getTime();
+            int day = date.getDay();
+            switch (day){
+                case 0: temp.add("Domenica"); break;
+                case 1: temp.add("Lunedì"); break;
+                case 2: temp.add("Martedì"); break;
+                case 3: temp.add("Mercoledì"); break;
+                case 4: temp.add("Giovedì"); break;
+                case 5: temp.add("Venerdì"); break;
+                case 6: temp.add("Sabato"); break;
+                default: temp.add("Invalid"); break;
+            }
+        }
+        return temp;
+    }
 
     public void prepareListData () {
         MyApplication myApplication = (MyApplication) getActivity().getApplication();
         DataInfo dataInfo = myApplication.getDataInfo();
         String urlToString = "";
         showtimes = new ArrayList<>();
-        for (int i = 0; i < dataInfo.films.size(); i++) {
-            if (dataInfo.films.get(i).getTitle().equals(name)) {
+        for (int i=0; i<dataInfo.films.size(); i++){
+            if (dataInfo.films.get(i).getTitle().equals(name)){
                 urlToString = dataInfo.films.get(i).getImg();
-                String movie_id = dataInfo.films.get(i).getId();
-                for (int j = 0; j < dataInfo.showTimes.size(); j++){
+                for (int j=0; j<dataInfo.showTimes.size(); j++){
                     DataShowTimes dataShowTimes = dataInfo.showTimes.get(j);
-                    if (!movie_id.equals(dataShowTimes.getMovie_id())) continue;
-                    String cinema_id = dataShowTimes.getCinema_id();
                     String cinema_name = "";
-                    for (int k = 0; k < dataInfo.cinemas.size(); k++){
-                        if (dataInfo.cinemas.get(k).getId().equals(cinema_id)){
-                            cinema_name = dataInfo.cinemas.get(k).getName();
-                            int l = 0;
-                            for (int m = 0; m < cinema.size(); m++){
+                    for (int k=0; k<dataInfo.cinemas.size(); k++){
+                        if (dataInfo.cinemas.get(k).getId().equals(dataShowTimes.getCinema_id())){
+                            cinema_name=dataInfo.cinemas.get(k).getName();
+                            int l=0;
+                            for (int m=0; m<cinema.size(); m++){
                                 if (cinema.get(m).get(0).equals(cinema_name)){
                                     l=1;
                                     break;
@@ -87,28 +132,35 @@ public class InfoFilm2 extends Fragment {
                             if (l==0){
                                 ArrayList<String> temp = new ArrayList<>();
                                 temp.add(cinema_name);
-                                temp.add(cinema_id);
+                                temp.add(dataShowTimes.getCinema_id());
                                 cinema.add(temp);
                             }
+                        }
+                    }
+                    String[] dataTime = dataShowTimes.getStart().split("T");
+                    int position=-1;
+                    for (int k=0; k<giorni.size(); k++){
+                        if (giorni.get(k).equals(dataTime[0])){
+                            position=k;
                             break;
                         }
                     }
-                    int position = -1;
-                    for (int k = 0; k < cinema.size(); k++){
-                        if (cinema.get(k).get(0).equals(cinema_name)){
-                            position = k;
-                            break;
-                        }
+                    if (position==-1) {
+                        giorni.add(dataTime[0]);
+                        position=giorni.size()-1;
                     }
-                    while (position>=showtimes.size()){
-                        showtimes.add(new ArrayList<DataShowTimes>());
-                    }
+                    while(position>=showtimes.size()) showtimes.add(new ArrayList<DataShowTimes>());
                     showtimes.get(position).add(dataShowTimes);
                 }
                 break;
             }
         }
-        new InfoFilm2.ImageDownloaderTask(imgFilm).execute(urlToString);
+        if (urlToString == null) {
+            Drawable placeholder = imgFilm.getContext().getResources().getDrawable(R.drawable.bho1);
+            imgFilm.setImageDrawable(placeholder);
+        }else{
+            new InfoFilm2.ImageDownloaderTask(imgFilm).execute(urlToString);
+        }
         titleFilm.setText(Html.fromHtml("<b>Titolo: </b>" + name));
     }
     private class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {

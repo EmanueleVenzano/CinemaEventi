@@ -5,18 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <nf.application.emanuele.tesi1.DynamicRectangularLayout
         android:id="@+id/imgLocandine"
-        android:layout_width="143dp"
-        android:layout_height="190dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="5dp"
-        android:contentDescription="@string/cast_expanded_controller_background_image"
-        android:text="" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:paddingLeft="2.5dp"
+        android:paddingRight="2.5dp"
+        android:layout_marginTop="2.5dp"
+        android:layout_marginBottom="2.5dp"/>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/titleLocandine"
         android:layout_width="204dp"
         android:layout_height="wrap_content"
@@ -27,7 +26,7 @@
         android:text=""
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/genereLocandine"
@@ -37,5 +36,6 @@
         android:layout_alignStart="@+id/titleLocandine"
         android:layout_marginTop="68dp"
         android:text=""
-        android:textSize="20sp" />
+        android:textSize="20sp"/>-->
+
 </RelativeLayout>

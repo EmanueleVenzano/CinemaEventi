@@ -42,4 +42,10 @@
         android:layout_height="wrap_content"
         android:text=""/>
 
+    <TextView
+        android:id="@+id/item_ora_evento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""/>
+
 </LinearLayout>

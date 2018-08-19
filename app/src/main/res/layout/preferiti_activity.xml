@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".Preferiti">
 
-    <TextView
+    <!--<TextView
         android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="#FFAC83"
+        android:background="#FF4500"
         android:padding="7dp"
         android:text="I tuoi preferiti"
         android:textColor="@android:color/black"
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:layout_below="@id/titleTextView"
-        android:background="@android:color/black" />
+        android:background="@android:color/black" />-->
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
@@ -39,8 +39,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
-        app:itemBackground="@color/colorPrimary"
-        app:itemTextColor="@drawable/nav_item_color_state"
         app:menu="@menu/navigation" />
 
     <android.support.design.widget.TabLayout
@@ -48,9 +46,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/divider"
-        android:background="?attr/colorPrimary"
         android:elevation="6dp"
+        app:tabIndicatorColor="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         app:tabMaxWidth="0dp"/>
 

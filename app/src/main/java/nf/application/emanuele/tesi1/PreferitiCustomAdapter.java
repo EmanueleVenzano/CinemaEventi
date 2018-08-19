@@ -43,16 +43,22 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
             viewHolder = new ViewHolder();
             viewHolder.nome = (TextView)convertView.findViewById(R.id.item_title_film);
             viewHolder.luogo=(TextView)convertView.findViewById(R.id.item_luogo_film);
-            viewHolder.orario = (TextView)convertView.findViewById(R.id.item_orario_film);
+            viewHolder.data = (TextView)convertView.findViewById(R.id.item_data_film);
+            //viewHolder.ora = (TextView)convertView.findViewById(R.id.item_ora_film);
             viewHolder.img=(ImageView)convertView.findViewById(R.id.item_star_film);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
         final ArrayList<String> copertina =getItem(position);
+        String[] tempData = copertina.get(0).split(" ");
+
         viewHolder.nome.setText(copertina.get(2));
-        viewHolder.luogo.setText(copertina.get(1));
-        viewHolder.orario.setText(copertina.get(0));
+        viewHolder.luogo.setText("Dove: "+copertina.get(1));
+        viewHolder.data.setText("Data: "+tempData[0]);
+        //viewHolder.ora.setText("Ora: "+tempData[1]);
+
         viewHolder.img.setImageResource(R.drawable.delete);
         viewHolder.img.setTag(R.drawable.delete);
         viewHolder.img.setOnClickListener(new View.OnClickListener() {
@@ -168,13 +174,15 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
     private class ViewHolder {
         public TextView nome;
         public TextView luogo;
-        public TextView orario;
+        public TextView data;
+        public TextView ora;
         public ImageView img;
 
         public ViewHolder(){
             nome=null;
             luogo=null;
-            orario=null;
+            data=null;
+            ora=null;
             img=null;
         }
     }

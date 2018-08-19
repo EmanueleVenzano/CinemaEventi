@@ -16,6 +16,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
     String param;
     String warning;
     int flag = 0;
+    BottomNavigationView bottomNavigationView = null;
 
     @Override
     public void onCreate (Bundle savedInstanceState) {
@@ -25,8 +26,8 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
 
         getIntent().getFlags();
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
-        bottomNavigationView.setItemIconTintList(null);
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
+        //bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -48,6 +49,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         break;
                     case R.id.navigation_eventi:
+                        next=3;
                         Toast.makeText(cercaFilm.this, "Eventi", Toast.LENGTH_SHORT).show();
                         selectedFragment = EventiFragment.newInstance();
                         break;
@@ -114,6 +116,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                 }
             case 3:
                 try {
+                    bottomNavigationView.getMenu().findItem(R.id.navigation_eventi).setChecked(true);
                     FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_fragment, new EventiFragment());
                     transaction.addToBackStack(null);
