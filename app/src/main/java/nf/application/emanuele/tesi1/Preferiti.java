@@ -49,6 +49,7 @@ public class Preferiti extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
         bottomNavigationView.getMenu().findItem(R.id.navigation_preferiti).setChecked(true);
+        BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
         //bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -56,9 +57,12 @@ public class Preferiti extends AppCompatActivity {
                 Intent intent = null;
                 int flag = 0;
                 switch (item.getItemId()) {
-                    /*case R.id.navigation_mappe:
-                        Toast.makeText(BottomBar.this, "Mappe", Toast.LENGTH_SHORT).show();
-                        break;*/
+                    case R.id.navigation_mappe:
+                        Toast.makeText(Preferiti.this, "Mappe", Toast.LENGTH_SHORT).show();
+                        Intent intent2 = new Intent(Preferiti.this, MapsActivity.class);
+                        intent2.putExtra("name", " ");
+                        startActivity(intent2);
+                        break;
                     case R.id.navigation_film:
                         Toast.makeText(Preferiti.this, "Film", Toast.LENGTH_SHORT).show();
                         intent = new Intent (Preferiti.this, cercaFilm.class);

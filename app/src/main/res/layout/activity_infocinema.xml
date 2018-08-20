@@ -1,47 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ImageView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imageCinema" />
+        android:id="@+id/nameCinema" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/nameCinema"
-        android:layout_below="@id/imageCinema" />
+        android:id="@+id/streetCinema"
+        android:layout_below="@id/nameCinema" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/nameCinema"
+        android:layout_below="@id/streetCinema"
         android:id="@+id/descriptionCinema"/>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/descriptionCinema">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:id="@+id/cityCinema"
+        android:layout_below="@id/descriptionCinema" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal">
+
+        <ImageButton
             android:id="@+id/buttonDriveCinema"
-            android:text="A" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/button_shape"
+            android:src="@drawable/ic_car" />
+
+        <ImageButton
             android:id="@+id/buttonTransitCinema"
-            android:text="T" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="105dp"
+            android:layout_x="98dp"
+            android:layout_y="0dp"
+            android:background="@drawable/button_shape"
+            android:src="@drawable/ic_bus" />
+
+        <ImageButton
             android:id="@+id/buttonFootCinema"
-            android:text="W" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="105dp"
+            android:layout_x="198dp"
+            android:layout_y="0dp"
+            android:background="@drawable/button_shape"
+            android:src="@drawable/ic_walk" />
+
+        <ImageButton
             android:id="@+id/buttonBikeCinema"
-            android:text="B" />
-    </LinearLayout>
-</LinearLayout>
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="5dp"
+            android:layout_x="297dp"
+            android:layout_y="0dp"
+            android:background="@drawable/button_shape"
+            android:src="@drawable/ic_bike" />
+    </RelativeLayout>
+</RelativeLayout>

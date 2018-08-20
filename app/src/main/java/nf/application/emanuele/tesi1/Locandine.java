@@ -39,15 +39,19 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
         itemsGridView.setOnItemClickListener(this);
         //titleTextView.setText("Cerca film");
 
-        for (int i=0; i<dataInfo.films.size(); i++){
-            Copertina temp = new Copertina();
-            temp.name = dataInfo.films.get(i).getTitle();
-            try {
-                temp.img = new URL (dataInfo.films.get(i).getImg());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+        if(films.size()<1) {
+
+            for (int i = 0; i < dataInfo.films.size(); i++) {
+                Copertina temp = new Copertina();
+                temp.name = dataInfo.films.get(i).getTitle();
+                try {
+                    temp.img = new URL(dataInfo.films.get(i).getImg());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                films.add(temp);
             }
-            films.add(temp);
+
         }
 
         CustomAdapter adapter = new CustomAdapter(Locandine.this.getContext(), R.layout.items_listview, films);

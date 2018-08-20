@@ -2,33 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--<item
+    <item
         android:id="@+id/navigation_mappe"
         android:icon="@drawable/ic_globe"
         android:title="Mappa"
         android:enabled="true"
-        app:showAsAction="ifRoom"/>-->
+        app:showAsAction="always|withText"/>
 
     <item
         android:id="@+id/navigation_film"
         android:icon="@drawable/ic_film"
         android:title="Cerca Film"
         android:enabled="true"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always|withText"/>
 
     <item
         android:id="@+id/navigation_eventi"
         android:icon="@drawable/ic_event"
         android:title="Cerca Eventi"
         android:enabled="true"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always|withText"/>
 
     <item
         android:id="@+id/navigation_preferiti"
         android:icon="@drawable/ic_fav"
         android:enabled="true"
         android:title="Preferiti"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always|withText"/>
 
 
 </menu>

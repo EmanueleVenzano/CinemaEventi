@@ -3,62 +3,61 @@
     android:id="@+id/ScrollView01"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/imgFilm"
-            android:layout_width="332dp"
-            android:layout_height="196dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/titleFilm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imgFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"/>
+            <ImageView
+                android:id="@+id/imgFilm"
+                android:layout_width="170dp"
+                android:layout_height="210dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="15dp"/>
 
-        <!--<TextView
-            android:id="@+id/durataFilm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/titleFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"/>
+            <TextView
+                android:id="@+id/titleFilm"
+                android:layout_width="166dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/imgFilm"
+                android:layout_marginEnd="18dp"
+                android:textColor="@color/black"
+                android:textSize="30dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/genereFilm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/durataFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="13dp"
+            android:background="@android:color/darker_gray"/>
 
         <TextView
-            android:id="@+id/descrizioneFilm"
+            android:id="@+id/proiezioniFilm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/genereFilm"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"/>
--->
+            android:layout_alignStart="@+id/titleFilm"
+            android:layout_marginTop="13dp"
+            android:layout_marginStart="15dp"
+            android:text="Proiezioni:"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+
         <ListView
             android:id="@+id/proiezioniListView"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="0dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="0dp"
-            android:layout_below="@id/titleFilm"
-            android:background="@drawable/shape" />
+            android:layout_marginTop="4dp"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 </ScrollView>

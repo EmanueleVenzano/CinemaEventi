@@ -14,12 +14,13 @@
 
     <Button
         android:id="@+id/bottoneCinema"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="66dp"
+        android:layout_height="37dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="11dp"
-        android:layout_marginTop="12dp"
-        android:background="#FF0000"
-        android:text="Visita" />
+        android:layout_marginTop="23dp"
+        android:background="@drawable/button_shape"
+        android:text="Visita"
+        android:textStyle="italic"/>
 </RelativeLayout>

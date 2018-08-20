@@ -86,7 +86,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
         boolean pippo = false;
         for (int i=0; i<infoPreferito.size(); i++) {
-            if(cinema.equals(preferitiLuogo.get(i)) && childText.equals(preferitiOrario.get(i))) {
+            if(cinema.equals(preferitiLuogo.get(i)) && ((DataShowTimes) getChild(groupPosition, childPosition)).getStart().equals(preferitiOrario.get(i))) {
                 pippo=true;
                 break;
             }

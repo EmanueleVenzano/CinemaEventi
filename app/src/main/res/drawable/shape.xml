@@ -11,7 +11,7 @@
             </corners>
             <stroke
                 android:width="10dp"
-                android:color="@color/colorPrimary"/>
+                android:color="@color/colorAccent"/>
         </shape>
     </item>
 </layer-list>

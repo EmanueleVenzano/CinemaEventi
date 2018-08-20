@@ -75,6 +75,21 @@ public class FilmCustomAdapter extends ArrayAdapter<String> {
         }
         ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, cinema, proiezioniPerCinema, film);
         viewHolder.expandableListView.setAdapter(listAdapter);
+
+        viewHolder.expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+
+            }
+        });
+
+        viewHolder.expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+
+            }
+        });
+
         return convertView;
     }
 
@@ -87,4 +102,5 @@ public class FilmCustomAdapter extends ArrayAdapter<String> {
             expandableListView = null;
         }
     }
+
 }

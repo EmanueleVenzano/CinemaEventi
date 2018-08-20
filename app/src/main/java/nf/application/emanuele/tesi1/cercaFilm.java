@@ -26,47 +26,56 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
 
         getIntent().getFlags();
 
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
-        //bottomNavigationView.setItemIconTintList(null);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
-                Intent intent = null;
-                switch (item.getItemId()) {
-                    /*case R.id.navigation_mappe:
-                        Toast.makeText(BottomBar.this, "Mappe", Toast.LENGTH_SHORT).show();
-                        break;*/
-                    case R.id.navigation_film:
-                        Toast.makeText(cercaFilm.this, "Film", Toast.LENGTH_SHORT).show();
-                        selectedFragment = Locandine.newInstance();
-                        break;
-                    case R.id.navigation_preferiti:
-                        Toast.makeText(cercaFilm.this, "Preferiti", Toast.LENGTH_SHORT).show();
-                        flag=1;
-                        intent = new Intent (cercaFilm.this, Preferiti.class);
-                        intent.putExtra("warning1", "1");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        break;
-                    case R.id.navigation_eventi:
-                        next=3;
-                        Toast.makeText(cercaFilm.this, "Eventi", Toast.LENGTH_SHORT).show();
-                        selectedFragment = EventiFragment.newInstance();
-                        break;
-                }
-                if (flag==0) {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.main_fragment, selectedFragment);
-                    transaction.commit();
-                } else {
-                    startActivity(intent);
-                }
-                return true;
-            }
-        });
-
         warning = getIntent().getStringExtra("warning");
         String name = getIntent().getStringExtra("name");
+        if(name.equals("cinema")) {
+            next=4;
+            param=getIntent().getStringExtra("cinemaName");
+            onSobstitute(4);
+        } else {
+            bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
+            BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
+            //bottomNavigationView.setItemIconTintList(null);
+            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+                    Intent intent = null;
+                    switch (item.getItemId()) {
+                        case R.id.navigation_mappe:
+                            Toast.makeText(cercaFilm.this, "Mappe", Toast.LENGTH_SHORT).show();
+                            Intent intent2 = new Intent(cercaFilm.this, MapsActivity.class);
+                            intent2.putExtra("name", " ");
+                            startActivity(intent2);
+                            break;
+                        case R.id.navigation_film:
+                            Toast.makeText(cercaFilm.this, "Film", Toast.LENGTH_SHORT).show();
+                            selectedFragment = Locandine.newInstance();
+                            break;
+                        case R.id.navigation_preferiti:
+                            Toast.makeText(cercaFilm.this, "Preferiti", Toast.LENGTH_SHORT).show();
+                            flag=1;
+                            intent = new Intent (cercaFilm.this, Preferiti.class);
+                            intent.putExtra("warning1", "1");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            break;
+                        case R.id.navigation_eventi:
+                            next=3;
+                            Toast.makeText(cercaFilm.this, "Eventi", Toast.LENGTH_SHORT).show();
+                            selectedFragment = EventiFragment.newInstance();
+                            break;
+                    }
+                    if (flag==0) {
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.main_fragment, selectedFragment);
+                        transaction.commit();
+                    } else {
+                        startActivity(intent);
+                    }
+                    return true;
+                }
+            });
+        }
         if (name.equals("preferiti")){
             next=2;
             onSobstitute(2);
@@ -114,6 +123,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                break;
             case 3:
                 try {
                     bottomNavigationView.getMenu().findItem(R.id.navigation_eventi).setChecked(true);
@@ -125,6 +135,17 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                     e.printStackTrace();
                 }
                 break;
+            case 4:
+                try {
+                    FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.main_fragment, new InfoCinema());
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+
         }
     }
 

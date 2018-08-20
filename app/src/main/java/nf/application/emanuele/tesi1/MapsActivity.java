@@ -136,22 +136,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             MyApplication myApplication = (MyApplication) this.getApplication();
             ArrayList<DataCinema> dataCinema = myApplication.getDataInfo().cinemas;
-            Cinemas c = new Cinemas();
             LatLng centered = new LatLng(44.416899, 8.917900);
-            for (int i = 0; i < c.cinemas.size(); i++) {
-                CinemaDB db = new CinemaDB(this);
-                String name = c.cinemas.get(i).name;
-                Location location = db.getCinemaLocation(name);
-                if (location != null) {
-                    LatLng temp = new LatLng(location.getLatitude(), location.getLongitude());
-                    Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(temp)
-                    .title(name)
-                    .snippet(name));
-                    if (name.equals(center)) {
-                        centered = temp;
-                        marker.showInfoWindow();
-                    }
+            for (int i = 0; i <dataCinema.size(); i++) {
+                LatLng temp = new LatLng(Double.parseDouble(dataCinema.get(i).getLat()), Double.parseDouble(dataCinema.get(i).getLon()));
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(temp)
+                        .title(dataCinema.get(i).getName())
+                        .snippet(dataCinema.get(i).getName()));
+                if (dataCinema.get(i).getName().equals(center)) {
+                    centered = temp;
+                    marker.showInfoWindow();
                 }
             }
             mMap.setOnMarkerClickListener(this);
@@ -360,29 +354,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-
-        //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
-
-        //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-
-        //stop location updates
+        LatLng dest = MarkerPoints.get(1);
+        String url = getUrl(latLng, dest);
+        Log.d("onMapClick", url.toString());
+        FetchUrl FetchUrl = new FetchUrl();
+        FetchUrl.execute(url);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
-
     }
 
     @Override
@@ -460,7 +452,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public boolean onMarkerClick (Marker marker){
         Intent intent = new Intent(this, InfoCinema.class);
-        intent.putExtra("name", marker.getTitle());
+        intent.putExtra("name", "cinema");
+        intent.putExtra("cinemaName", marker.getTitle());
         startActivity(intent);
         return true;
     }

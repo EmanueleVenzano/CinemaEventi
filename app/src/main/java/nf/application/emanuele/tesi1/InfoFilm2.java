@@ -63,6 +63,19 @@ public class InfoFilm2 extends Fragment {
         giorni = convertDays(giorni);
         FilmCustomAdapter listAdapter = new FilmCustomAdapter(InfoFilm2.this.getContext(), R.layout.proiezioni_listview, cinema, giorni, showtimes, name);
         explistView.setAdapter(listAdapter);
+        FilmCustomAdapter listadp = (FilmCustomAdapter) explistView.getAdapter();
+        if (listadp != null) {
+            int totalHeight = 0;
+            for (int i = 0; i < listadp.getCount(); i++) {
+                View listItem = listadp.getView(i, null, explistView);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+            ViewGroup.LayoutParams params = explistView.getLayoutParams();
+            params.height = totalHeight + (explistView.getDividerHeight() * (listadp.getCount() - 1));
+            explistView.setLayoutParams(params);
+            explistView.requestLayout();
+        }
         return view;
     }
 
@@ -161,7 +174,7 @@ public class InfoFilm2 extends Fragment {
         }else{
             new InfoFilm2.ImageDownloaderTask(imgFilm).execute(urlToString);
         }
-        titleFilm.setText(Html.fromHtml("<b>Titolo: </b>" + name));
+        titleFilm.setText(name);
     }
     private class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
         private final WeakReference<ImageView> imageViewWeakReference;
