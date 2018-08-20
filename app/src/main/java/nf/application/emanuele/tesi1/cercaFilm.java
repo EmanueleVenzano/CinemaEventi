@@ -43,10 +43,11 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                     Intent intent = null;
                     switch (item.getItemId()) {
                         case R.id.navigation_mappe:
+                            flag=1;
                             Toast.makeText(cercaFilm.this, "Mappe", Toast.LENGTH_SHORT).show();
-                            Intent intent2 = new Intent(cercaFilm.this, MapsActivity.class);
-                            intent2.putExtra("name", " ");
-                            startActivity(intent2);
+                            intent = new Intent(cercaFilm.this, MapsActivity.class);
+                            intent.putExtra("name", " ");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             break;
                         case R.id.navigation_film:
                             Toast.makeText(cercaFilm.this, "Film", Toast.LENGTH_SHORT).show();
@@ -96,6 +97,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
         switch (next){
             case 0:
                 try {
+                    bottomNavigationView.getMenu().findItem(R.id.navigation_film).setChecked(true);
                     FragmentTransaction transaction = (FragmentTransaction) getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_fragment, new Locandine());
                     transaction.addToBackStack(null);

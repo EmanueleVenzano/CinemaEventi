@@ -244,6 +244,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent (context, MapsActivity.class);
+                intent.putExtra("flag", "1");
                 intent.putExtra("cinema", headerTitle);
                 context.startActivity(intent);
             }

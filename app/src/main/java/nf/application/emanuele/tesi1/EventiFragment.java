@@ -39,7 +39,7 @@ public class EventiFragment extends Fragment {
             String[] temp1 = dataTime[0].split("/");
             String[] temp2 = dataTime[1].split(":");
             Calendar movie = Calendar.getInstance();
-            movie.set(Integer.parseInt("20"+temp1[2]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[0]), Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]));
+            movie.set(Integer.parseInt("20"+temp1[2]), Integer.parseInt(temp1[1])-1, Integer.parseInt(temp1[0]), Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]));
             Calendar currentTime = Calendar.getInstance(Calendar.getInstance().getTimeZone());
             if(currentTime.after(movie)) {
                 PreferitiDB db = new PreferitiDB(getContext());

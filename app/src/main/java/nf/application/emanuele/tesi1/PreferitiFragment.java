@@ -24,6 +24,7 @@ public class PreferitiFragment extends Fragment {
         View v = inflater.inflate(R.layout.preferiti_fragment, container, false);
         PreferitiDB db = new PreferitiDB(getContext());
         infoPreferito = db.getAllFavourites("1");
+        deletePastEvents();
         listView=(ListView) v.findViewById(R.id.preferiti_listview);
 
         PreferitiCustomAdapter customAdapter = new PreferitiCustomAdapter(getContext(), R.layout.preferiti_items_listview, infoPreferito, "1");
@@ -37,7 +38,7 @@ public class PreferitiFragment extends Fragment {
             String[] temp1 = dataTime[0].split("-");
             String[] temp2 = dataTime[1].split(":");
             Calendar movie = Calendar.getInstance();
-            movie.set(Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[2]), Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]));
+            movie.set(Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1])-1, Integer.parseInt(temp1[2]), Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]));
             Calendar currentTime = Calendar.getInstance(Calendar.getInstance().getTimeZone());
             if(currentTime.after(movie)) {
                 PreferitiDB db = new PreferitiDB(getContext());

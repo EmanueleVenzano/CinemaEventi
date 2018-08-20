@@ -9,12 +9,17 @@ import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -55,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String goTo;
     String mode="";
     String center="";
+    String flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         // Initializing
         MarkerPoints = new ArrayList<>();
+
+        getIntent().getFlags();
+        if(getIntent().getStringExtra("flag")==null) {
+            flag="0";
+        } else {
+            flag=getIntent().getStringExtra("flag");
+        }
+
+        //------------------------------------------------------------------------------
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
+        bottomNavigationView.getMenu().findItem(R.id.navigation_mappe).setChecked(true);
+        BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
+        //bottomNavigationView.setItemIconTintList(null);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent = null;
+                int flag = 0;
+                switch (item.getItemId()) {
+                    case R.id.navigation_mappe:
+                        Toast.makeText(MapsActivity.this, "Mappe", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.navigation_film:
+                        flag=1;
+                        Toast.makeText(MapsActivity.this, "Film", Toast.LENGTH_SHORT).show();
+                        intent = new Intent (MapsActivity.this, cercaFilm.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("name", "search");
+                        intent.putExtra("warning", "1");
+                        break;
+                    case R.id.navigation_preferiti:
+                        flag=1;
+                        Toast.makeText(MapsActivity.this, "Preferiti", Toast.LENGTH_SHORT).show();
+                        intent = new Intent (MapsActivity.this, Preferiti.class);
+                        intent.putExtra("warning1", "1");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        break;
+                    case R.id.navigation_eventi:
+                        flag=1;
+                        Toast.makeText(MapsActivity.this, "Eventi", Toast.LENGTH_SHORT).show();
+                        intent = new Intent (MapsActivity.this, cercaFilm.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("name", "eventi");
+                        intent.putExtra("warning", "1");
+                        break;
+                }
+                if(flag==1) {
+                    startActivity(intent);
+                }
+                return true;
+            }
+        });
+        //-------------------------------------------------------------------------------
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -455,6 +514,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         intent.putExtra("name", "cinema");
         intent.putExtra("cinemaName", marker.getTitle());
         startActivity(intent);
+        return true;
+    }
+
+    @Override
+    public boolean onKeyDown (int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(flag.equals("0")) {
+                Intent intent = new Intent(MapsActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } else{
+                finish();
+            }
+        }
         return true;
     }
 }

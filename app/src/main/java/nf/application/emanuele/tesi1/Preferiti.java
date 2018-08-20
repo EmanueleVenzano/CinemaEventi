@@ -59,9 +59,9 @@ public class Preferiti extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_mappe:
                         Toast.makeText(Preferiti.this, "Mappe", Toast.LENGTH_SHORT).show();
-                        Intent intent2 = new Intent(Preferiti.this, MapsActivity.class);
-                        intent2.putExtra("name", " ");
-                        startActivity(intent2);
+                        intent = new Intent(Preferiti.this, MapsActivity.class);
+                        intent.putExtra("name", " ");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         break;
                     case R.id.navigation_film:
                         Toast.makeText(Preferiti.this, "Film", Toast.LENGTH_SHORT).show();
