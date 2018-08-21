@@ -57,10 +57,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Location mLastLocation;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
-    String goTo;
+    String goTo=null;
     String mode="";
     String center="";
     String flag;
+    LatLng end=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,44 +154,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.setMyLocationEnabled(true);
             }
 
-            // Setting onclick event listener for the map
-            LatLng myPosition = new LatLng(44.426669, 8.800794);
-            MarkerPoints.add(myPosition);
-            MarkerPoints.add(new LatLng(44.413339, 8.880113));
-            MarkerOptions options = new MarkerOptions();
-
-            // Setting the position of the marker
-            options.position(new LatLng(44.413339, 8.880113));
-
-            /**
-             * For the start location, the color of marker is GREEN and
-             * for the end location, the color of marker is RED.
-             */
-            if (MarkerPoints.size() == 1) {
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            } else if (MarkerPoints.size() == 2) {
-                options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            }
-
-
-            // Add new marker to the Google Map Android API V2
-            mMap.addMarker(options);
-
-            // Checks, whether start and end locations are captured
-            if (MarkerPoints.size() >= 2) {
-                LatLng origin = MarkerPoints.get(0);
-                LatLng dest = MarkerPoints.get(1);
-
-                // Getting URL to the Google Directions API
-                String url = getUrl(origin, dest);
-                Log.d("onMapClick", url.toString());
-                FetchUrl FetchUrl = new FetchUrl();
-
-                // Start downloading json data from Google Directions API
-                FetchUrl.execute(url);
-                //move map camera
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+            MyApplication myApplication = (MyApplication) getApplication();
+            ArrayList<DataCinema> dataCinemas = myApplication.getDataInfo().cinemas;
+            for(int i=0; i<dataCinemas.size(); i++) {
+                if(dataCinemas.get(i).getName().equals(goTo)) {
+                    end = new LatLng(Double.parseDouble(dataCinemas.get(i).getLat()), Double.parseDouble(dataCinemas.get(i).getLon()));
+                    break;
+                }
             }
         } else {
             MyApplication myApplication = (MyApplication) this.getApplication();
@@ -220,7 +190,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Destination of route
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-
 
         // Sensor enabled
         String sensor = "sensor=false";
@@ -421,16 +390,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-        LatLng dest = MarkerPoints.get(1);
-        String url = getUrl(latLng, dest);
-        Log.d("onMapClick", url.toString());
-        FetchUrl FetchUrl = new FetchUrl();
-        FetchUrl.execute(url);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
+        if(end!=null) {
+            MarkerOptions markerOptions1 = new MarkerOptions();
+            markerOptions1.position(end);
+            markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            mMap.addMarker(markerOptions1);
+            String url = getUrl(latLng, end);
+            Log.d("onMapClick", url.toString());
+            FetchUrl FetchUrl = new FetchUrl();
+            FetchUrl.execute(url);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
+        }
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
@@ -510,7 +481,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick (Marker marker){
-        Intent intent = new Intent(this, InfoCinema.class);
+        Intent intent = new Intent(this, cercaFilm.class);
         intent.putExtra("name", "cinema");
         intent.putExtra("cinemaName", marker.getTitle());
         startActivity(intent);
