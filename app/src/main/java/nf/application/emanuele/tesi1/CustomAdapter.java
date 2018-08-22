@@ -79,6 +79,7 @@ public class CustomAdapter extends ArrayAdapter<Copertina> {
             img=null;
         }
     }
+
     private class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap>{
         private final WeakReference<ImageView> imageViewWeakReference;
 

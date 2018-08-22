@@ -1,19 +1,29 @@
 package nf.application.emanuele.tesi1;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
-public class InfoCinema extends Fragment implements View.OnClickListener{
+public class InfoCinema extends Fragment implements View.OnClickListener {
     private String name;
+    private ImageView imgCinema;
     private TextView nameCinema;
     private TextView descriptionCinema;
     private ImageButton buttonDrive;
@@ -40,6 +50,7 @@ public class InfoCinema extends Fragment implements View.OnClickListener{
             if (dataCinema.get(position).getName().equals(name)) break;
         }
 
+        imgCinema = (ImageView) view.findViewById(R.id.img_cinema);
         nameCinema = (TextView) view.findViewById(R.id.nameCinema);
         descriptionCinema = (TextView) view.findViewById(R.id.descriptionCinema);
         buttonDrive = (ImageButton) view.findViewById(R.id.buttonDriveCinema);
@@ -57,6 +68,17 @@ public class InfoCinema extends Fragment implements View.OnClickListener{
         descriptionCinema.setText(dataCinema.get(position).getCap());
         streetCinema.setText(dataCinema.get(position).getAddress());
         cityCinema.setText(dataCinema.get(position).getCity());
+
+        //---------------------------------------------------------------------
+        if(dataCinema.get(position).getUrl_img()==null || dataCinema.get(position).getUrl_img().equals("")) {
+            Drawable placeholder = imgCinema.getContext().getResources().getDrawable(R.drawable.noimg);
+            imgCinema.setImageDrawable(placeholder);
+        }else {
+            ImageDownloaderTask idt = new ImageDownloaderTask((ImageView)view.findViewById(R.id.img_cinema));
+            idt.execute(imgCinema.toString());
+        }
+        //---------------------------------------------------------------------
+
         return view;
     }
 
@@ -71,6 +93,73 @@ public class InfoCinema extends Fragment implements View.OnClickListener{
         }
         intent.putExtra("name", name);
         startActivity(intent);
+    }
+
+    private class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
+        private final WeakReference<ImageView> imageViewWeakReference;
+
+        public ImageDownloaderTask (ImageView imageView){
+            imageViewWeakReference = new WeakReference<ImageView>(imageView);
+        }
+
+        @Override
+        protected Bitmap doInBackground (String... params){
+            return downloadBitmap(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute (Bitmap result){
+            if (isCancelled()){
+                result=null;
+            }
+            if (imageViewWeakReference!=null){
+                ImageView imageView = imageViewWeakReference.get();
+                if (imageView!=null){
+                    if (result!=null) {
+                        imageView.setImageBitmap(result);
+                    }else{
+                        Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.ic_launcher_background);
+                        imageView.setImageDrawable(placeholder);
+                    }
+//                    WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+                    //                  Display display = wm.getDefaultDisplay();
+                    //                Point size = new Point();
+                    //              display.getSize(size);
+                    //            int height = size.y/3;
+                    //          height=1;
+                    //        imageView.on;
+                    //      height=4400404;
+                }
+            }
+        }
+
+        private Bitmap downloadBitmap(String url){
+            HttpURLConnection urlConnection = null;
+            try{
+                URL uri = new URL(url);
+                urlConnection = (HttpURLConnection) uri.openConnection();
+                int statusCode = urlConnection.getResponseCode();
+                if (statusCode!=200){
+                    return null;
+                }
+                InputStream inputStream = urlConnection.getInputStream();
+
+                if (inputStream!=null){
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds=true;
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    return bitmap;
+                }
+            }catch (Exception e){
+                urlConnection.disconnect();
+                Log.w("Image Downloader", "Error downloding image from "+url);
+            }finally {
+                if (urlConnection!=null){
+                    urlConnection.disconnect();
+                }
+            }
+            return null;
+        }
     }
 }
 

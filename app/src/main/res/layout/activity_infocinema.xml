@@ -4,31 +4,55 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/nameCinema" />
+        android:layout_height="150dp"
+        android:id="@+id/img_cinema" />
     <TextView
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameCinema"
+        android:layout_below="@id/img_cinema"/>
+    <view
+        android:id="@+id/riga"
+        android:layout_below="@id/nameCinema"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/streetCinema"
-        android:layout_below="@id/nameCinema" />
+        android:layout_below="@id/riga"/>
     <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/streetCinema"
-        android:id="@+id/descriptionCinema"/>
+        android:id="@+id/descriptionCinema"
+        android:layout_below="@id/streetCinema"/>
     <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/cityCinema"
-        android:layout_below="@id/descriptionCinema" />
+        android:layout_below="@id/descriptionCinema"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_marginBottom="60dp"
         android:orientation="horizontal">
 
         <ImageButton
@@ -38,7 +62,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="5dp"
-            android:background="@drawable/button_shape"
+            android:background="@drawable/button_shape1"
             android:src="@drawable/ic_car" />
 
         <ImageButton
@@ -50,7 +74,7 @@
             android:layout_marginStart="105dp"
             android:layout_x="98dp"
             android:layout_y="0dp"
-            android:background="@drawable/button_shape"
+            android:background="@drawable/button_shape1"
             android:src="@drawable/ic_bus" />
 
         <ImageButton
@@ -62,7 +86,7 @@
             android:layout_marginEnd="105dp"
             android:layout_x="198dp"
             android:layout_y="0dp"
-            android:background="@drawable/button_shape"
+            android:background="@drawable/button_shape1"
             android:src="@drawable/ic_walk" />
 
         <ImageButton
@@ -74,7 +98,7 @@
             android:layout_marginEnd="5dp"
             android:layout_x="297dp"
             android:layout_y="0dp"
-            android:background="@drawable/button_shape"
+            android:background="@drawable/button_shape1"
             android:src="@drawable/ic_bike" />
     </RelativeLayout>
 </RelativeLayout>

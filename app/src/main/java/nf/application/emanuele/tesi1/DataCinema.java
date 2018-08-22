@@ -1,6 +1,7 @@
 package nf.application.emanuele.tesi1;
 
 public class DataCinema {
+    private String url_img;
     private String name;
     private String id;
     private String lat;
@@ -9,7 +10,8 @@ public class DataCinema {
     private String cap;
     private String city;
 
-    public DataCinema(String name, String id, String lat, String lon, String address, String cap, String city) {
+    public DataCinema(String url_img, String name, String id, String lat, String lon, String address, String cap, String city) {
+        this.url_img = url_img;
         this.name = name;
         this.id = id;
         this.lat = lat;
@@ -20,6 +22,7 @@ public class DataCinema {
     }
 
     public DataCinema() {
+        this.url_img = "";
         this.name = "";
         this.id = "";
         this.lat = "";
@@ -27,6 +30,14 @@ public class DataCinema {
         this.address = "";
         this.cap = "";
         this.city = "";
+    }
+
+    public String getUrl_img() {
+        return url_img;
+    }
+
+    public void setUrl_img(String url_img) {
+        this.url_img = url_img;
     }
 
     public String getName() {
