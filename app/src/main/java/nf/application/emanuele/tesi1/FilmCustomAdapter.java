@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.InputStream;
@@ -30,14 +31,22 @@ public class FilmCustomAdapter extends ArrayAdapter<String> {
     private ArrayList<ArrayList<DataShowTimes>> dataShowTimes;
     private String film;
     private List<String> giorni;
+    private ListView explistView;
+    private int altezzaIniziale;
 
-    public FilmCustomAdapter (Context context, int textViewResourceId, List<ArrayList<String>> cinemas, List<String> giorni, ArrayList<ArrayList<DataShowTimes>> dataShowTimes, String film){
+    public FilmCustomAdapter (Context context, int textViewResourceId, List<ArrayList<String>> cinemas, List<String> giorni, ArrayList<ArrayList<DataShowTimes>> dataShowTimes, String film, ListView explistView){
         super(context, textViewResourceId, giorni);
         this.context = context;
         this.cinemas = cinemas;
         this.dataShowTimes = dataShowTimes;
         this.film = film;
         this.giorni = giorni;
+        this.explistView = explistView;
+
+    }
+
+    public void setHeight (int p){
+        altezzaIniziale = p;
     }
 
     @Override
@@ -73,22 +82,8 @@ public class FilmCustomAdapter extends ArrayAdapter<String> {
             }
             proiezioniPerCinema.get(pos).add(dataShowTimes.get(position).get(i));
         }
-        ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, cinema, proiezioniPerCinema, film);
+        ExpandableListAdapter listAdapter = new ExpandableListAdapter(context, cinema, proiezioniPerCinema, film, viewHolder.expandableListView, explistView);
         viewHolder.expandableListView.setAdapter(listAdapter);
-
-        viewHolder.expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-
-            }
-        });
-
-        viewHolder.expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-
-            }
-        });
 
         return convertView;
     }

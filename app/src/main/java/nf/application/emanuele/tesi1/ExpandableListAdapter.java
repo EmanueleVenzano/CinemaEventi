@@ -24,6 +24,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,12 +42,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> listDataHeader;
     private ArrayList<ArrayList<DataShowTimes>> listDataChild;
     String film;
+    ExpandableListView expandableListView;
+    ListView listView;
 
-    public ExpandableListAdapter (Context context, List<String> listDataHeader, ArrayList<ArrayList<DataShowTimes>> listDataChild, String film) {
+    public ExpandableListAdapter (Context context, List<String> listDataHeader, ArrayList<ArrayList<DataShowTimes>> listDataChild, String film, ExpandableListView expandableListView, ListView listView) {
         this.context = context;
         this.listDataChild = listDataChild;
         this.listDataHeader = listDataHeader;
         this.film = film;
+        this.expandableListView = expandableListView;
+        this.listView = listView;
     }
 
     public String getChildH (int groupPosition, int childPosition) {
@@ -251,6 +256,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         });
         //ExpandableListView eLV = (ExpandableListView) parent;
         //eLV.expandGroup(groupPosition);
+        final ExpandableListView elv = expandableListView;
         convertView.setOnClickListener(new View.OnClickListener() {
             final ViewGroup p = parent;
             final int i = groupPosition;
@@ -258,9 +264,30 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             public void onClick(View v) {
                 ExpandableListView eLV = (ExpandableListView) parent;
                 if (isExpanded){
-                    eLV.collapseGroup(groupPosition);
+                    int height=0;
+                    for(int i=0; i<elv.getChildCount(); i++) {
+                        height+=elv.getChildAt(i).getMeasuredHeight();
+                        height+=elv.getDividerHeight();
+                    }
+                    ViewGroup.LayoutParams params = listView.getLayoutParams();
+                    params.height-=height;
+                    listView.setLayoutParams(params);
+                    listView.requestLayout();
+                    elv.collapseGroup(groupPosition);
                 }else{
-                    eLV.expandGroup(groupPosition);
+                    int height=0;
+                    for(int i=0; i<elv.getChildCount(); i++) {
+                        height+=elv.getChildAt(i).getMeasuredHeight();
+                        height+=elv.getDividerHeight();
+                    }
+                    ViewGroup.LayoutParams params = listView.getLayoutParams();
+                    params.height+=height;
+                    listView.setLayoutParams(params);
+                    listView.requestLayout();
+                    boolean p = elv.expandGroup(groupPosition);
+                    if (p){
+
+                    }
                 }
 
             }
