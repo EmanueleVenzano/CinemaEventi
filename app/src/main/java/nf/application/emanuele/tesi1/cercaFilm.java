@@ -46,7 +46,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                             flag=1;
                             Toast.makeText(cercaFilm.this, "Mappe", Toast.LENGTH_SHORT).show();
                             intent = new Intent(cercaFilm.this, MapsActivity.class);
-                            intent.putExtra("name", " ");
+                            intent.putExtra("name", "");
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             break;
                         case R.id.navigation_film:
