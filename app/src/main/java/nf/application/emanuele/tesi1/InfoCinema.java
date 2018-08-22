@@ -40,46 +40,52 @@ public class InfoCinema extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.activity_infocinema, container, false);
-        name = ((cercaFilm)getActivity()).getMyData();
+        try{
+            View view = inflater.inflate(R.layout.activity_infocinema, container, false);
+            name = ((cercaFilm)getActivity()).getMyData();
 
-        MyApplication myApplication = (MyApplication) getActivity().getApplication();
-        ArrayList<DataCinema> dataCinema = myApplication.getDataInfo().cinemas;
-        int position;
-        for (position=0; position<dataCinema.size(); position++){
-            if (dataCinema.get(position).getName().equals(name)) break;
+            MyApplication myApplication = (MyApplication) getActivity().getApplication();
+            ArrayList<DataCinema> dataCinema = myApplication.getDataInfo().cinemas;
+            int position;
+            for (position=0; position<dataCinema.size(); position++){
+                if (dataCinema.get(position).getName().equals(name)) break;
+            }
+
+            imgCinema = (ImageView) view.findViewById(R.id.img_cinema);
+            nameCinema = (TextView) view.findViewById(R.id.nameCinema);
+            descriptionCinema = (TextView) view.findViewById(R.id.descriptionCinema);
+            buttonDrive = (ImageButton) view.findViewById(R.id.buttonDriveCinema);
+            buttonDrive.setOnClickListener(this);
+            buttonTransit = (ImageButton) view.findViewById(R.id.buttonTransitCinema);
+            buttonTransit.setOnClickListener(this);
+            buttonWalk = (ImageButton) view.findViewById(R.id.buttonFootCinema);
+            buttonWalk.setOnClickListener(this);
+            buttonBike = (ImageButton) view.findViewById(R.id.buttonBikeCinema);
+            buttonBike.setOnClickListener(this);
+            streetCinema = (TextView) view.findViewById(R.id.streetCinema);
+            cityCinema = (TextView) view.findViewById(R.id.cityCinema);
+
+            nameCinema.setText(dataCinema.get(position).getName());
+            descriptionCinema.setText(dataCinema.get(position).getCap());
+            streetCinema.setText(dataCinema.get(position).getAddress());
+            cityCinema.setText(dataCinema.get(position).getCity());
+
+            //---------------------------------------------------------------------
+            if(dataCinema.get(position).getUrl_img()==null || dataCinema.get(position).getUrl_img().equals("")) {
+                Drawable placeholder = imgCinema.getContext().getResources().getDrawable(R.drawable.noimg);
+                imgCinema.setImageDrawable(placeholder);
+            }else {
+                ImageDownloaderTask idt = new ImageDownloaderTask((ImageView)view.findViewById(R.id.img_cinema));
+                idt.execute(dataCinema.get(position).getUrl_img());
+            }
+            //---------------------------------------------------------------------
+
+            return view;
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        imgCinema = (ImageView) view.findViewById(R.id.img_cinema);
-        nameCinema = (TextView) view.findViewById(R.id.nameCinema);
-        descriptionCinema = (TextView) view.findViewById(R.id.descriptionCinema);
-        buttonDrive = (ImageButton) view.findViewById(R.id.buttonDriveCinema);
-        buttonDrive.setOnClickListener(this);
-        buttonTransit = (ImageButton) view.findViewById(R.id.buttonTransitCinema);
-        buttonTransit.setOnClickListener(this);
-        buttonWalk = (ImageButton) view.findViewById(R.id.buttonFootCinema);
-        buttonWalk.setOnClickListener(this);
-        buttonBike = (ImageButton) view.findViewById(R.id.buttonBikeCinema);
-        buttonBike.setOnClickListener(this);
-        streetCinema = (TextView) view.findViewById(R.id.streetCinema);
-        cityCinema = (TextView) view.findViewById(R.id.cityCinema);
-
-        nameCinema.setText(dataCinema.get(position).getName());
-        descriptionCinema.setText(dataCinema.get(position).getCap());
-        streetCinema.setText(dataCinema.get(position).getAddress());
-        cityCinema.setText(dataCinema.get(position).getCity());
-
-        //---------------------------------------------------------------------
-        if(dataCinema.get(position).getUrl_img()==null || dataCinema.get(position).getUrl_img().equals("")) {
-            Drawable placeholder = imgCinema.getContext().getResources().getDrawable(R.drawable.noimg);
-            imgCinema.setImageDrawable(placeholder);
-        }else {
-            ImageDownloaderTask idt = new ImageDownloaderTask((ImageView)view.findViewById(R.id.img_cinema));
-            idt.execute(imgCinema.toString());
-        }
-        //---------------------------------------------------------------------
-
-        return view;
+        return null;
     }
 
     @Override

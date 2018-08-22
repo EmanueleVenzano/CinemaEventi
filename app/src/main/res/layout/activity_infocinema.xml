@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/nameCinema"
         android:layout_below="@id/img_cinema"/>
-    <view
+    <View
         android:id="@+id/riga"
         android:layout_below="@id/nameCinema"
         android:layout_marginTop="10dp"

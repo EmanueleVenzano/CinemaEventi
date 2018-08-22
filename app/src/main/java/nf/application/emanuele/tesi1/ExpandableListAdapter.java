@@ -270,7 +270,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         height+=elv.getDividerHeight();
                     }
                     ViewGroup.LayoutParams params = listView.getLayoutParams();
-                    params.height-=height;
+                    //params.height-=height;
                     listView.setLayoutParams(params);
                     listView.requestLayout();
                     elv.collapseGroup(groupPosition);
@@ -281,10 +281,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         height+=elv.getDividerHeight();
                     }
                     ViewGroup.LayoutParams params = listView.getLayoutParams();
-                    params.height+=height;
-                    listView.setLayoutParams(params);
-                    listView.requestLayout();
-                    boolean p = elv.expandGroup(groupPosition);
+                    //params.height+=height;
+                    //listView.setLayoutParams(params);
+                    //listView.requestLayout();
+                    boolean p = expand(eLV, groupPosition);
+                    p = expand(elv, groupPosition);
                     if (p){
 
                     }
@@ -294,6 +295,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         });
 
         return convertView;
+    }
+
+    public boolean expand(ExpandableListView e, int g){
+        return e.expandGroup(g);
     }
 
     @Override
