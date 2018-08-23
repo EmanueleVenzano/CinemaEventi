@@ -41,7 +41,17 @@ public class DirectionParser {
                         String travel_mode = actualStep.getString("travel_mode");
                         step.add(travel_mode);
                         if (!travel_mode.equals("WALKING")){
-
+                            JSONObject transit_details = actualStep.getJSONObject("transit_details");
+                            JSONObject line = transit_details.getJSONObject("line");
+                            String headsign = line.getString("short_name")+" - "+transit_details.getString("headsign");
+                            step.add(headsign);
+                            step.add(transit_details.getString("num_stops"));
+                            JSONObject departure_time = transit_details.getJSONObject("departure_time");
+                            step.add(departure_time.getString("text"));
+                            JSONObject arrival_time = transit_details.getJSONObject("arrival_time");
+                            step.add(arrival_time.getString("text"));
+                            JSONObject vehicle = line.getJSONObject("vehicle");
+                            step.add(vehicle.getString("icon"));
                         }
                         definitivo.add(step);
                     }
