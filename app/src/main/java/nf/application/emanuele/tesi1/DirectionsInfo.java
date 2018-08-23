@@ -14,6 +14,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -52,8 +53,6 @@ import java.util.List;
 
 public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
-    private TextView time;
-    private ListView list;
     private GoogleMap mMap;
     ArrayList<LatLng> MarkerPoints;
     GoogleApiClient mGoogleApiClient;
@@ -70,8 +69,6 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.directions_info);
-        time = (TextView) findViewById(R.id.directionTime);
-        list = (ListView) findViewById(R.id.directionList);
         goTo = getIntent().getStringExtra("name");
         mode= getIntent().getStringExtra("mode");
         center = getIntent().getStringExtra("cinema");
@@ -237,8 +234,29 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 DataParser parser = new DataParser();
                 Log.d("ParserTask", parser.toString());
                 routes = parser.parse(jObject);
+
                 DirectionParser directionParser = new DirectionParser();
                 ArrayList<ArrayList<String>> data = directionParser.parse(jObject, mode);
+
+                TextView startTime = (TextView) findViewById(R.id.directionStart);
+                startTime.setText(Html.fromHtml("<b>Partenza: </b>"+ data.get(0).get(0)));
+                TextView endTime = (TextView) findViewById(R.id.directionArr);
+                endTime.setText(Html.fromHtml("<b>Arrivo: </b>"+ data.get(0).get(1)));
+                TextView time = (TextView) findViewById(R.id.directionTime);
+                time.setText(Html.fromHtml("<b>Durata: </b>"+data.get(0).get(2)));
+                TextView km = (TextView) findViewById(R.id.directionDistance);
+                km.setText(Html.fromHtml("<b>Distanza: </b>"+data.get(0).get(3)));
+
+                if (mode.equals("transit")){
+                    ArrayList<ArrayList<String>> toPass = new ArrayList<>();
+                    for (int i=1; i<data.size(); i++){
+                        toPass.add(data.get(i));
+                    }
+                    DirectionAdapter directionAdapter = new DirectionAdapter(DirectionsInfo.this, R.layout.direction_item, toPass, mMap);
+                    ListView listView = (ListView) findViewById(R.id.directionList);
+                    listView.setAdapter(directionAdapter);
+                }
+
                 Log.d("ParserTask", "Executing routes");
                 Log.d("ParserTask", routes.toString());
             } catch (Exception e) {
