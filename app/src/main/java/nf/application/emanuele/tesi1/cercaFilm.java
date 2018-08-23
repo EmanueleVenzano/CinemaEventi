@@ -28,15 +28,10 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
 
         warning = getIntent().getStringExtra("warning");
         String name = getIntent().getStringExtra("name");
-        if(name.equals("cinema")) {
-            next=4;
-            param=getIntent().getStringExtra("cinemaName");
-            onSobstitute(4);
-        } else {
-            bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
-            BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
-            //bottomNavigationView.setItemIconTintList(null);
-            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
+        BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
+        //bottomNavigationView.setItemIconTintList(null);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     Fragment selectedFragment = null;
@@ -76,7 +71,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                     return true;
                 }
             });
-        }
+
         if (name.equals("preferiti")){
             next=2;
             onSobstitute(2);
@@ -88,6 +83,11 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
         if (name.equals("eventi")){
             next=3;
             onSobstitute(3);
+        }
+        if(name.equals("cinema")) {
+            next=4;
+            param=getIntent().getStringExtra("cinemaName");
+            onSobstitute(4);
         }
 
     }
