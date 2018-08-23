@@ -16,7 +16,7 @@ public class PreferitiDBHelper extends SQLiteOpenHelper {
         //-------------------------------------------------------------
         db.execSQL(PreferitiDB.CREATE_EVENTI_TABLE);
         db.execSQL("INSERT INTO eventi (eventiTitolo, eventiData, eventiLuogo) VALUES ('Renzo Arbore', '16/10/18 21:00', 'Teatro Carlo Felice')");
-        db.execSQL("INSERT INTO eventi (eventiTitolo, eventiData, eventiLuogo) VALUES ('GlenMillerOrchestra', '16/10/18 21:00', 'Teatro Politeama Genovese')");
+        db.execSQL("INSERT INTO eventi (eventiTitolo, eventiData, eventiLuogo) VALUES ('Glen Miller Orchestra', '16/10/18 21:00', 'Teatro Politeama Genovese')");
         db.execSQL("INSERT INTO eventi (eventiTitolo, eventiData, eventiLuogo) VALUES ('Ben Ottewell', '17/10/18 21:00', 'Teatro Bloser')");
         db.execSQL("INSERT INTO eventi (eventiTitolo, eventiData, eventiLuogo) VALUES ('Ghali', '26/10/18 21:00', 'RDS Stadium')");
         db.execSQL("INSERT INTO eventi (eventiTitolo, eventiData, eventiLuogo) VALUES ('Luca Carboni', '16/10/18 21:00', 'Teatro Politeama Genovese')");

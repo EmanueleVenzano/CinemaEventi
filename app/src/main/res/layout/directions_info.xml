@@ -12,13 +12,14 @@
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="com.google.android.gms.maps.SupportMapFragment" />
+        class="com.google.android.gms.maps.SupportMapFragment"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/buttonmap"
             android:layout_marginBottom="5dp"
@@ -33,42 +34,48 @@
                 android:layout_alignParentTop="true">
 
                 <TextView
+                    android:layout_marginStart="5dp"
                     android:id="@+id/directionStart"
                     android:layout_column="0"
                     android:layout_row="0"
-                    android:text="Partenza 12:15" />
+                    android:text="Partenza:" />
 
                 <TextView
+                    android:layout_marginEnd="5dp"
                     android:id="@+id/directionArr"
-                    android:layout_column="1"
+                    android:layout_column="3"
                     android:layout_row="0"
-                    android:text="Partenza 12:15" />
+                    android:text="Arrivo:" />
 
                 <TextView
+                    android:layout_marginStart="5dp"
                     android:id="@+id/directionTime"
                     android:layout_column="0"
                     android:layout_row="1"
-                    android:text="Partenza 12:15" />
+                    android:text="Durata:" />
 
                 <TextView
+                    android:layout_marginEnd="5dp"
                     android:id="@+id/directionDistance"
-                    android:layout_column="1"
+                    android:layout_column="3"
                     android:layout_row="1"
-                    android:text="Partenza 12:15" />
+                    android:text="Distanza:" />
             </GridLayout>
+
             <ListView
+                android:id="@+id/directionList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/directionGrid"
-                android:id="@+id/directionList">
-            </ListView>
+                android:layout_height="113dp"
+                android:layout_below="@id/directionGrid"></ListView>
         </RelativeLayout>
     </ScrollView>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_above="@+id/bottom"
-        android:background="@color/colorPrimary"></View>
+        android:background="@color/colorPrimary">
+    </View>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom"
@@ -78,5 +85,6 @@
         android:background="@color/white"
         app:itemIconTint="@drawable/nav_item_color_state"
         app:itemTextColor="@drawable/nav_item_color_state"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation"/>
+
 </RelativeLayout>

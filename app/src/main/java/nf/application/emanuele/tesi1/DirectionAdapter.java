@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class DirectionAdapter extends ArrayAdapter<ArrayList<String>> {
     private GoogleMap mMap;
@@ -65,17 +66,31 @@ public class DirectionAdapter extends ArrayAdapter<ArrayList<String>> {
         LatLng end = new LatLng(Double.parseDouble(copertina.get(2)), Double.parseDouble(copertina.get(3)));
         int numMarkerStart = position+1;
         String urlMarkerStart = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+toAlphabetic(numMarkerStart)+"|FE6256|000000";
-        new BitmapDownloaderTask().execute(urlMarkerStart);
+        try {
+            tempBitmap = new BitmapDownloaderTask().execute(urlMarkerStart).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        int height = 100;
+        int width = 100;
         MarkerOptions startMarker = new MarkerOptions()
                 .position(start)
-                .icon(BitmapDescriptorFactory.fromBitmap(tempBitmap));
+                .icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(tempBitmap, width, height, false)));
         mMap.addMarker(startMarker);
         int numMarkerEnd = position+2;
         String urlMarkerEnd = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+toAlphabetic(numMarkerEnd)+"|FE6256|000000";
-        new BitmapDownloaderTask().execute(urlMarkerEnd);
+        try {
+            tempBitmap = new BitmapDownloaderTask().execute(urlMarkerEnd).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         MarkerOptions endMarker = new MarkerOptions()
                 .position(end)
-                .icon(BitmapDescriptorFactory.fromBitmap(tempBitmap));
+                .icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(tempBitmap, width, height, false)));
         mMap.addMarker(endMarker);
         viewHolder.start.setText(toAlphabetic(numMarkerStart));
         viewHolder.end.setText(toAlphabetic(numMarkerEnd));
@@ -89,7 +104,7 @@ public class DirectionAdapter extends ArrayAdapter<ArrayList<String>> {
                 Drawable placeholder = viewHolder.icon.getContext().getResources().getDrawable(R.drawable.bho1);
                 viewHolder.icon.setImageDrawable(placeholder);
             }else{
-                new DirectionAdapter.ImageDownloaderTask(viewHolder.icon).execute(copertina.get(10));
+                new DirectionAdapter.ImageDownloaderTask(viewHolder.icon).execute("http:"+copertina.get(10));
             }
         }else{
             viewHolder.numStops.setText("");
@@ -127,11 +142,6 @@ public class DirectionAdapter extends ArrayAdapter<ArrayList<String>> {
         @Override
         protected Bitmap doInBackground(String... params) {
             return downloadBitmap(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute (Bitmap result){
-            tempBitmap = result;
         }
     }
 

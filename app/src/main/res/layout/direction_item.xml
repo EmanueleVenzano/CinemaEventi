@@ -6,63 +6,54 @@
     <ImageView
         android:id="@+id/directionItemIcon"
         android:layout_width="wrap_content"
-        android:layout_height="15dp"
-        android:background="@android:drawable/btn_dialog" />
+        android:layout_height="15dp" />
 
     <TextView
         android:id="@+id/directionItemLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/directionItemIcon"
-        android:text="textaaaaaaaaaaaaa" />
-
+        android:layout_toEndOf="@+id/directionItemIcon"/>
     <TextView
         android:id="@+id/directionItemStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/directionItemLine"
-        android:layout_marginStart="20dp"
-        android:text="textaaaaaaaaaaaaa" />
+        android:layout_marginStart="20dp"/>
 
     <TextView
         android:id="@+id/directionItemStartTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/directionItemLine"
-        android:layout_toEndOf="@+id/directionItemStart"
-        android:text="textaaaaaaaaaaaaa" />
+        android:layout_toEndOf="@+id/directionItemStart"/>
 
     <TextView
         android:id="@+id/directionItemDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/directionItemStart"
-        android:layout_below="@+id/directionItemStart"
-        android:text="textaaaaaaaaaaaaa" />
+        android:layout_below="@+id/directionItemStart"/>
 
     <TextView
         android:id="@+id/directionItemNumStops"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/directionItemStart"
-        android:layout_toEndOf="@+id/directionItemStart"
-        android:text="textaaaaaaaaaaaaa" />
+        android:layout_toEndOf="@+id/directionItemStart"/>
 
     <TextView
         android:id="@+id/directionItemEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/directionItemStart"
-        android:layout_below="@+id/directionItemDistance"
-        android:text="textaaaaaaaaaaaaa" />
+        android:layout_below="@+id/directionItemDistance"/>
 
     <TextView
         android:id="@+id/directionItemEndTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/directionItemDistance"
-        android:layout_toEndOf="@+id/directionItemStart"
-        android:text="textaaaaaaaaaaaaa" />
+        android:layout_toEndOf="@+id/directionItemStart"/>
 </RelativeLayout>

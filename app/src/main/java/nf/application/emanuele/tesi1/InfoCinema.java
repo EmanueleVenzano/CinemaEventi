@@ -3,10 +3,12 @@ package nf.application.emanuele.tesi1;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,9 +68,12 @@ public class InfoCinema extends Fragment implements View.OnClickListener {
             cityCinema = (TextView) view.findViewById(R.id.cityCinema);
 
             nameCinema.setText(dataCinema.get(position).getName());
-            descriptionCinema.setText(dataCinema.get(position).getCap());
-            streetCinema.setText(dataCinema.get(position).getAddress());
-            cityCinema.setText(dataCinema.get(position).getCity());
+            descriptionCinema.setText(Html.fromHtml("<b>Cap: <br></b>"+dataCinema.get(position).getCap()));
+            descriptionCinema.setTextColor(Color.parseColor("#000000"));
+            streetCinema.setText(Html.fromHtml("<b>Indirizzo: <br></b>"+dataCinema.get(position).getAddress()));
+            streetCinema.setTextColor(Color.parseColor("#000000"));
+            cityCinema.setText(Html.fromHtml("<b>Città: <br></b>"+dataCinema.get(position).getCity()));
+            cityCinema.setTextColor(Color.parseColor("#000000"));
 
             //---------------------------------------------------------------------
             if(dataCinema.get(position).getUrl_img()==null || dataCinema.get(position).getUrl_img().equals("")) {
@@ -90,7 +95,7 @@ public class InfoCinema extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v){
-        Intent intent = new Intent(getContext(), MapsActivity.class);
+        Intent intent = new Intent(getContext(), DirectionsInfo.class);
         switch (v.getId()){
             case R.id.buttonDriveCinema: intent.putExtra("mode", "driving"); break;
             case R.id.buttonTransitCinema: intent.putExtra("mode", "transit"); break;

@@ -29,10 +29,10 @@ public class MyApplication extends Application {
         cinemas = downloadCinemas("https://api.internationalshowtimes.com/v4/cinemas/?city_ids=11861");
         int downloaded= cinemas.size();
         cinemas.get(0).setUrl_img("http://www.spimgenova.it/wp-content/uploads/2017/10/spim-uci.jpg");
-        cinemas.add(new DataCinema("http://www.portoantico.it/wp-content/uploads/2014/04/the-space-cinema-002_mini-960x600.jpg", "TheSpace", "1", "44.408220", "8.921539", "Via Magazzini del Cotone", "16128", "Genova"));
-        cinemas.add(new DataCinema("http://www.ilsecoloxix.it/rf/Image-lowres_Multimedia/IlSecoloXIXWEB/genova/foto/2015/01/16/cinema_italia-H150116150454.jpg", "CinemaItalia", "2", "44.403022", "8.684162", "Via Sauli Pallavicino, 21, Arenzano", "16011", "Arenzano"));
-        cinemas.add(new DataCinema("https://www.taxidrivers.it/wp-content/uploads/2016/05/foto-sivori.jpg", "CinemaSivori", "3", "44.409894", "8.936847", "Salita di S.Caterina, 48", "16123", "Genova"));
-        cinemas.add(new DataCinema("http://www.ilsecoloxix.it/rf/Image-lowres_Multimedia/IlSecoloXIXWEB/genova/foto/2014/01/22/cinemapalmaro.jpg","CinemaPalmaro", "4", "44.427484", "8.774715", "Via Pra', 164, Genova Pra'", "16157", "Genova"));
+        cinemas.add(new DataCinema("http://www.portoantico.it/wp-content/uploads/2014/04/the-space-cinema-002_mini-960x600.jpg", "The Space", "1", "44.408220", "8.921539", "Via Magazzini del Cotone", "16128", "Genova"));
+        cinemas.add(new DataCinema("http://www.ilsecoloxix.it/rf/Image-lowres_Multimedia/IlSecoloXIXWEB/genova/foto/2015/01/16/cinema_italia-H150116150454.jpg", "Cinema Italia", "2", "44.403022", "8.684162", "Via Sauli Pallavicino, 21, Arenzano", "16011", "Arenzano"));
+        cinemas.add(new DataCinema("https://www.taxidrivers.it/wp-content/uploads/2016/05/foto-sivori.jpg", "Cinema Sivori", "3", "44.409894", "8.936847", "Salita di S.Caterina, 48", "16123", "Genova"));
+        cinemas.add(new DataCinema("http://www.ilsecoloxix.it/rf/Image-lowres_Multimedia/IlSecoloXIXWEB/genova/foto/2014/01/22/cinemapalmaro.jpg","Cinema Palmaro", "4", "44.427484", "8.774715", "Via Pra', 164, Genova Pra'", "16157", "Genova"));
         films = downloadFilms("https://api.internationalshowtimes.com/v4/movies/?city_ids=11861");
         showTimes = downloadShowTimes("https://api.internationalshowtimes.com/v4/showtimes/?city_ids=11861");
         ArrayList<DataShowTimes> filmFiumara = new ArrayList<>();

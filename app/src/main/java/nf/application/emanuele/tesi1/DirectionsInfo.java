@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,10 +17,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,20 +46,26 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+import static java.lang.StrictMath.abs;
 
 public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
     private GoogleMap mMap;
-    ArrayList<LatLng> MarkerPoints;
+    ArrayList<ArrayList<Double>> lineCoefficents = new ArrayList<>();
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
     String goTo=null;
     String mode="";
-    String center="";
     String flag;
     LatLng end=null;
+    ArrayList<ArrayList<String>> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +73,10 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         setContentView(R.layout.directions_info);
         goTo = getIntent().getStringExtra("name");
         mode= getIntent().getStringExtra("mode");
-        center = getIntent().getStringExtra("cinema");
+        data = new ArrayList<>();
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
-        // Initializing
-        MarkerPoints = new ArrayList<>();
-
         getIntent().getFlags();
         if(getIntent().getStringExtra("flag")==null) {
             flag="0";
@@ -214,16 +213,10 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
             }
             return data;
         }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            ParserTask parserTask = new ParserTask();
-            parserTask.execute(result);
-        }
     }
 
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+       String dota;
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
             JSONObject jObject;
@@ -234,29 +227,8 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 DataParser parser = new DataParser();
                 Log.d("ParserTask", parser.toString());
                 routes = parser.parse(jObject);
-
                 DirectionParser directionParser = new DirectionParser();
-                ArrayList<ArrayList<String>> data = directionParser.parse(jObject, mode);
-
-                TextView startTime = (TextView) findViewById(R.id.directionStart);
-                startTime.setText(Html.fromHtml("<b>Partenza: </b>"+ data.get(0).get(0)));
-                TextView endTime = (TextView) findViewById(R.id.directionArr);
-                endTime.setText(Html.fromHtml("<b>Arrivo: </b>"+ data.get(0).get(1)));
-                TextView time = (TextView) findViewById(R.id.directionTime);
-                time.setText(Html.fromHtml("<b>Durata: </b>"+data.get(0).get(2)));
-                TextView km = (TextView) findViewById(R.id.directionDistance);
-                km.setText(Html.fromHtml("<b>Distanza: </b>"+data.get(0).get(3)));
-
-                if (mode.equals("transit")){
-                    ArrayList<ArrayList<String>> toPass = new ArrayList<>();
-                    for (int i=1; i<data.size(); i++){
-                        toPass.add(data.get(i));
-                    }
-                    DirectionAdapter directionAdapter = new DirectionAdapter(DirectionsInfo.this, R.layout.direction_item, toPass, mMap);
-                    ListView listView = (ListView) findViewById(R.id.directionList);
-                    listView.setAdapter(directionAdapter);
-                }
-
+                data = directionParser.parse(jObject, mode);
                 Log.d("ParserTask", "Executing routes");
                 Log.d("ParserTask", routes.toString());
             } catch (Exception e) {
@@ -307,8 +279,8 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = LocationRequest.create()
-                .setInterval(1000)
-                .setFastestInterval(1000)
+                .setInterval(10000)
+                .setFastestInterval(5000)
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -328,24 +300,120 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
             mCurrLocationMarker.remove();
         }
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
+        /*MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
+        */
         if(end!=null) {
-            MarkerOptions markerOptions1 = new MarkerOptions();
-            markerOptions1.position(end);
-            markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            mMap.addMarker(markerOptions1);
-            String url = getUrl(latLng, end);
-            Log.d("onMapClick", url.toString());
-            FetchUrl FetchUrl = new FetchUrl();
-            FetchUrl.execute(url);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
+            boolean recalc = false;
+            if (lineCoefficents.size()>0){
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(latLng)
+                        .title("Current Position")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                int foundedOk = 0;
+                for (int i = 0; i < lineCoefficents.size(); i++){
+                    double xp = location.getLatitude();
+                    double yp = location.getLongitude();
+                    double m = lineCoefficents.get(i).get(0);
+                    double q = lineCoefficents.get(i).get(1);
+                    double Px = ((xp/m)+yp-q)/(m+(1/m));
+                    if (Px>lineCoefficents.get(i).get(2) && Px<lineCoefficents.get(i).get(4)){
+                        double distance = (abs(yp-((m*xp)+q)))/sqrt(1+(m*m));
+                        if (distance < 0.9){
+                            foundedOk++;
+                            break;
+                        }
+                    }else {
+                        double Py = m*Px+q;
+                        double d1 = sqrt(pow((Py-lineCoefficents.get(i).get(3)), 2.0)+pow((Px-lineCoefficents.get(i).get(2)), 2.0));
+                        double d2 = sqrt(pow((Py-lineCoefficents.get(i).get(5)), 2.0)+pow((Px-lineCoefficents.get(i).get(4)), 2.0));
+                        if (min(d1,d2) < 0.9){
+                        //if (min(d1,d2) < 0.0009){
+                            foundedOk++;
+                        }
+                    }
+                }
+                if (foundedOk == 0){
+                    recalc = true;
+                }
+            }
+            if (lineCoefficents.size()==0 || recalc){
+                mMap.clear();
+                MarkerOptions markerOptions1 = new MarkerOptions();
+                markerOptions1.position(end);
+                markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mMap.addMarker(markerOptions1);
+                String url = getUrl(latLng, end);
+                Log.d("onMapClick", url.toString());
+                try {
+                    String finish = new FetchUrl().execute(url).get();
+                    List<List<HashMap<String, String>>> dota = new ParserTask().execute(finish).get();
+                    lineCoefficents = new LineCalcTask().execute(dota).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                try{
+                    TextView startTime = (TextView) findViewById(R.id.directionStart);
+                    startTime.setText(Html.fromHtml("<b>Partenza: </b>"+ data.get(0).get(0)));
+                    TextView endTime = (TextView) findViewById(R.id.directionArr);
+                    endTime.setText(Html.fromHtml("<b>Arrivo: </b>"+ data.get(0).get(1)));
+                    TextView time = (TextView) findViewById(R.id.directionTime);
+                    time.setText(Html.fromHtml("<b>Durata: </b>"+data.get(0).get(2)));
+                    TextView km = (TextView) findViewById(R.id.directionDistance);
+                    km.setText(Html.fromHtml("<b>Distanza: </b>"+data.get(0).get(3)));
+
+                    if (mode.equals("transit")){
+                        ArrayList<ArrayList<String>> toPass = new ArrayList<>();
+                        for (int i=1; i<data.size(); i++){
+                            toPass.add(data.get(i));
+                        }
+                        DirectionAdapter directionAdapter = new DirectionAdapter(DirectionsInfo.this, R.layout.direction_item, toPass, mMap);
+                        ListView listView = (ListView) findViewById(R.id.directionList);
+                        listView.setAdapter(directionAdapter);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }else{
+
+            }
         }
-        if (mGoogleApiClient != null) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+        /*if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }*/
+    }
+
+    private class LineCalcTask extends AsyncTask<List<List<HashMap<String, String>>>, Void, ArrayList<ArrayList<Double>>> {
+        @Override
+        protected ArrayList<ArrayList<Double>> doInBackground (List<List<HashMap<String, String>>>... params){
+            ArrayList<ArrayList<Double>> lines = new ArrayList<>();
+            for (int i=0; i<params[0].size(); i++){
+                List<HashMap<String, String>> path = params[0].get(i);
+                for (int j=1; j<path.size(); j++){
+                    double x1 = Double.parseDouble(path.get(j-1).get("lat"));
+                    double y1 = Double.parseDouble(path.get(j-1).get("lng"));
+                    double x2 = Double.parseDouble(path.get(j).get("lat"));
+                    double y2 = Double.parseDouble(path.get(j).get("lng"));
+                    double m = (y2-y1)/(x2-x1);
+                    double q = -((x1*(y2-y1))/(x2-x1))+y1;
+                    ArrayList<Double> temp = new ArrayList<>();
+                    temp.add(m);
+                    temp.add(q);
+                    temp.add(x1);
+                    temp.add(y1);
+                    temp.add(x2);
+                    temp.add(y2);
+                    lines.add(temp);
+                }
+            }
+            return lines;
         }
+
     }
 
     @Override
