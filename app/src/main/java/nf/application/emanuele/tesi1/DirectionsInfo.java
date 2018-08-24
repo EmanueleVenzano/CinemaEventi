@@ -59,6 +59,7 @@ import static java.lang.StrictMath.abs;
 
 public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private GoogleMap mMap;
     ArrayList<ArrayList<Double>> lineCoefficents = new ArrayList<>();
     GoogleApiClient mGoogleApiClient;
@@ -70,7 +71,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     LatLng end=null;
     ArrayList<ArrayList<String>> data;
     boolean followMe = true;
-    boolean recalc = true;
+    private ChangeListener listener;
     int notFirsTime = 0;
 
     @Override
@@ -90,11 +91,62 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
             flag=getIntent().getStringExtra("flag");
         }
 
-        //------------------------------------------------------------------------------
+        listener = new ChangeListener();
+        listener.setChangeListener(new ChangeListener.Listener() {
+            @Override
+            public void onChange(LatLng latLng) {
+                Toast.makeText(DirectionsInfo.this, "REST = "+latLng.toString(), Toast.LENGTH_LONG).show();
+                mMap.clear();
+                if (notFirsTime>0){
+                    MarkerOptions markerOptions2 = new MarkerOptions();
+                    markerOptions2.position(latLng);
+                    markerOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                    mMap.addMarker(markerOptions2);
+                }
+                MarkerOptions markerOptions1 = new MarkerOptions();
+                markerOptions1.position(end);
+                markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mMap.addMarker(markerOptions1);
+
+                String url = getUrl(latLng, end);
+                Log.d("onMapClick", url.toString());
+                try {
+                    String finish = new FetchUrl().execute(url).get();
+                    List<List<HashMap<String, String>>> dota = new ParserTask().execute(finish).get();
+                    lineCoefficents = new LineCalcTask().execute(dota).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                try{
+                    TextView startTime = (TextView) findViewById(R.id.directionStart);
+                    startTime.setText(Html.fromHtml("<b>Partenza: </b>"+ data.get(0).get(0)));
+                    TextView endTime = (TextView) findViewById(R.id.directionArr);
+                    endTime.setText(Html.fromHtml("<b>Arrivo: </b>"+ data.get(0).get(1)));
+                    TextView time = (TextView) findViewById(R.id.directionTime);
+                    time.setText(Html.fromHtml("<b>Durata: </b>"+data.get(0).get(2)));
+                    TextView km = (TextView) findViewById(R.id.directionDistance);
+                    km.setText(Html.fromHtml("<b>Distanza: </b>"+data.get(0).get(3)));
+
+                    if (mode.equals("transit")){
+                        ArrayList<ArrayList<String>> toPass = new ArrayList<>();
+                        for (int i=1; i<data.size(); i++){
+                            toPass.add(data.get(i));
+                        }
+                        DirectionAdapter directionAdapter = new DirectionAdapter(DirectionsInfo.this, R.layout.direction_item, toPass, mMap);
+                        ListView listView = (ListView) findViewById(R.id.directionList);
+                        listView.setAdapter(directionAdapter);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
         bottomNavigationView.getMenu().findItem(R.id.navigation_mappe).setChecked(true);
         BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
-        //bottomNavigationView.setItemIconTintList(null);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -134,9 +186,6 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 return true;
             }
         });
-        //-------------------------------------------------------------------------------
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -150,27 +199,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                followMe = false;
-                final Button follow = (Button) findViewById(R.id.button_follow_me);
-                follow.setEnabled(true);
-                follow.setVisibility(View.VISIBLE);
-                follow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mLastLocation!=null){
-                            followMe = true;
-                            follow.setEnabled(false);
-                            follow.setVisibility(View.INVISIBLE);
-                            float bearing = mLastLocation.getBearing();
-                            final CameraPosition SYDNEY = new CameraPosition.Builder().target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
-                                    .zoom(18)
-                                    .bearing(bearing)
-                                    .tilt(60)
-                                    .build();
-                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
-                        }
-                    }
-                });
+                enableButton();
             }
         });
 
@@ -179,28 +208,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
             public void onCameraChange(CameraPosition cameraPosition) {
                 float zoom = cameraPosition.zoom;
                 if (zoom != 18 && notFirsTime>1){
-                    followMe = false;
-                    final Button follow = (Button) findViewById(R.id.button_follow_me);
-                    follow.setEnabled(true);
-                    follow.setVisibility(View.VISIBLE);
-                    follow.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (mLastLocation!=null){
-                                followMe = true;
-                                follow.setEnabled(false);
-                                follow.setVisibility(View.INVISIBLE);
-                                float bearing = mLastLocation.getBearing();
-                                final CameraPosition SYDNEY = new CameraPosition.Builder().target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
-                                        .zoom(18)
-                                        .bearing(bearing)
-                                        .tilt(60)
-                                        .build();
-                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
-
-                            }
-                        }
-                    });
+                    enableButton();
                 }
             }
         });
@@ -226,47 +234,135 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
             }
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(44.416899, 8.917900), 12));
-        followMe = true;
-        Button follow = (Button) findViewById(R.id.button_follow_me);
-        follow.setEnabled(false);
-        follow.setVisibility(View.INVISIBLE);
     }
 
-    private String getUrl(LatLng origin, LatLng dest) {
-        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-        String sensor = "sensor=false";
-        String parameters = str_origin + "&" + str_dest + "&" + sensor;
-        String output = "json";
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters+ "&mode=" + mode;
-        return url;
-    }
-
-    private String downloadUrl(String strUrl) throws IOException {
-        String data = "";
-        InputStream iStream = null;
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL(strUrl);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.connect();
-            iStream = urlConnection.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-            StringBuffer sb = new StringBuffer();
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            data = sb.toString();
-            Log.d("downloadUrl", data.toString());
-            br.close();
-        } catch (Exception e) {
-            Log.d("Exception", e.toString());
-        } finally {
-            iStream.close();
-            urlConnection.disconnect();
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLocationRequest = LocationRequest.create()
+                .setInterval(5000)
+                .setFastestInterval(2000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
-        return data;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        if (notFirsTime == 0){
+            listener.latLng = latLng;
+            listener.somethingChanged();
+        }
+        notFirsTime++;
+        new IfWrongWay().execute(latLng);
+        if (followMe){
+            float bearing = location.getBearing();
+            moveCamerToMe(latLng, bearing);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {}
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        if (mGoogleApiClient == null) {
+                            buildGoogleApiClient();
+                        }
+                        mMap.setMyLocationEnabled(true);
+                    }
+                } else {
+                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
+    }
+    @Override
+    public boolean onKeyDown (int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if(flag.equals("0")) {
+                Intent intent = new Intent(DirectionsInfo.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } else{
+                finish();
+            }
+        }
+        return true;
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void enableButton() {
+        followMe = false;
+        final Button follow = (Button) findViewById(R.id.button_follow_me);
+        follow.setEnabled(true);
+        follow.setVisibility(View.VISIBLE);
+        follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mLastLocation != null) {
+                    followMe = true;
+                    follow.setEnabled(false);
+                    follow.setVisibility(View.INVISIBLE);
+                    float bearing = mLastLocation.getBearing();
+                    moveCamerToMe(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), bearing);
+                }
+            }
+        });
+    }
+
+    private void moveCamerToMe(LatLng latLng, float bearing){
+        final CameraPosition SYDNEY = new CameraPosition.Builder().target(latLng)
+                .zoom(18)
+                .bearing(bearing)
+                .tilt(60)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
     }
 
     private class FetchUrl extends AsyncTask<String, Void, String> {
@@ -284,7 +380,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     }
 
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-       String dota;
+        String dota;
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
             JSONObject jObject;
@@ -335,35 +431,10 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        mLocationRequest = LocationRequest.create()
-                .setInterval(5000)
-                .setFastestInterval(2000)
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-    }
-
-    private class IfWrongWay extends AsyncTask<LatLng, Void, Boolean>{
+    private class IfWrongWay extends AsyncTask<LatLng, Void, MarkerOptions>{
         @Override
-        protected Boolean doInBackground (LatLng... params){
+        protected MarkerOptions doInBackground (LatLng... params){
+            MarkerOptions markerOptions = null;
             if (lineCoefficents.size()>0){
                 int foundedOk = 0;
                 for (int i = 0; i < lineCoefficents.size(); i++){
@@ -390,84 +461,26 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                     }
                 }
                 if (foundedOk == 0){
-                    recalc = true;
+                    listener.latLng = params[0];
+                    listener.somethingChanged();
                 }else {
-                    MarkerOptions markerOptions = new MarkerOptions()
+                    markerOptions = new MarkerOptions()
                             .position(params[0])
                             .title("Current Position")
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 }
             }
-            return false;
+            return markerOptions;
         }
-    }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        new IfWrongWay().execute(latLng);
-        if(end!=null) {
-            notFirsTime++;
-            if (recalc){
-                mMap.clear();
-                if (notFirsTime>1){
-                    MarkerOptions markerOptions2 = new MarkerOptions();
-                    markerOptions2.position(latLng);
-                    markerOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                    mMap.addMarker(markerOptions2);
-                }
-                MarkerOptions markerOptions1 = new MarkerOptions();
-                markerOptions1.position(end);
-                markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                mMap.addMarker(markerOptions1);
-
-                String url = getUrl(latLng, end);
-                Log.d("onMapClick", url.toString());
-                try {
-                    String finish = new FetchUrl().execute(url).get();
-                    List<List<HashMap<String, String>>> dota = new ParserTask().execute(finish).get();
-                    lineCoefficents = new LineCalcTask().execute(dota).get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                try{
-                    TextView startTime = (TextView) findViewById(R.id.directionStart);
-                    startTime.setText(Html.fromHtml("<b>Partenza: </b>"+ data.get(0).get(0)));
-                    TextView endTime = (TextView) findViewById(R.id.directionArr);
-                    endTime.setText(Html.fromHtml("<b>Arrivo: </b>"+ data.get(0).get(1)));
-                    TextView time = (TextView) findViewById(R.id.directionTime);
-                    time.setText(Html.fromHtml("<b>Durata: </b>"+data.get(0).get(2)));
-                    TextView km = (TextView) findViewById(R.id.directionDistance);
-                    km.setText(Html.fromHtml("<b>Distanza: </b>"+data.get(0).get(3)));
-
-                    if (mode.equals("transit")){
-                        ArrayList<ArrayList<String>> toPass = new ArrayList<>();
-                        for (int i=1; i<data.size(); i++){
-                            toPass.add(data.get(i));
-                        }
-                        DirectionAdapter directionAdapter = new DirectionAdapter(DirectionsInfo.this, R.layout.direction_item, toPass, mMap);
-                        ListView listView = (ListView) findViewById(R.id.directionList);
-                        listView.setAdapter(directionAdapter);
-                    }
-                    recalc = false;
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }else{
-
+        @Override
+        public void onPostExecute (MarkerOptions options){
+            if (options == null) return;
+            try{
+                mMap.addMarker(options);
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        }
-        if (followMe){
-            float bearing = location.getBearing();
-            final CameraPosition SYDNEY = new CameraPosition.Builder().target(latLng)
-                            .zoom(18)
-                            .bearing(bearing)
-                            .tilt(60)
-                            .build();
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
         }
     }
 
@@ -499,66 +512,40 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
 
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    private String getUrl(LatLng origin, LatLng dest) {
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        String sensor = "sensor=false";
+        String parameters = str_origin + "&" + str_dest + "&" + sensor;
+        String output = "json";
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters+ "&mode=" + mode;
+        return url;
     }
 
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
-    public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
+            iStream = urlConnection.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+            StringBuffer sb = new StringBuffer();
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
             }
-            return false;
-        } else {
-            return true;
+            data = sb.toString();
+            Log.d("downloadUrl", data.toString());
+            br.close();
+        } catch (Exception e) {
+            Log.d("Exception", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-                        if (mGoogleApiClient == null) {
-                            buildGoogleApiClient();
-                        }
-                        mMap.setMyLocationEnabled(true);
-                    }
-                } else {
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-        }
-    }
-
-    @Override
-    public boolean onKeyDown (int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(flag.equals("0")) {
-                Intent intent = new Intent(DirectionsInfo.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            } else{
-                finish();
-            }
-        }
-        return true;
+        return data;
     }
 }

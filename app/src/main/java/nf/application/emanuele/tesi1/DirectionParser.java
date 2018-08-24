@@ -43,8 +43,8 @@ public class DirectionParser {
                     arrival_timeString = arrival_time.getString("text");
                 }catch (JSONException e){
                     int minMod = (now.getMinutes()+Integer.parseInt(splitted[0]))%60;
-                    int hoMod = (now.getHours()+minMod)%24;
-                    actual.set(hoMod, minMod);
+                    int hoMod = (now.getHours()+(now.getMinutes()+Integer.parseInt(splitted[0]))/60)%24;
+                    actual.set(now.getYear(), now.getMonth(), now.getDate(), hoMod, minMod);
                     now = actual.getTime();
                     arrival_timeString = String.valueOf(now.getHours())+":"+String.valueOf(now.getMinutes());
                 }
