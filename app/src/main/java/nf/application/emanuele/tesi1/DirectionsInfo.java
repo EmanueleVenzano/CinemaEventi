@@ -17,6 +17,8 @@ import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +32,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -58,14 +61,14 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     private GoogleMap mMap;
     ArrayList<ArrayList<Double>> lineCoefficents = new ArrayList<>();
     GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
+    Location mLastLocation;
     String goTo=null;
     String mode="";
     String flag;
     LatLng end=null;
     ArrayList<ArrayList<String>> data;
+    boolean followMe = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +144,31 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setBuildingsEnabled(true);
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                followMe = false;
+                final Button follow = (Button) findViewById(R.id.button_follow_me);
+                follow.setEnabled(true);
+                follow.setVisibility(View.VISIBLE);
+                follow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        followMe = true;
+                        follow.setEnabled(false);
+                        follow.setVisibility(View.INVISIBLE);
+                        float bearing = mLastLocation.getBearing();
+                        final CameraPosition SYDNEY = new CameraPosition.Builder().target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
+                                .zoom(18)
+                                .bearing(bearing)
+                                .tilt(0)
+                                .build();
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
+                    }
+                });
+            }
+        });
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
@@ -162,6 +190,9 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 break;
             }
         }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(44.416899, 8.917900), 12));
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(44.416899, 8.917900), 12), 1000, null);
+
     }
 
     private String getUrl(LatLng origin, LatLng dest) {
@@ -279,8 +310,8 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = LocationRequest.create()
-                .setInterval(10000)
-                .setFastestInterval(5000)
+                .setInterval(5000)
+                .setFastestInterval(2000)
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -296,9 +327,6 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         /*MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
@@ -320,7 +348,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                     double Px = ((xp/m)+yp-q)/(m+(1/m));
                     if (Px>lineCoefficents.get(i).get(2) && Px<lineCoefficents.get(i).get(4)){
                         double distance = (abs(yp-((m*xp)+q)))/sqrt(1+(m*m));
-                        if (distance < 0.9){
+                        if (distance < 0.00065){
                             foundedOk++;
                             break;
                         }
@@ -328,7 +356,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                         double Py = m*Px+q;
                         double d1 = sqrt(pow((Py-lineCoefficents.get(i).get(3)), 2.0)+pow((Px-lineCoefficents.get(i).get(2)), 2.0));
                         double d2 = sqrt(pow((Py-lineCoefficents.get(i).get(5)), 2.0)+pow((Px-lineCoefficents.get(i).get(4)), 2.0));
-                        if (min(d1,d2) < 0.9){
+                        if (min(d1,d2) < 0.00065){
                         //if (min(d1,d2) < 0.0009){
                             foundedOk++;
                         }
@@ -381,8 +409,16 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
 
             }
         }
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
+        if (followMe){
+            float bearing = location.getBearing();
+            final CameraPosition SYDNEY = new CameraPosition.Builder().target(latLng)
+                            .zoom(18)
+                            .bearing(bearing)
+                            .tilt(0)
+                            .build();
+            //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
+        }
         /*if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }*/

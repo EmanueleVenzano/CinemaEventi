@@ -149,7 +149,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         MyApplication myApplication = (MyApplication) this.getApplication();
         ArrayList<DataCinema> dataCinema = myApplication.getDataInfo().cinemas;
-        LatLng centered = new LatLng(44.416899, 8.917900);
+        LatLng centered = null;
         for (int i = 0; i <dataCinema.size(); i++) {
             LatLng temp = new LatLng(Double.parseDouble(dataCinema.get(i).getLat()), Double.parseDouble(dataCinema.get(i).getLon()));
             Marker marker = mMap.addMarker(new MarkerOptions()
@@ -162,8 +162,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         mMap.setOnMarkerClickListener(this);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(centered));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centered, 12), 1000, null);
+        if (centered!=null){
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(centered));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centered, 12), 1000, null);
+        }
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -208,7 +210,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
-        if (center.equals("")){
+        if (center==null){
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12), 1000, null);
         }
