@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -69,6 +70,8 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     LatLng end=null;
     ArrayList<ArrayList<String>> data;
     boolean followMe = true;
+    boolean recalc = true;
+    boolean notFirsTime = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +142,6 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -155,18 +157,51 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 follow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        followMe = true;
-                        follow.setEnabled(false);
-                        follow.setVisibility(View.INVISIBLE);
-                        float bearing = mLastLocation.getBearing();
-                        final CameraPosition SYDNEY = new CameraPosition.Builder().target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
-                                .zoom(18)
-                                .bearing(bearing)
-                                .tilt(0)
-                                .build();
-                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
+                        if (mLastLocation!=null){
+                            followMe = true;
+                            follow.setEnabled(false);
+                            follow.setVisibility(View.INVISIBLE);
+                            float bearing = mLastLocation.getBearing();
+                            final CameraPosition SYDNEY = new CameraPosition.Builder().target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
+                                    .zoom(18)
+                                    .bearing(bearing)
+                                    .tilt(60)
+                                    .build();
+                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
+                        }
                     }
                 });
+            }
+        });
+
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                float zoom = cameraPosition.zoom;
+                if (zoom != 18){
+                    followMe = false;
+                    final Button follow = (Button) findViewById(R.id.button_follow_me);
+                    follow.setEnabled(true);
+                    follow.setVisibility(View.VISIBLE);
+                    follow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mLastLocation!=null){
+                                followMe = true;
+                                follow.setEnabled(false);
+                                follow.setVisibility(View.INVISIBLE);
+                                float bearing = mLastLocation.getBearing();
+                                final CameraPosition SYDNEY = new CameraPosition.Builder().target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
+                                        .zoom(18)
+                                        .bearing(bearing)
+                                        .tilt(60)
+                                        .build();
+                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
+
+                            }
+                        }
+                    });
+                }
             }
         });
         //Initialize Google Play Services
@@ -191,6 +226,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
             }
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(44.416899, 8.917900), 12));
+        followMe = true;
 //        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(44.416899, 8.917900), 12), 1000, null);
 
     }
@@ -312,7 +348,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         mLocationRequest = LocationRequest.create()
                 .setInterval(5000)
                 .setFastestInterval(2000)
-                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -324,29 +360,18 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     public void onConnectionSuspended(int i) {
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        /*MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        */
-        if(end!=null) {
-            boolean recalc = false;
+    private class IfWrongWay extends AsyncTask<LatLng, Void, Boolean>{
+        @Override
+        protected Boolean doInBackground (LatLng... params){
             if (lineCoefficents.size()>0){
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .position(latLng)
-                        .title("Current Position")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                 int foundedOk = 0;
                 for (int i = 0; i < lineCoefficents.size(); i++){
-                    double xp = location.getLatitude();
-                    double yp = location.getLongitude();
+                    double xp = params[0].latitude;
+                    double yp = params[0].longitude;
                     double m = lineCoefficents.get(i).get(0);
                     double q = lineCoefficents.get(i).get(1);
                     double Px = ((xp/m)+yp-q)/(m+(1/m));
-                    if (Px>lineCoefficents.get(i).get(2) && Px<lineCoefficents.get(i).get(4)){
+                    if (Px>(min(lineCoefficents.get(i).get(2),lineCoefficents.get(i).get(4))) && Px<(max(lineCoefficents.get(i).get(2),lineCoefficents.get(i).get(4)))){
                         double distance = (abs(yp-((m*xp)+q)))/sqrt(1+(m*m));
                         if (distance < 0.00065){
                             foundedOk++;
@@ -357,21 +382,44 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                         double d1 = sqrt(pow((Py-lineCoefficents.get(i).get(3)), 2.0)+pow((Px-lineCoefficents.get(i).get(2)), 2.0));
                         double d2 = sqrt(pow((Py-lineCoefficents.get(i).get(5)), 2.0)+pow((Px-lineCoefficents.get(i).get(4)), 2.0));
                         if (min(d1,d2) < 0.00065){
-                        //if (min(d1,d2) < 0.0009){
                             foundedOk++;
+                            break;
                         }
                     }
                 }
                 if (foundedOk == 0){
                     recalc = true;
+                }else {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(params[0])
+                            .title("Current Position")
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 }
             }
-            if (lineCoefficents.size()==0 || recalc){
+            return false;
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        new IfWrongWay().execute(latLng);
+        if(end!=null) {
+            if (recalc){
                 mMap.clear();
+                if (notFirsTime){
+                    MarkerOptions markerOptions2 = new MarkerOptions();
+                    markerOptions2.position(latLng);
+                    markerOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                    mMap.addMarker(markerOptions2);
+                }
+                notFirsTime = true;
                 MarkerOptions markerOptions1 = new MarkerOptions();
                 markerOptions1.position(end);
                 markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 mMap.addMarker(markerOptions1);
+
                 String url = getUrl(latLng, end);
                 Log.d("onMapClick", url.toString());
                 try {
@@ -414,14 +462,10 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
             final CameraPosition SYDNEY = new CameraPosition.Builder().target(latLng)
                             .zoom(18)
                             .bearing(bearing)
-                            .tilt(0)
+                            .tilt(60)
                             .build();
-            //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
         }
-        /*if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }*/
     }
 
     private class LineCalcTask extends AsyncTask<List<List<HashMap<String, String>>>, Void, ArrayList<ArrayList<Double>>> {
