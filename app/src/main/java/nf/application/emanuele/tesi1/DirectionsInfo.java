@@ -71,7 +71,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     ArrayList<ArrayList<String>> data;
     boolean followMe = true;
     boolean recalc = true;
-    boolean notFirsTime = false;
+    int notFirsTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +178,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 float zoom = cameraPosition.zoom;
-                if (zoom != 18){
+                if (zoom != 18 && notFirsTime>1){
                     followMe = false;
                     final Button follow = (Button) findViewById(R.id.button_follow_me);
                     follow.setEnabled(true);
@@ -227,8 +227,9 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(44.416899, 8.917900), 12));
         followMe = true;
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(44.416899, 8.917900), 12), 1000, null);
-
+        Button follow = (Button) findViewById(R.id.button_follow_me);
+        follow.setEnabled(false);
+        follow.setVisibility(View.INVISIBLE);
     }
 
     private String getUrl(LatLng origin, LatLng dest) {
@@ -371,9 +372,10 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                     double m = lineCoefficents.get(i).get(0);
                     double q = lineCoefficents.get(i).get(1);
                     double Px = ((xp/m)+yp-q)/(m+(1/m));
+                    double maxDistance = 0.0005;
                     if (Px>(min(lineCoefficents.get(i).get(2),lineCoefficents.get(i).get(4))) && Px<(max(lineCoefficents.get(i).get(2),lineCoefficents.get(i).get(4)))){
                         double distance = (abs(yp-((m*xp)+q)))/sqrt(1+(m*m));
-                        if (distance < 0.00065){
+                        if (distance < maxDistance){
                             foundedOk++;
                             break;
                         }
@@ -381,7 +383,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                         double Py = m*Px+q;
                         double d1 = sqrt(pow((Py-lineCoefficents.get(i).get(3)), 2.0)+pow((Px-lineCoefficents.get(i).get(2)), 2.0));
                         double d2 = sqrt(pow((Py-lineCoefficents.get(i).get(5)), 2.0)+pow((Px-lineCoefficents.get(i).get(4)), 2.0));
-                        if (min(d1,d2) < 0.00065){
+                        if (min(d1,d2) < maxDistance){
                             foundedOk++;
                             break;
                         }
@@ -406,15 +408,15 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         new IfWrongWay().execute(latLng);
         if(end!=null) {
+            notFirsTime++;
             if (recalc){
                 mMap.clear();
-                if (notFirsTime){
+                if (notFirsTime>1){
                     MarkerOptions markerOptions2 = new MarkerOptions();
                     markerOptions2.position(latLng);
                     markerOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                     mMap.addMarker(markerOptions2);
                 }
-                notFirsTime = true;
                 MarkerOptions markerOptions1 = new MarkerOptions();
                 markerOptions1.position(end);
                 markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -450,6 +452,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                         ListView listView = (ListView) findViewById(R.id.directionList);
                         listView.setAdapter(directionAdapter);
                     }
+                    recalc = false;
                 }catch (Exception e){
                     e.printStackTrace();
                 }
