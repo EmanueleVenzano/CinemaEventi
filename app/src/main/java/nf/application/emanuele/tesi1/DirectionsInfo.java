@@ -17,6 +17,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -73,6 +74,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     boolean followMe = true;
     private ChangeListener listener;
     int notFirsTime = 0;
+    private float zoom = 18;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,9 +188,16 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 return true;
             }
         });
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        CustomMapFragment customMapFragment = ((CustomMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
+        customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
+            @Override
+            public void onDrag(MotionEvent motionEvent) {
+                Toast.makeText(DirectionsInfo.this, "Someone dragged me", Toast.LENGTH_LONG).show();
+                enableButton();
+            }
+        });
+        customMapFragment.getMapAsync(this);
+        //mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -206,9 +215,15 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                float zoom = cameraPosition.zoom;
-                if (zoom != 18 && notFirsTime>1){
-                    enableButton();
+                Toast.makeText(DirectionsInfo.this, "Someone pinched me", Toast.LENGTH_LONG).show();
+                float zoomH = cameraPosition.zoom;
+                if (notFirsTime > 1){
+                    if (zoomH<16 || zoomH>20){
+                        zoom = 18;
+                        enableButton();
+                    }else{
+                        zoom = zoomH;
+                    }
                 }
             }
         });
@@ -358,7 +373,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
 
     private void moveCamerToMe(LatLng latLng, float bearing){
         final CameraPosition SYDNEY = new CameraPosition.Builder().target(latLng)
-                .zoom(18)
+                .zoom(zoom)
                 .bearing(bearing)
                 .tilt(60)
                 .build();
