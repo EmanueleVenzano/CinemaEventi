@@ -148,7 +148,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
         }
         MyApplication myApplication = (MyApplication) this.getApplication();
-        ArrayList<DataCinema> dataCinema = myApplication.getDataInfo().cinemas;
+        ArrayList<DataCinema> dataCinema = null;
+        while (dataCinema == null){
+            dataCinema = myApplication.getDataInfo().cinemas;
+        }
         LatLng centered = null;
         for (int i = 0; i <dataCinema.size(); i++) {
             LatLng temp = new LatLng(Double.parseDouble(dataCinema.get(i).getLat()), Double.parseDouble(dataCinema.get(i).getLon()));
