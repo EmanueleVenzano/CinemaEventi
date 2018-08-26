@@ -1,5 +1,7 @@
 package nf.application.emanuele.tesi1;
 
+import android.widget.ScrollView;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -34,6 +36,22 @@ public class DirectionParser {
                 try{
                     JSONObject departure_time = allLegs.getJSONObject("departure_time");
                     departure_timeString = departure_time.getString("text");
+                    String tot="";
+                    int l;
+                    for (l=0; departure_timeString.charAt(l)!=':'; l++){
+                        tot+=departure_timeString.charAt(l);
+                    }
+                    l++;
+                    int t = (Integer.parseInt(tot));
+                    tot = "";
+                    for (int m=l; departure_timeString.charAt(m)!='a'&&departure_timeString.charAt(m)!='p'; m++){
+                        tot += departure_timeString.charAt(m);
+                    }
+                    if (departure_timeString.charAt(departure_timeString.length()-2) == 'p'){
+                        t = (t+12)%24;
+                    }
+                    departure_timeString = String.valueOf(t)+":"+tot;
+
                 }catch (JSONException e){
                     departure_timeString = String.valueOf(now.getHours())+":"+String.valueOf(now.getMinutes());
                 }
@@ -41,6 +59,21 @@ public class DirectionParser {
                 try {
                     JSONObject arrival_time = allLegs.getJSONObject("arrival_time");
                     arrival_timeString = arrival_time.getString("text");
+                    String tot="";
+                    int l;
+                    for (l=0; arrival_timeString.charAt(l)!=':'; l++){
+                        tot+=arrival_timeString.charAt(l);
+                    }
+                    l++;
+                    int t = (Integer.parseInt(tot));
+                    tot = "";
+                    for (int m=l; arrival_timeString.charAt(m)!='a'&&arrival_timeString.charAt(m)!='p'; m++){
+                        tot += arrival_timeString.charAt(m);
+                    }
+                    if (arrival_timeString.charAt(arrival_timeString.length()-2) == 'p'){
+                        t = (t+12)%24;
+                    }
+                    arrival_timeString = String.valueOf(t)+":"+tot;
                 }catch (JSONException e){
                     int minMod = (now.getMinutes()+Integer.parseInt(splitted[0]))%60;
                     int hoMod = (now.getHours()+(now.getMinutes()+Integer.parseInt(splitted[0]))/60)%24;
