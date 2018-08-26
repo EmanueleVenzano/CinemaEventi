@@ -34,6 +34,8 @@ public class InfoCinema extends Fragment implements View.OnClickListener {
     private ImageButton buttonBike;
     private TextView streetCinema;
     private TextView cityCinema;
+    private String nomeFilm;
+    private String tornaInfoFilm;
 
     public static InfoCinema newInstance(){
         InfoCinema Fragment = new InfoCinema();
@@ -45,7 +47,8 @@ public class InfoCinema extends Fragment implements View.OnClickListener {
         try{
             View view = inflater.inflate(R.layout.activity_infocinema, container, false);
             name = ((cercaFilm)getActivity()).getMyData();
-
+            tornaInfoFilm = ((cercaFilm)getActivity()).getTornaInfoFilm();
+            nomeFilm = ((cercaFilm)getActivity()).getNomeFilm();
             MyApplication myApplication = (MyApplication) getActivity().getApplication();
             ArrayList<DataCinema> dataCinema = myApplication.getDataInfo().cinemas;
             int position;
@@ -103,6 +106,8 @@ public class InfoCinema extends Fragment implements View.OnClickListener {
             case R.id.buttonBikeCinema: intent.putExtra("mode", "bicycling"); break;
         }
         intent.putExtra("name", name);
+        intent.putExtra("nomeFilm", nomeFilm);
+        intent.putExtra("tornaInfoFilm", tornaInfoFilm);
         startActivity(intent);
     }
 

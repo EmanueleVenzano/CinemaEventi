@@ -249,11 +249,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent (context, MapsActivity.class);
+                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.putExtra("tornaInfoFilm", "1");
                 intent.putExtra("flag", "1");
                 intent.putExtra("cinema", headerTitle);
+                intent.putExtra("nomeFilm", film);
                 context.startActivity(intent);
             }
         });
+
         //ExpandableListView eLV = (ExpandableListView) parent;
         //eLV.expandGroup(groupPosition);
         final ExpandableListView elv = expandableListView;
@@ -264,38 +268,78 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             public void onClick(View v) {
                 ExpandableListView eLV = (ExpandableListView) parent;
                 if (isExpanded){
-                    int height=0;
+                    /*int child=0;
                     for(int i=0; i<elv.getChildCount(); i++) {
-                        height+=elv.getChildAt(i).getMeasuredHeight();
-                        height+=elv.getDividerHeight();
-                    }
-                    ViewGroup.LayoutParams params = listView.getLayoutParams();
-                    //params.height-=height;
-                    listView.setLayoutParams(params);
-                    listView.requestLayout();
-                    elv.collapseGroup(groupPosition);
+                        child+=elv.getChildAt(i).getMeasuredHeight();
+                        child+=elv.getDividerHeight();
+                    }*/
+                    int child = eLV.getExpandableListAdapter().getChildrenCount(groupPosition);
+                    boolean p = eLV.collapseGroup(groupPosition);
+                    setListViewHeightCollapse(groupPosition, child);
+                    /*if(p) {
+                        ViewGroup.LayoutParams params = listView.getLayoutParams();
+                        params.height-=height;
+                        listView.setLayoutParams(params);
+                        listView.requestLayout();
+                    }*/
                 }else{
-                    int height=0;
+                    /*int child=0;
                     for(int i=0; i<elv.getChildCount(); i++) {
-                        height+=elv.getChildAt(i).getMeasuredHeight();
-                        height+=elv.getDividerHeight();
-                    }
-                    ViewGroup.LayoutParams params = listView.getLayoutParams();
-                    //params.height+=height;
-                    //listView.setLayoutParams(params);
-                    //listView.requestLayout();
-                    boolean p = expand(eLV, groupPosition);
-                    p = expand(elv, groupPosition);
-                    if (p){
-
-                    }
+                        child+=elv.getChildAt(i).getMeasuredHeight();
+                        child+=elv.getDividerHeight();
+                    }*/
+                    int child = eLV.getExpandableListAdapter().getChildrenCount(groupPosition);
+                    setListViewHeightExpand(groupPosition, child);
+                    boolean p = eLV.expandGroup(groupPosition);
+                    /*if (p){
+                        ViewGroup.LayoutParams params = listView.getLayoutParams();
+                        params.height+=height;
+                        listView.setLayoutParams(params);
+                        listView.requestLayout();
+                    }*/
                 }
 
             }
-        });
 
+        });
         return convertView;
     }
+
+    //----------------------------------------------------------------------------------------------
+    public void setListViewHeightExpand (int groupPosition, int child) {
+        FilmCustomAdapter listadp = (FilmCustomAdapter) listView.getAdapter();
+        if (listadp != null) {
+            int totalHeight = 0;
+            for (int i = 0; i < listadp.getCount(); i++) {
+                View listItem = listadp.getView(i, null, listView);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            params.height = totalHeight + (listView.getDividerHeight() * (listadp.getCount() - 1)) * (child*68);
+            listView.setLayoutParams(params);
+            listView.requestLayout();
+            listadp.setHeight(listView.getLayoutParams().height);
+        }
+    }
+
+    public void setListViewHeightCollapse (int groupPosition, int child) {
+        FilmCustomAdapter listadp = (FilmCustomAdapter) listView.getAdapter();
+        if (listadp != null) {
+            int totalHeight = 0;
+            for (int i = 0; i < listadp.getCount(); i++) {
+                View listItem = listadp.getView(i, null, listView);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            params.height = totalHeight + (listView.getDividerHeight() * (listadp.getCount() - 1)) - child;
+            listView.setLayoutParams(params);
+            listView.requestLayout();
+            listadp.setHeight(listView.getLayoutParams().height);
+        }
+    }
+    //----------------------------------------------------------------------------------------------
 
     public boolean expand(ExpandableListView e, int g){
         return e.expandGroup(g);

@@ -43,6 +43,7 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
             viewHolder.luogo = (TextView)convertView.findViewById(R.id.item_luogo_evento);
             viewHolder.data = (TextView)convertView.findViewById(R.id.item_data_evento);
             viewHolder.ora = (TextView)convertView.findViewById(R.id.item_ora_evento);
+            viewHolder.descrizione = (TextView)convertView.findViewById(R.id.item_descrizione_evento);
             viewHolder.img = (ImageView)convertView.findViewById(R.id.ratingBar);
             convertView.setTag(viewHolder);
         }else{
@@ -56,6 +57,9 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
         viewHolder.luogo.setText("Dove: "+copertina.get(1));
         viewHolder.data.setText("Data: "+tempData[0]);
         viewHolder.ora.setText("Ora: "+tempData[1]);
+        viewHolder.descrizione.setText("Descrizione: "+ copertina.get(3));
+
+
 
         PreferitiDB db = new PreferitiDB(context);
         final ArrayList<ArrayList<String>> infoPreferito = db.getPreferito(copertina.get(2));
@@ -161,6 +165,7 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
         public TextView luogo;
         public TextView data;
         public TextView ora;
+        public TextView descrizione;
         public ImageView img;
 
         public ViewHolder(){

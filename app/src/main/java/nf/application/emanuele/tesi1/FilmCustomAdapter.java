@@ -66,7 +66,6 @@ public class FilmCustomAdapter extends ArrayAdapter<String> {
         ArrayList<ArrayList<DataShowTimes>> proiezioniPerCinema = new ArrayList<>();
         ArrayList<String> cinema = new ArrayList<>();
         for (int i = 0; i < dataShowTimes.get(position).size(); i++){
-//            if (!dataShowTimes.get(position).get(i).getCinema_id().equals(getItem(position).get(1))) continue;
             String cinema_name="";
             for (int j=0; j<cinemas.size(); j++){
                 if (cinemas.get(j).get(1).equals(dataShowTimes.get(position).get(i).getCinema_id())){

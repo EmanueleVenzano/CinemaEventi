@@ -33,11 +33,10 @@ import java.util.concurrent.ExecutionException;
 
 public class Locandine extends Fragment implements AdapterView.OnItemClickListener {
     private GridView itemsGridView;
-    private List<ArrayList<String>> films = new LinkedList();
+    private List<ArrayList<String>> films;
     MyApplication myApplication;
-    ArrayList<DataFilm> filmsT = new ArrayList<>();
-    ChangeListener filmlistener = new ChangeListener();
-    int p = 0;
+    ArrayList<DataFilm> filmsT ;
+    ChangeListener filmlistener;
 
     public static Locandine newInstance(){
         Locandine Fragment = new Locandine();
@@ -50,8 +49,9 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
         myApplication = (MyApplication) getActivity().getApplication();
         itemsGridView = (GridView) view.findViewById(R.id.itemsListView);
         itemsGridView.setOnItemClickListener(this);
+        filmsT = new ArrayList<>();
+        filmlistener = new ChangeListener();
         if (myApplication.getDataInfo().films == null) {
-            p = 1;
             DataInfo dF = myApplication.getDataInfo();
             String[] params = new String[dF.nearestCinemas.size()];
             for (int i=0; i<dF.nearestCinemas.size(); i++){
@@ -72,6 +72,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
         }else{
             filmsT = myApplication.getDataInfo().films;
         }
+        films = new LinkedList();
         for (int i = 0; i < filmsT.size(); i++) {
             ArrayList<String> temp = new ArrayList<>();
             if (!filmsT.get(i).getTitle().equals("null")){
@@ -90,7 +91,7 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
     public void onItemClick(AdapterView<?> parent, View v, int position, long id){
         ArrayList<String> item = films.get(position);
         ((cercaFilm)getActivity()).onSobstitute(1);
-        ((cercaFilm)getActivity()).setMyData(item.get(0));
+        ((cercaFilm)getActivity()).setNomeFilm(item.get(0));
     }
 
     public class DownloadFilmTask extends AsyncTask<String, Void, Boolean> {
@@ -114,7 +115,6 @@ public class Locandine extends Fragment implements AdapterView.OnItemClickListen
                     }
                 }
             }
-            p = 2;
             filmlistener.somethingChanged();
             return true;
         }

@@ -64,7 +64,7 @@ public class DirectionAdapter extends ArrayAdapter<ArrayList<String>> {
         ArrayList<String> copertina = getItem(position);
         LatLng start = new LatLng(Double.parseDouble(copertina.get(0)), Double.parseDouble(copertina.get(1)));
         LatLng end = new LatLng(Double.parseDouble(copertina.get(2)), Double.parseDouble(copertina.get(3)));
-        int numMarkerStart = position+1;
+        int numMarkerStart = position;
         String urlMarkerStart = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+toAlphabetic(numMarkerStart)+"|FE6256|000000";
         try {
             tempBitmap = new BitmapDownloaderTask().execute(urlMarkerStart).get();
@@ -79,7 +79,7 @@ public class DirectionAdapter extends ArrayAdapter<ArrayList<String>> {
                 .position(start)
                 .icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(tempBitmap, width, height, false)));
         mMap.addMarker(startMarker);
-        int numMarkerEnd = position+2;
+        int numMarkerEnd = position+1;
         String urlMarkerEnd = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+toAlphabetic(numMarkerEnd)+"|FE6256|000000";
         try {
             tempBitmap = new BitmapDownloaderTask().execute(urlMarkerEnd).get();

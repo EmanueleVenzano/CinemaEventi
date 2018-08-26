@@ -35,6 +35,8 @@ public class PreferitiDB {
     public static final int EVENTI_DATA_COL = 2;
     public static final String EVENTI_LUOGO = "eventiLuogo";
     public static final int EVENTI_LUOGO_COL = 3;
+    public static final String EVENTI_DESCRIZIONE = "eventiDescrizione";
+    public static final int EVENTI_DESCRIZIONE_COL = 4;
 
     //-------------------
     public static final String CREATE_PREFERITI_TABLE = "CREATE TABLE " + PREFERITI_TABLE + "(" +
@@ -50,7 +52,8 @@ public class PreferitiDB {
             EVENTI_ID + "INT AUTO_INCREMENT PRIMARY KEY, "+
             EVENTI_TITOLO + " TEXT, " +
             EVENTI_DATA + " TEXT, " +
-            EVENTI_LUOGO + " TEXT);";
+            EVENTI_LUOGO + " TEXT, " +
+            EVENTI_DESCRIZIONE + " TEXT);";
     public static final String DROP_EVENTI_TABLE = "DROP TABLE IF EXISTS "+ EVENTI_TABLE;
 //-------------------------------
     public PreferitiDB(Context context){
@@ -196,6 +199,8 @@ public class PreferitiDB {
                 temp.add(luogo);
                 String titolo = cursor.getString(EVENTI_TITOLO_COL);
                 temp.add(titolo);
+                String descrizione = cursor.getString(EVENTI_DESCRIZIONE_COL);
+                temp.add(descrizione);
                 result.add(temp);
             }
         } catch (Exception e) {

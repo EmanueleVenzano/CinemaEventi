@@ -61,6 +61,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String center="";
     String flag;
     LatLng end=null;
+    String tornaInfoFilm;
+    String nomeFilm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         goTo = getIntent().getStringExtra("name");
         mode= getIntent().getStringExtra("mode");
         center = getIntent().getStringExtra("cinema");
+        tornaInfoFilm = getIntent().getStringExtra("tornaInfoFilm");
+        nomeFilm = getIntent().getStringExtra("nomeFilm");
+        if(tornaInfoFilm == null){
+            tornaInfoFilm = "0";
+        }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
@@ -295,6 +302,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public boolean onMarkerClick (Marker marker){
         Intent intent = new Intent(this, cercaFilm.class);
         intent.putExtra("name", "cinema");
+        intent.putExtra("tornaInfoFilm", tornaInfoFilm);
+        intent.putExtra("nomeFilm", nomeFilm);
         intent.putExtra("cinemaName", marker.getTitle());
         startActivity(intent);
         return true;

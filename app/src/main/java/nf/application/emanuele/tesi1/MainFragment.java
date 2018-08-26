@@ -35,6 +35,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
             case R.id.MapButton:
                 intent = new Intent (getContext(), MapsActivity.class);
                 intent.putExtra("name", "");
+                intent.putExtra("tornaInfoFilm", "0");
                 break;
             case R.id.SavedButton:
                 intent = new Intent (getContext(), Preferiti.class);

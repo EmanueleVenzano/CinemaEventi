@@ -45,8 +45,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    ArrayList<DataCinema> cinemas = new ArrayList<>();
-    ChangeListener listener = new ChangeListener();
+    ArrayList<DataCinema> cinemas;
+    ChangeListener listener;
     ArrayList<DataCinema> nearestCinemas = null;
 
     @Override
@@ -54,6 +54,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         super.onCreate(savedInstaceState);
         getIntent().getFlags();
          myApplication = (MyApplication) getApplication();
+         listener = new ChangeListener();
+         cinemas = new ArrayList<>();
         if (myApplication.getDataInfo() == null) {
             getFragmentManager().beginTransaction().replace(android.R.id.content, new MainFragmentLogo()).commit();
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -175,10 +177,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
             }
-            buildGoogleApiClient();
             return false;
         } else {
-            buildGoogleApiClient();
             return true;
         }
     }

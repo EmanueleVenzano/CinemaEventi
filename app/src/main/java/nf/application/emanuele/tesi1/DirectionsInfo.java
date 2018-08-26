@@ -75,6 +75,8 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     private ChangeListener listener;
     int notFirsTime = 0;
     private float zoom = 18;
+    String tornaInfoFilm;
+    String nomeFilm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,9 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         } else {
             flag=getIntent().getStringExtra("flag");
         }
+
+        tornaInfoFilm = getIntent().getStringExtra("tornaInfoFilm");
+        nomeFilm = getIntent().getStringExtra("nomeFilm");
 
         listener = new ChangeListener();
         listener.setChangeListener(new ChangeListener.Listener() {
@@ -196,14 +201,13 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
             }
         });
         customMapFragment.getMapAsync(this);
-        //mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setBuildingsEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.setBuildingsEnabled(true);
         /*mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -311,8 +315,11 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     public boolean onKeyDown (int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if(flag.equals("0")) {
-                Intent intent = new Intent(DirectionsInfo.this, MainActivity.class);
+                Intent intent = new Intent(DirectionsInfo.this, cercaFilm.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("tornaInfoFilm", tornaInfoFilm);
+                intent.putExtra("cinemaName", goTo);
+                intent.putExtra("nomeFilm", nomeFilm);
                 startActivity(intent);
             } else{
                 finish();
@@ -373,7 +380,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         final CameraPosition SYDNEY = new CameraPosition.Builder().target(latLng)
                 .zoom(zoom)
                 .bearing(bearing)
-                .tilt(60)
+                .tilt(50)
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(SYDNEY), 2000, null);
     }

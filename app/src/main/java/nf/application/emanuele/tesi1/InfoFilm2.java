@@ -50,7 +50,6 @@ public class InfoFilm2 extends Fragment {
     ArrayList<ArrayList<DataShowTimes>> showtimes = new ArrayList<>();
     String name = "";
     MyApplication myApplication;
-    int p = 0;
 
     public static InfoFilm2 newInstance(){
         InfoFilm2 Fragment = new InfoFilm2();
@@ -61,7 +60,7 @@ public class InfoFilm2 extends Fragment {
     public View onCreateView (LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         setRetainInstance(true);
         View view = inflater.inflate(R.layout.activity_infofilm, container, false);
-        name = ((cercaFilm)getActivity()).getMyData();
+        name = ((cercaFilm)getActivity()).getNomeFilm();
         myApplication = (MyApplication) getActivity().getApplication();
         String movie_id="";
         String urlToString ="";
@@ -73,7 +72,6 @@ public class InfoFilm2 extends Fragment {
             }
         }
         if (myApplication.getDataInfo().showTimes == null){
-            p = 1;
             DataInfo dF = myApplication.getDataInfo();
             String[] params = new String[dF.nearestCinemas.size()];
             for (int i=0; i<dF.nearestCinemas.size(); i++){
@@ -107,8 +105,14 @@ public class InfoFilm2 extends Fragment {
         titleFilm.setText(name);
         orderByDate();
         giorni = convertDays(giorni);
+
         FilmCustomAdapter listAdapter = new FilmCustomAdapter(InfoFilm2.this.getContext(), R.layout.proiezioni_listview, cinema, giorni, showtimes, name, explistView);
         explistView.setAdapter(listAdapter);
+        setListViewHeight();
+        return view;
+    }
+
+    public void setListViewHeight(){
         FilmCustomAdapter listadp = (FilmCustomAdapter) explistView.getAdapter();
         if (listadp != null) {
             int totalHeight = 0;
@@ -123,7 +127,6 @@ public class InfoFilm2 extends Fragment {
             explistView.requestLayout();
             listadp.setHeight(explistView.getLayoutParams().height);
         }
-        return view;
     }
 
     public ArrayList<DataShowTimes> parseShowTime(JSONObject jObject) {
