@@ -37,6 +37,18 @@ import static java.lang.Math.sqrt;
 
 public class MyApplication extends Application {
     private DataInfo dataInfo = null;
+    private String api_key = "9AmxQRqw3gltnlBKQvR9CgJDwUaC6DLg";
+    private String country_code;
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+        country_code = getApplicationContext().getResources().getConfiguration().locale.getCountry();
+    }
+
+    public String getCountry_code() {
+        return country_code;
+    }
 
     public void setDataShowTimes(ArrayList<DataShowTimes> dataShowTimes){
         if (dataInfo == null){
@@ -59,83 +71,18 @@ public class MyApplication extends Application {
         dataInfo.cinemas = dataCinemas;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    /*private class downloadUrlTask extends AsyncTask<String, String, String>{
-        @Override
-        protected String doInBackground(String... param){
-            String data = "";
-            InputStream iStream = null;
-            HttpURLConnection urlConnection = null;
-            try {
-                URL url = new URL(param[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestProperty("X-API-Key","9AmxQRqw3gltnlBKQvR9CgJDwUaC6DLg");
-                urlConnection.connect();
-                iStream = urlConnection.getInputStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-                StringBuffer sb = new StringBuffer();
-                String line = "";
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                }
-                data = sb.toString();
-                Log.d("downloadUrl", data.toString());
-                br.close();
-
-            } catch (Exception e) {
-                Log.d("Exception", e.toString());
-            } finally {
-                try {
-                    iStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                urlConnection.disconnect();
-            }
-            return data;
+    public void setDataNearestCinemas(ArrayList<DataCinema> dataCinemas){
+        if (dataInfo == null){
+            dataInfo = new DataInfo();
         }
-        @Override
-        protected void onPostExecute (String result){
-            super.onPostExecute(result);
-        }
-    }*/
+        dataInfo.nearestCinemas = dataCinemas;
+    }
 
+    public String getApiKey(){
+        return api_key;
+    }
 
     public DataInfo getDataInfo (){
         return dataInfo;
     }
-
-        /*@Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-                        if (mGoogleApiClient == null) {
-                            buildGoogleApiClient();
-                        }
-                        mMap.setMyLocationEnabled(true);
-                    }
-                } else {
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-        }
-    }*/
-
 }

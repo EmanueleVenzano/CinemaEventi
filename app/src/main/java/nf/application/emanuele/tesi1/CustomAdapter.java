@@ -1,5 +1,6 @@
 package nf.application.emanuele.tesi1;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,10 +18,11 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
-public class CustomAdapter extends ArrayAdapter<Copertina> {
-    public CustomAdapter (Context context, int textViewResoutceId, List<Copertina> objects){
+public class CustomAdapter extends ArrayAdapter<ArrayList<String>> {
+    public CustomAdapter (Context context, int textViewResoutceId, List<ArrayList<String>> objects){
         super(context, textViewResoutceId, objects);
     }
 
@@ -36,46 +38,28 @@ public class CustomAdapter extends ArrayAdapter<Copertina> {
             }
             convertView.setTag(R.id.imgLocandine, convertView.findViewById(R.id.imgLocandine));
             viewHolder = new ViewHolder();
-            //viewHolder.name = (TextView)convertView.findViewById(R.id.titleLocandine);
-            //viewHolder.genere=(TextView)convertView.findViewById(R.id.genereLocandine);
             viewHolder.img = (ImageView) convertView.getTag(R.id.imgLocandine);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        Copertina copertina =getItem(position);
-        //viewHolder.name.setText("Titolo: "+copertina.name);
-        //viewHolder.genere.setText("Genere: "+copertina.genere);
-
-        if(copertina.img==null) {
+        ArrayList<String> copertina =getItem(position);
+        if(copertina.get(1) == null) {
             Drawable placeholder = viewHolder.img.getContext().getResources().getDrawable(R.drawable.bho1);
             viewHolder.img.setImageDrawable(placeholder);
         }else {
             ImageDownloaderTask idt = new ImageDownloaderTask((ImageView)convertView.findViewById(R.id.imgLocandine));
-            idt.execute(copertina.img.toString());
+            idt.execute(copertina.get(1));
         }
-
-        /*Bitmap bmp = null;
-        try{
-            URLConnection c = copertina.img.openConnection();
-            InputStream is = c.getInputStream();
-            bmp = BitmapFactory.decodeStream(is);
-        }catch (Exception error){
-            Log.e("!!!!!!!!!!!", error.getMessage());
-            error.printStackTrace();
-        }
-        viewHolder.img.setImageBitmap(bmp);*/
         return convertView;
     }
 
     private class ViewHolder {
         public TextView name;
-        public TextView genere;
         public ImageView img;
 
         public ViewHolder(){
             name=null;
-            genere=null;
             img=null;
         }
     }
@@ -106,14 +90,6 @@ public class CustomAdapter extends ArrayAdapter<Copertina> {
                         Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.ic_launcher_background);
                         imageView.setImageDrawable(placeholder);
                     }
-//                    WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-  //                  Display display = wm.getDefaultDisplay();
-    //                Point size = new Point();
-      //              display.getSize(size);
-        //            int height = size.y/3;
-          //          height=1;
-            //        imageView.on;
-              //      height=4400404;
                 }
             }
         }

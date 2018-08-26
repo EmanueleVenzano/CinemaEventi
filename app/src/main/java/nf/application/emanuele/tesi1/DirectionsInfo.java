@@ -192,7 +192,6 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         customMapFragment.setOnDragListener(new MapWrapperLayout.OnDragListener() {
             @Override
             public void onDrag(MotionEvent motionEvent) {
-                Toast.makeText(DirectionsInfo.this, "Someone dragged me", Toast.LENGTH_LONG).show();
                 enableButton();
             }
         });
@@ -215,7 +214,6 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                Toast.makeText(DirectionsInfo.this, "Someone pinched me", Toast.LENGTH_LONG).show();
                 float zoomH = cameraPosition.zoom;
                 if (notFirsTime > 1){
                     if (zoomH<16 || zoomH>20){
@@ -458,7 +456,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                     double m = lineCoefficents.get(i).get(0);
                     double q = lineCoefficents.get(i).get(1);
                     double Px = ((xp/m)+yp-q)/(m+(1/m));
-                    double maxDistance = 0.0005;
+                    double maxDistance = 0.0012558343839854;
                     if (Px>(min(lineCoefficents.get(i).get(2),lineCoefficents.get(i).get(4))) && Px<(max(lineCoefficents.get(i).get(2),lineCoefficents.get(i).get(4)))){
                         double distance = (abs(yp-((m*xp)+q)))/sqrt(1+(m*m));
                         if (distance < maxDistance){
