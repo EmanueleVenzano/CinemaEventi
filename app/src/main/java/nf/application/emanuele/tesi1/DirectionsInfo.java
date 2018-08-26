@@ -128,24 +128,25 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                     e.printStackTrace();
                 }
                 try{
-                    TextView startTime = (TextView) findViewById(R.id.directionStart);
-                    startTime.setText(Html.fromHtml("<b>Partenza: </b>"+ data.get(0).get(0)));
-                    TextView endTime = (TextView) findViewById(R.id.directionArr);
-                    endTime.setText(Html.fromHtml("<b>Arrivo: </b>"+ data.get(0).get(1)));
-                    TextView time = (TextView) findViewById(R.id.directionTime);
-                    time.setText(Html.fromHtml("<b>Durata: </b>"+data.get(0).get(2)));
-                    TextView km = (TextView) findViewById(R.id.directionDistance);
-                    km.setText(Html.fromHtml("<b>Distanza: </b>"+data.get(0).get(3)));
-
-                    if (mode.equals("transit")){
+//                    if (mode.equals("transit")){
                         ArrayList<ArrayList<String>> toPass = new ArrayList<>();
                         for (int i=1; i<data.size(); i++){
                             toPass.add(data.get(i));
                         }
+                        View header = getLayoutInflater().inflate(R.layout.grid_layout, null);
+                        TextView startTime = (TextView) header.findViewById(R.id.directionStart);
+                        startTime.setText(Html.fromHtml("<b>Partenza: </b>"+ data.get(0).get(0)));
+                        TextView endTime = (TextView) header.findViewById(R.id.directionArr);
+                        endTime.setText(Html.fromHtml("<b>Arrivo: </b>"+ data.get(0).get(1)));
+                        TextView time = (TextView) header.findViewById(R.id.directionTime);
+                        time.setText(Html.fromHtml("<b>Durata: </b>"+data.get(0).get(2)));
+                        TextView km = (TextView) header.findViewById(R.id.directionDistance);
+                        km.setText(Html.fromHtml("<b>Distanza: </b>"+data.get(0).get(3)));
                         DirectionAdapter directionAdapter = new DirectionAdapter(DirectionsInfo.this, R.layout.direction_item, toPass, mMap);
                         ListView listView = (ListView) findViewById(R.id.directionList);
+                        listView.addHeaderView(header);
                         listView.setAdapter(directionAdapter);
-                    }
+  //                  }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
