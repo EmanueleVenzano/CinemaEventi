@@ -51,7 +51,6 @@ public class DirectionParser {
                         t = (t+12)%24;
                     }
                     departure_timeString = String.valueOf(t)+":"+tot;
-
                 }catch (JSONException e){
                     departure_timeString = String.valueOf(now.getHours())+":"+String.valueOf(now.getMinutes());
                 }

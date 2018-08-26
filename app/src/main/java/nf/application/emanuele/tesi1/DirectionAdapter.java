@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,12 +95,41 @@ public class DirectionAdapter extends ArrayAdapter<ArrayList<String>> {
         mMap.addMarker(endMarker);
         viewHolder.start.setText(toAlphabetic(numMarkerStart));
         viewHolder.end.setText(toAlphabetic(numMarkerEnd));
-        viewHolder.distance.setText(copertina.get(4));
+        viewHolder.distance.setText(Html.fromHtml("<b>Tratta: </b>"+copertina.get(4)));
         if (!copertina.get(5).equals("WALKING")){
-            viewHolder.line.setText(copertina.get(6));
-            viewHolder.numStops.setText(copertina.get(7));
-            viewHolder.startTime.setText(copertina.get(8));
-            viewHolder.endTime.setText(copertina.get(9));
+            viewHolder.line.setText(Html.fromHtml("<b>"+copertina.get(6)+"</b>"));
+            viewHolder.numStops.setText(Html.fromHtml("<b>Fermate: </b>"+copertina.get(7)));
+            String tot="";
+            int l;
+            for (l=0; copertina.get(8).charAt(l)!=':'; l++){
+                tot+=copertina.get(8).charAt(l);
+            }
+            l++;
+            int t = (Integer.parseInt(tot));
+            tot = "";
+            for (int m=l; m<copertina.get(8).length()&&copertina.get(8).charAt(m)!='a'&&copertina.get(8).charAt(m)!='p'; m++){
+                tot += copertina.get(8).charAt(m);
+            }
+            if (copertina.get(8).charAt(copertina.get(8).length()-2) == 'p'){
+                t = (t+12)%24;
+            }
+            copertina.set(8, String.valueOf(t)+":"+tot);
+            viewHolder.startTime.setText(Html.fromHtml("<b>Ora salita: </b>"+copertina.get(8)));
+            tot="";
+            for (l=0; copertina.get(9).charAt(l)!=':'; l++){
+                tot+=copertina.get(9).charAt(l);
+            }
+            l++;
+            t = (Integer.parseInt(tot));
+            tot = "";
+            for (int m=l; m<copertina.get(9).length()&&copertina.get(9).charAt(m)!='a'&&copertina.get(9).charAt(m)!='p'; m++){
+                tot += copertina.get(9).charAt(m);
+            }
+            if (copertina.get(9).charAt(copertina.get(9).length()-2) == 'p'){
+                t = (t+12)%24;
+            }
+            copertina.set(9, String.valueOf(t)+":"+tot);
+            viewHolder.endTime.setText(Html.fromHtml("<b>Ora discesa: </b>"+copertina.get(9)));
             if (copertina.get(10).equals("null")) {
                 Drawable placeholder = viewHolder.icon.getContext().getResources().getDrawable(R.drawable.bho1);
                 viewHolder.icon.setImageDrawable(placeholder);
@@ -111,7 +141,7 @@ public class DirectionAdapter extends ArrayAdapter<ArrayList<String>> {
             viewHolder.line.setText("");
             viewHolder.endTime.setText("");
             viewHolder.startTime.setText("");
-            viewHolder.icon.setImageResource(R.drawable.ic_walk);
+            viewHolder.icon.setImageResource(R.drawable.ic_walk_black);
         }
         return convertView;
     }

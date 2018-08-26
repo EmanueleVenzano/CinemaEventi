@@ -32,13 +32,10 @@
         android:textColor="#737373"
         android:visibility="invisible">
     </Button>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
+        <nf.application.emanuele.tesi1.MaxHeightLinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            app:maxHeightDp="200"
             android:orientation="vertical"
             android:background="@drawable/buttonmap"
             android:layout_marginBottom="5dp"
@@ -97,15 +94,14 @@
                     android:text="Distanza:" />
             </GridLayout>
 
-            <nf.application.emanuele.tesi1.CustomScrollView
+            <ListView
                 android:id="@+id/directionList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxHeight="100dp"
-                android:layout_below="@id/directionGrid"></nf.application.emanuele.tesi1.CustomScrollView>
-        </LinearLayout>
-    </ScrollView>
-
+                android:layout_below="@id/directionGrid">
+            </ListView>
+        </nf.application.emanuele.tesi1.MaxHeightLinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"

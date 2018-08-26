@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +36,7 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         ViewHolder viewHolder = null;
+
         if (convertView==null){
             LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.eventi_items_listview, null);
@@ -45,6 +47,7 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
             viewHolder.ora = (TextView)convertView.findViewById(R.id.item_ora_evento);
             viewHolder.descrizione = (TextView)convertView.findViewById(R.id.item_descrizione_evento);
             viewHolder.img = (ImageView)convertView.findViewById(R.id.ratingBar);
+            viewHolder.bottone =(Button)convertView.findViewById(R.id.eventiLink);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
@@ -58,6 +61,13 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
         viewHolder.data.setText("Data: "+tempData[0]);
         viewHolder.ora.setText("Ora: "+tempData[1]);
         viewHolder.descrizione.setText("Descrizione: "+ copertina.get(3));
+        viewHolder.bottone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.ticketone.it"));
+                context.startActivity(browserIntent);
+            }
+        });
 
 
 
@@ -167,6 +177,7 @@ public class EventiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
         public TextView ora;
         public TextView descrizione;
         public ImageView img;
+        public Button bottone;
 
         public ViewHolder(){
             titolo=null;
