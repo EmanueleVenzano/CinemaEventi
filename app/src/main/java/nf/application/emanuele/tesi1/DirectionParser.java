@@ -50,9 +50,9 @@ public class DirectionParser {
                     if (departure_timeString.charAt(departure_timeString.length()-2) == 'p'){
                         t = (t+12)%24;
                     }
-                    departure_timeString = String.valueOf(t)+":"+tot;
+                    departure_timeString = (t < 10 ? "0" : "")+t+":"+(Integer.parseInt(tot) < 10 ? "0": "")+tot;
                 }catch (JSONException e){
-                    departure_timeString = String.valueOf(now.getHours())+":"+String.valueOf(now.getMinutes());
+                    departure_timeString = (now.getHours()<10?"0":"")+now.getHours()+":"+(now.getMinutes()<10?"0":"")+now.getMinutes();
                 }
                 String arrival_timeString;
                 try {
@@ -72,13 +72,24 @@ public class DirectionParser {
                     if (arrival_timeString.charAt(arrival_timeString.length()-2) == 'p'){
                         t = (t+12)%24;
                     }
-                    arrival_timeString = String.valueOf(t)+":"+tot;
+                    arrival_timeString = (t < 10 ? "0" : "")+t+":"+(Integer.parseInt(tot) < 10 ? "0": "")+tot;
                 }catch (JSONException e){
-                    int minMod = (now.getMinutes()+Integer.parseInt(splitted[0]))%60;
-                    int hoMod = (now.getHours()+(now.getMinutes()+Integer.parseInt(splitted[0]))/60)%24;
+                    int minMod = now.getMinutes();
+                    int hoMod = now.getHours();
+                    if (splitted.length == 2){
+                        minMod = (minMod+Integer.parseInt(splitted[0]))%60;
+                        hoMod = (hoMod+(now.getMinutes()+Integer.parseInt(splitted[0]))/60)%24;
+                    } else if (splitted.length == 4){
+                        if (splitted[1].equals("hour") || splitted[1].equals("hours")){
+                            minMod = (minMod+Integer.parseInt(splitted[2]))%60;
+                            hoMod = (hoMod+(now.getMinutes()+Integer.parseInt(splitted[2]))/60+Integer.parseInt(splitted[0]))%24;
+                        }else{
+                            hoMod = (hoMod+Integer.parseInt(splitted[2]))%24;
+                        }
+                    }
                     actual.set(now.getYear(), now.getMonth(), now.getDate(), hoMod, minMod);
                     now = actual.getTime();
-                    arrival_timeString = String.valueOf(now.getHours())+":"+String.valueOf(now.getMinutes());
+                    arrival_timeString = (now.getHours()<10?"0":"")+now.getHours()+":"+(now.getMinutes()<10?"0":"")+now.getMinutes();
                 }
                 timing.add(departure_timeString);
                 timing.add(arrival_timeString);
