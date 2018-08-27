@@ -23,13 +23,13 @@ public class BottomBar extends AppCompatActivity {
                         Toast.makeText(BottomBar.this, "Mappe", Toast.LENGTH_SHORT).show();
                         break;*/
                     case R.id.navigation_film:
-                        Toast.makeText(BottomBar.this, "Film", Toast.LENGTH_SHORT).show();
+//                  Toast.makeText(BottomBar.this, "Film", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_preferiti:
-                        Toast.makeText(BottomBar.this, "Preferiti", Toast.LENGTH_SHORT).show();
+  //                      Toast.makeText(BottomBar.this, "Preferiti", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_eventi:
-                        Toast.makeText(BottomBar.this, "Eventi", Toast.LENGTH_SHORT).show();
+    //                    Toast.makeText(BottomBar.this, "Eventi", Toast.LENGTH_SHORT).show();
                         break;
                 }
                 return true;

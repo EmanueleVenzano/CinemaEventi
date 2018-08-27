@@ -220,7 +220,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(MainActivity.this, "*onLocationChanged*", Toast.LENGTH_LONG).show();
+//        Toast.makeText(MainActivity.this, "*onLocationChanged*", Toast.LENGTH_LONG).show();
         if (location != null){
             this.location = new LatLng(location.getLatitude(), location.getLongitude());
         }

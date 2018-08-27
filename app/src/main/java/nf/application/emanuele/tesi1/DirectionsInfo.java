@@ -103,15 +103,14 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         listener.setChangeListener(new ChangeListener.Listener() {
             @Override
             public void onChange(LatLng latLng) {
-                Toast.makeText(DirectionsInfo.this, "REST = "+latLng.toString(), Toast.LENGTH_LONG).show();
                 mMap.clear();
-                if (notFirsTime>0){
+/*                if (notFirsTime>0){
                     MarkerOptions markerOptions2 = new MarkerOptions();
                     markerOptions2.position(latLng);
                     markerOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                     mMap.addMarker(markerOptions2);
                 }
-                MarkerOptions markerOptions1 = new MarkerOptions();
+*/              MarkerOptions markerOptions1 = new MarkerOptions();
                 markerOptions1.position(end);
                 markerOptions1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 mMap.addMarker(markerOptions1);
@@ -144,7 +143,9 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                         km.setText(Html.fromHtml("<b>Distanza: </b>"+data.get(0).get(3)));
                         DirectionAdapter directionAdapter = new DirectionAdapter(DirectionsInfo.this, R.layout.direction_item, toPass, mMap);
                         ListView listView = (ListView) findViewById(R.id.directionList);
-                        listView.addHeaderView(header);
+                        if (listView.getHeaderViewsCount() == 0){
+                            listView.addHeaderView(header);
+                        }
                         listView.setAdapter(directionAdapter);
   //                  }
                 }catch (Exception e){
@@ -163,11 +164,11 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 int flag = 0;
                 switch (item.getItemId()) {
                     case R.id.navigation_mappe:
-                        Toast.makeText(DirectionsInfo.this, "Mappe", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(DirectionsInfo.this, "Mappe", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_film:
                         flag=1;
-                        Toast.makeText(DirectionsInfo.this, "Film", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(DirectionsInfo.this, "Film", Toast.LENGTH_SHORT).show();
                         intent = new Intent (DirectionsInfo.this, cercaFilm.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("name", "search");
@@ -175,14 +176,14 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                         break;
                     case R.id.navigation_preferiti:
                         flag=1;
-                        Toast.makeText(DirectionsInfo.this, "Preferiti", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(DirectionsInfo.this, "Preferiti", Toast.LENGTH_SHORT).show();
                         intent = new Intent (DirectionsInfo.this, Preferiti.class);
                         intent.putExtra("warning1", "1");
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         break;
                     case R.id.navigation_eventi:
                         flag=1;
-                        Toast.makeText(DirectionsInfo.this, "Eventi", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(DirectionsInfo.this, "Eventi", Toast.LENGTH_SHORT).show();
                         intent = new Intent (DirectionsInfo.this, cercaFilm.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("name", "eventi");
@@ -484,12 +485,11 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 }
                 if (foundedOk == 0){
                     listener.latLng = params[0];
-                    listener.somethingChanged();
-                }else {
+/*                }else {
                     markerOptions = new MarkerOptions()
                             .position(params[0])
                             .title("Current Position")
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));*/
                 }
             }
             return markerOptions;
@@ -497,11 +497,10 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
 
         @Override
         public void onPostExecute (MarkerOptions options){
-            if (options == null) return;
-            try{
-                mMap.addMarker(options);
-            }catch (Exception e){
-                e.printStackTrace();
+            if (options == null) {
+                listener.somethingChanged();
+/*            }else{
+                mMap.addMarker(options);*/
             }
         }
     }

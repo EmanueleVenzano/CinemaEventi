@@ -58,24 +58,24 @@ public class Preferiti extends AppCompatActivity {
                 int flag = 0;
                 switch (item.getItemId()) {
                     case R.id.navigation_mappe:
-                        Toast.makeText(Preferiti.this, "Mappe", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Preferiti.this, "Mappe", Toast.LENGTH_SHORT).show();
                         intent = new Intent(Preferiti.this, MapsActivity.class);
                         intent.putExtra("name", "");
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         break;
                     case R.id.navigation_film:
-                        Toast.makeText(Preferiti.this, "Film", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Preferiti.this, "Film", Toast.LENGTH_SHORT).show();
                         intent = new Intent (Preferiti.this, cercaFilm.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("name", "search");
                         intent.putExtra("warning", "1");
                         break;
                     case R.id.navigation_preferiti:
-                        Toast.makeText(Preferiti.this, "Preferiti", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Preferiti.this, "Preferiti", Toast.LENGTH_SHORT).show();
                         flag = 1;
                         break;
                     case R.id.navigation_eventi:
-                        Toast.makeText(Preferiti.this, "Eventi", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(Preferiti.this, "Eventi", Toast.LENGTH_SHORT).show();
                         intent = new Intent (Preferiti.this, cercaFilm.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("name", "eventi");

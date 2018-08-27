@@ -50,7 +50,7 @@ public class DirectionParser {
                     if (departure_timeString.charAt(departure_timeString.length()-2) == 'p'){
                         t = (t+12)%24;
                     }
-                    departure_timeString = (t < 10 ? "0" : "")+t+":"+(Integer.parseInt(tot) < 10 ? "0": "")+tot;
+                    departure_timeString = (t < 10 ? "0" : "")+t+":"+(Integer.parseInt(tot) < 10 ? "0": "")+Integer.parseInt(tot);
                 }catch (JSONException e){
                     departure_timeString = (now.getHours()<10?"0":"")+now.getHours()+":"+(now.getMinutes()<10?"0":"")+now.getMinutes();
                 }
@@ -72,7 +72,7 @@ public class DirectionParser {
                     if (arrival_timeString.charAt(arrival_timeString.length()-2) == 'p'){
                         t = (t+12)%24;
                     }
-                    arrival_timeString = (t < 10 ? "0" : "")+t+":"+(Integer.parseInt(tot) < 10 ? "0": "")+tot;
+                    arrival_timeString = (t < 10 ? "0" : "")+t+":"+(Integer.parseInt(tot) < 10 ? "0": "")+Integer.parseInt(tot);
                 }catch (JSONException e){
                     int minMod = now.getMinutes();
                     int hoMod = now.getHours();

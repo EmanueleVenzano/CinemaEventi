@@ -61,7 +61,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                     switch (item.getItemId()) {
                         case R.id.navigation_mappe:
                             flag=1;
-                            Toast.makeText(cercaFilm.this, "Mappe", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(cercaFilm.this, "Mappe", Toast.LENGTH_SHORT).show();
                             intent = new Intent(cercaFilm.this, MapsActivity.class);
                             intent.putExtra("name", "");
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -69,11 +69,11 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                         case R.id.navigation_film:
                             next=2;
                             warning="1";
-                            Toast.makeText(cercaFilm.this, "Film", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(cercaFilm.this, "Film", Toast.LENGTH_SHORT).show();
                             selectedFragment = Locandine.newInstance();
                             break;
                         case R.id.navigation_preferiti:
-                            Toast.makeText(cercaFilm.this, "Preferiti", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(cercaFilm.this, "Preferiti", Toast.LENGTH_SHORT).show();
                             flag=1;
                             intent = new Intent (cercaFilm.this, Preferiti.class);
                             intent.putExtra("warning1", "1");
@@ -82,7 +82,7 @@ public class cercaFilm extends AppCompatActivity implements KeyEvent.Callback {
                         case R.id.navigation_eventi:
                             next=3;
                             warning="1";
-                            Toast.makeText(cercaFilm.this, "Eventi", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(cercaFilm.this, "Eventi", Toast.LENGTH_SHORT).show();
                             selectedFragment = EventiFragment.newInstance();
                             break;
                     }

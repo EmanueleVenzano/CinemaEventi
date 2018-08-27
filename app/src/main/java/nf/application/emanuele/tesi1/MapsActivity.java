@@ -98,11 +98,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 int flag = 0;
                 switch (item.getItemId()) {
                     case R.id.navigation_mappe:
-                        Toast.makeText(MapsActivity.this, "Mappe", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MapsActivity.this, "Mappe", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_film:
                         flag=1;
-                        Toast.makeText(MapsActivity.this, "Film", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MapsActivity.this, "Film", Toast.LENGTH_SHORT).show();
                         intent = new Intent (MapsActivity.this, cercaFilm.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("name", "search");
@@ -110,14 +110,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         break;
                     case R.id.navigation_preferiti:
                         flag=1;
-                        Toast.makeText(MapsActivity.this, "Preferiti", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MapsActivity.this, "Preferiti", Toast.LENGTH_SHORT).show();
                         intent = new Intent (MapsActivity.this, Preferiti.class);
                         intent.putExtra("warning1", "1");
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         break;
                     case R.id.navigation_eventi:
                         flag=1;
-                        Toast.makeText(MapsActivity.this, "Eventi", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MapsActivity.this, "Eventi", Toast.LENGTH_SHORT).show();
                         intent = new Intent (MapsActivity.this, cercaFilm.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("name", "eventi");
