@@ -125,8 +125,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1])-1, Integer.parseInt(temp1[2]), Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]));
                         Date filmTime = calendar.getTime();
-                        //if (filmTime.after(currentTime)) {
-                        if (true) {
+                        if (filmTime.after(currentTime)) {
                             img_selected.setImageResource(R.drawable.friends);
                             img_selected.setTag(R.drawable.friends);
                             result = db.insertPreferito(film, "1", dataShowTimes.getStart(), cinema);

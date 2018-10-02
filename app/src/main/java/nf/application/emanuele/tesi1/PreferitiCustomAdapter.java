@@ -100,8 +100,7 @@ public class PreferitiCustomAdapter extends ArrayAdapter<ArrayList<String>> {
                             calendar.set(Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1])-1, Integer.parseInt(temp1[2]), Integer.parseInt(temp2[0]), Integer.parseInt(temp2[0]));
                         }
                         filmTime = calendar.getTime();
-                        //                        if (filmTime.after(currentTime)){
-                        if (true) {
+                        if (filmTime.after(currentTime)) {
                             db = new PreferitiDB(context);
                             result = db.insertPreferito(copertina.get(2), isFilm, copertina.get(0), copertina.get(1));
                             view.setImageResource(R.drawable.delete);

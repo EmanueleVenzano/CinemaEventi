@@ -37,7 +37,7 @@ import static java.lang.Math.sqrt;
 
 public class MyApplication extends Application {
     private DataInfo dataInfo = null;
-    private String api_key = "9AmxQRqw3gltnlBKQvR9CgJDwUaC6DLg";
+    private String api_key = "O2SDCQ4xaVnyRRfX6AmyOuGGaZQ24GBJ";
     private String country_code;
 
     @Override
