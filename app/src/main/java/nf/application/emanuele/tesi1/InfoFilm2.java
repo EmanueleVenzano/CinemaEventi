@@ -96,6 +96,16 @@ public class InfoFilm2 extends Fragment {
         titleFilm = (TextView)view.findViewById(R.id.titleFilm);
         explistView = (ListView)view.findViewById(R.id.proiezioniListView);
         prepareListData();
+        if (name.equals("Una storia senza nome")){
+            urlToString = "http://t1.gstatic.com/images?q=tbn:ANd9GcSFg3tSeV7z9rYxyPNuDhcuspEtq2YcEfxfkItMoTaS0uuWGyU0";
+        }else if (name.equals("Finding Momo")){
+            urlToString = "https://www.ucicinemas.it/media/movie/l/2018/un-figlio-all-improvviso.jpg";
+        }else if (name.equals("Rolling to You")){
+            urlToString = "http://t1.gstatic.com/images?q=tbn:ANd9GcRKvfWV9Vrr6_HFdPMnSZf7e6wUbf94k2Ld4PQPOnkoaIIoNLFD";
+        }else if (name.equals("Titanic")){
+            urlToString = "https://movieplayer.net-cdn.it/images/2009/09/29/la-locandina-di-titanic-7522.jpg";
+        }
+
         if (urlToString.equals("null")) {
             Drawable placeholder = imgFilm.getContext().getResources().getDrawable(R.drawable.bho1);
             imgFilm.setImageDrawable(placeholder);

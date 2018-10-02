@@ -210,10 +210,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
+        //mLastLocation.setLatitude(44.403058);
+        //mLastLocation.setLongitude(8.958195);
+
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+  //      LatLng latLng = new LatLng(44.403058, 8.958195);
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");

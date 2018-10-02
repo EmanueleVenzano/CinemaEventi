@@ -16,7 +16,7 @@
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_new"
+        android:icon="@drawable/logo_tondo_nero_1"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_new_round"
         android:supportsRtl="true"

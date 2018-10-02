@@ -13,7 +13,7 @@
         android:textColor="@color/black"
         android:background="#ece3ce"
         android:padding="7dp"
-        android:text="I prossimi eventi a Genova"
+        android:text="I prossimi eventi nella tua città"
         android:textSize="22dp"/>
     <View
         android:id="@+id/divider"
