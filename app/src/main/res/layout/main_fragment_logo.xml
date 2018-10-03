@@ -31,7 +31,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="259dp"
-        android:text="Loading..."
+        android:text="Searching for GPS.."
         android:textColor="#FF4500"
         android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"

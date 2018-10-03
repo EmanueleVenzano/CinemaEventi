@@ -78,8 +78,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                     getFragmentManager().beginTransaction().replace(android.R.id.content, new MainFragment()).commit();
                 }
             });
-            new DownloadCinemaTask().execute("https://api.internationalshowtimes.com/v4/cinemas/?countries="+myApplication.getCountry_code());
-//            new DownloadCinemaTask().execute("https://api.internationalshowtimes.com/v4/cinemas/?countries=IT");
+//            new DownloadCinemaTask().execute("https://api.internationalshowtimes.com/v4/cinemas/?countries="+myApplication.getCountry_code());
+            new DownloadCinemaTask().execute("https://api.internationalshowtimes.com/v4/cinemas/?countries=IT");
         }else{
             getFragmentManager().beginTransaction().replace(android.R.id.content, new MainFragment()).commit();
         }
@@ -224,6 +224,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         if (location != null){
             this.location = new LatLng(location.getLatitude(), location.getLongitude());
 //            this.location = new LatLng(44.403058, 8.958195);
+//            this.location = new LatLng(45.076846, 7.674095);
+//            this.location = new LatLng(45.482619, 9.178466);
         }
         if (mGoogleApiClient != null){
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);

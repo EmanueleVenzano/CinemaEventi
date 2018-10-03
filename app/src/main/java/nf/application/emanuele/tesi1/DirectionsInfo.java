@@ -485,6 +485,7 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 }
                 if (foundedOk == 0){
                     listener.latLng = params[0];
+                    listener.somethingChanged();
 /*                }else {
                     markerOptions = new MarkerOptions()
                             .position(params[0])
@@ -493,15 +494,6 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
                 }
             }
             return markerOptions;
-        }
-
-        @Override
-        public void onPostExecute (MarkerOptions options){
-            if (options == null) {
-                listener.somethingChanged();
-/*            }else{
-                mMap.addMarker(options);*/
-            }
         }
     }
 
@@ -537,9 +529,10 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
         String sensor = "sensor=false";
-        String parameters = str_origin + "&" + str_dest + "&" + sensor;
+        String key = "key=" + getString(R.string.google_maps_key);
+        String parameters = str_origin + "&" + str_dest + "&" +key;
         String output = "json";
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters+ "&mode=" + mode;
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters+ "&mode=" + mode+ "&" + sensor ;
         return url;
     }
 

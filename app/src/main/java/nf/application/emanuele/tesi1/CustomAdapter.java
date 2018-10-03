@@ -27,12 +27,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class CustomAdapter extends ArrayAdapter<ArrayList<String>> {
+public class CustomAdapter extends ArrayAdapter<String> {
     Context context;
-
-    public CustomAdapter (Context context, int textViewResoutceId, List<ArrayList<String>> objects){
-        super(context, textViewResoutceId, objects);
+    ArrayList<Bitmap> immagini;
+    ArrayList<String> urls;
+    public CustomAdapter (Context context, int textViewResoutceId, List<String> titoli, ArrayList<String> urls, ArrayList<Bitmap>immagini){
+        super(context, textViewResoutceId, titoli);
         this.context = context;
+        this.immagini = immagini;
+        this.urls = urls;
     }
 
     @Override
@@ -52,50 +55,37 @@ public class CustomAdapter extends ArrayAdapter<ArrayList<String>> {
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        ArrayList<String> copertina =getItem(position);
-        if (copertina.get(0).equals("Una storia senza nome")){
-            copertina.set(1, "http://t1.gstatic.com/images?q=tbn:ANd9GcSFg3tSeV7z9rYxyPNuDhcuspEtq2YcEfxfkItMoTaS0uuWGyU0");
-        }else if (copertina.get(0).equals("Finding Momo")){
-            copertina.set(1, "https://www.ucicinemas.it/media/movie/l/2018/un-figlio-all-improvviso.jpg");
-        }else if (copertina.get(0).equals("Rolling to You")){
-            copertina.set(1, "http://t1.gstatic.com/images?q=tbn:ANd9GcRKvfWV9Vrr6_HFdPMnSZf7e6wUbf94k2Ld4PQPOnkoaIIoNLFD");
-        }else if (copertina.get(0).equals("Titanic")){
-            copertina.set(1, "https://movieplayer.net-cdn.it/images/2009/09/29/la-locandina-di-titanic-7522.jpg");
-        }
-        if(copertina.get(1) == null || copertina.get(1).equals("null")) {
-            Bitmap src = BitmapFactory.decodeResource(context.getResources(), R.drawable.bho1);
-            Bitmap dest = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
-            String yourText = String.valueOf(copertina.get(0));
-            Canvas cs = new Canvas(dest);
-            Paint tPaint = new Paint();
-            tPaint.setTextSize(100);
-            tPaint.setColor(Color.BLACK);
-            tPaint.setStyle(Paint.Style.FILL);
-            cs.drawBitmap(src, 5f, 5f, null);
-            float height = tPaint.measureText("yY");
-            float width = tPaint.measureText(yourText);
-            float x_coord = (src.getWidth() - width)/2;
-            float y_coord = (src.getHeight()-height-100f);
-            cs.drawText(yourText, x_coord, y_coord, tPaint);
-            viewHolder.img.setImageDrawable(new BitmapDrawable(context.getResources(), dest));
-        }else {
-            ImageDownloaderTask idt = new ImageDownloaderTask();
-            Bitmap result = null;
-            try {
-                result = idt.execute(copertina.get(1)).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            ImageView imageView = (ImageView)convertView.findViewById(R.id.imgLocandine);
-            if (result != null){
-                imageView.setImageBitmap(result);
+        if (immagini.get(position) == null){
+            String copertina =getItem(position);
+            Bitmap bitmap = null;
+            if (urls.get(position) != null && !urls.get(position).equals("null")){
+                try {
+                    bitmap = new ImageDownloaderTask().execute(urls.get(position)).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
             }else{
-                Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.ic_launcher_background);
-                imageView.setImageDrawable(placeholder);
+                Bitmap src = BitmapFactory.decodeResource(context.getResources(), R.drawable.bho1);
+                Bitmap dest = Bitmap.createBitmap(src.getWidth(), src.getHeight(), Bitmap.Config.ARGB_8888);
+                String yourText = String.valueOf(copertina);
+                Canvas cs = new Canvas(dest);
+                Paint tPaint = new Paint();
+                tPaint.setTextSize(100);
+                tPaint.setColor(Color.BLACK);
+                tPaint.setStyle(Paint.Style.FILL);
+                cs.drawBitmap(src, 5f, 5f, null);
+                float height = tPaint.measureText("yY");
+                float width = tPaint.measureText(yourText);
+                float x_coord = (src.getWidth() - width)/2;
+                float y_coord = (src.getHeight()-height-100f);
+                cs.drawText(yourText, x_coord, y_coord, tPaint);
+                bitmap = new BitmapDrawable(context.getResources(), dest).getBitmap();
             }
+            immagini.set(position, bitmap);
         }
+        viewHolder.img.setImageBitmap(immagini.get(position));
         return convertView;
     }
 
