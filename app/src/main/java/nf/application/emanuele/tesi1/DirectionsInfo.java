@@ -272,7 +272,10 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        mLastLocation.setLatitude(44.403058);
+        mLastLocation.setLongitude(44.403058);
+//        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLng = new LatLng(44.403058, 8.958195);
         if (notFirsTime == 0){
             listener.latLng = latLng;
             listener.somethingChanged();
@@ -532,7 +535,14 @@ public class DirectionsInfo extends FragmentActivity implements OnMapReadyCallba
         String key = "key=" + getString(R.string.google_maps_key);
         String parameters = str_origin + "&" + str_dest + "&" +key;
         String output = "json";
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters+ "&mode=" + mode+ "&" + sensor ;
+        String modeS;
+        if (mode.equals("bicycling")){
+            modeS = "&mode=walking";
+        }else{
+            modeS = "&mode=" + mode;
+        }
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters+ modeS + "&" + sensor ;
         return url;
     }
 

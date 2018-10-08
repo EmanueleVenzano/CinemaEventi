@@ -74,8 +74,34 @@ public class DirectionParser {
                     }
                     arrival_timeString = (t < 10 ? "0" : "")+t+":"+(Integer.parseInt(tot) < 10 ? "0": "")+Integer.parseInt(tot);
                 }catch (JSONException e){
-                    int minMod = now.getMinutes();
                     int hoMod = now.getHours();
+                    int minMod = now.getMinutes();
+                    if (mode.equals("bicycling")){
+                        int rest = 0;
+                        if (splitted[1].equals("hour") || splitted[1].equals("hours")){
+                            rest = Integer.parseInt(splitted[0])%2*30;
+                        }else{
+                            rest = Integer.parseInt(splitted[0])%2*12;
+                        }
+                        splitted[0] = String.valueOf(Integer.parseInt(splitted[0])/2);
+                        if (splitted.length>2){
+                            splitted[2] = String.valueOf((Integer.parseInt(splitted[2])/2)+rest);
+                            if (splitted[1].equals("hour") || splitted[1].equals("hours")){
+                                rest = Integer.parseInt(splitted[2])/60;
+                                splitted[2] = String.valueOf(Integer.parseInt(splitted[2])%60);
+                            }else{
+                                rest = Integer.parseInt(splitted[0])/24;
+                                splitted[2] = String.valueOf(Integer.parseInt(splitted[2])% 24);
+                            }
+                            splitted[0] = String.valueOf(Integer.parseInt(splitted[0])+rest);
+                        }
+                        durationString = "";
+                        for (int j=0; j<splitted.length; j=j+2){
+                            if (!splitted[j].equals("0")){
+                                durationString = durationString+splitted[j]+" "+splitted[j+1]+" ";
+                            }
+                        }
+                    }
                     if (splitted.length == 2){
                         minMod = (minMod+Integer.parseInt(splitted[0]))%60;
                         hoMod = (hoMod+(now.getMinutes()+Integer.parseInt(splitted[0]))/60)%24;

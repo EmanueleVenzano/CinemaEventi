@@ -57,7 +57,7 @@
         android:id="@+id/eventiLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#00bfff"
+        android:textColor="@color/colorPrimary"
         android:text="Prenota subito!"
         android:src="@drawable/button_shape"/>
 
